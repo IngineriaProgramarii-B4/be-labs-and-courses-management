@@ -1,4 +1,4 @@
-package com.example.coursesmodule;
+package com.example.uniManagerBackend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,8 +10,8 @@ import java.util.List;
 
 @SpringBootApplication
 @RestController
-public class CoursesModuleApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(CoursesModuleApplication.class, args);
-    }
+public class UniManagerBackendApplication {
+	public static void main(String[] args) {
+		SpringApplication.run(UniManagerBackendApplication.class, args);
+	}
 }
