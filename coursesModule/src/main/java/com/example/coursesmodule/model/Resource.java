@@ -1,23 +1,28 @@
 package com.example.coursesmodule.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class Resource {
-    private String id;
+    private UUID id;
     private String title;
     private String location;
     private LocalDateTime timeStamp;
 
     //constructor
-    public Resource(String id, String title, String location, LocalDateTime timeStamp) {
+    public Resource(@JsonProperty("id") UUID id,
+                    @JsonProperty("title") String title,
+                    @JsonProperty("location") String location) {
         this.id = id;
         this.title = title;
         this.location = location;
-        this.timeStamp = timeStamp;
+        this.timeStamp = LocalDateTime.now();
     }
 
     //setters
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
     public void setTitle(String title) {
@@ -31,7 +36,7 @@ public class Resource {
     }
 
     //getters
-    public String getId() {
+    public UUID getId() {
         return id;
     }
     public String getTitle() {
