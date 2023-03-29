@@ -6,13 +6,15 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class Resource {
-    private UUID id;
+    private int id;
     private String title;
     private String location;
     private LocalDateTime timeStamp;
 
     //constructor
-    public Resource(UUID id, String title, String location) {
+    public Resource(@JsonProperty("id") int id,
+                    @JsonProperty("title") String title,
+                    @JsonProperty("location") String location) {
         this.id = id;
         this.title = title;
         this.location = location;
@@ -20,7 +22,7 @@ public class Resource {
     }
 
     //setters
-    public void setId(UUID id) {
+    public void setId(int id) {
         this.id = id;
     }
     public void setTitle(String title) {
@@ -34,7 +36,7 @@ public class Resource {
     }
 
     //getters
-    public UUID getId() {
+    public int getId() {
         return id;
     }
     public String getTitle() {

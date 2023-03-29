@@ -2,6 +2,7 @@ package com.example.coursesmodule.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,6 +28,7 @@ public class Course {
         this.credits = credits;
         this.year = year;
         this.semester = semester;
+        this.resources=new ArrayList<>();
     }
 
     public Course(String title, int id, List<Resource> resources, int credits, Evaluation evaluationMethod, int year, int semester, List<Approfundation> approfundationList) {

@@ -13,4 +13,6 @@ public interface CourseDao {
     List<Course> selectAllCourses();
 
     Optional<Course> selectCourseById(int id);
+    void addResource(int id, Resource resource);
+    Optional<Resource> getResourceById(Course course, int resourceId);
 }

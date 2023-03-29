@@ -2,6 +2,7 @@ package com.example.coursesmodule.service;
 
 import com.example.coursesmodule.dao.CourseDao;
 import com.example.coursesmodule.model.Course;
+import com.example.coursesmodule.model.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -27,5 +28,12 @@ public class CourseService {
 
     public Optional<Course> getCourseById(int id) {
         return courseDao.selectCourseById(id);
+    }
+
+    public void addResource(int id, Resource resource) {
+        courseDao.addResource(id, resource);
+    }
+    public Optional<Resource> getResourceById(Course course, int resourceId) {
+        return courseDao.getResourceById(course, resourceId);
     }
 }
