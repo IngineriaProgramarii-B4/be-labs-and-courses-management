@@ -12,9 +12,7 @@ public class Resource {
     private LocalDateTime timeStamp;
 
     //constructor
-    public Resource(@JsonProperty("id") UUID id,
-                    @JsonProperty("title") String title,
-                    @JsonProperty("location") String location) {
+    public Resource(UUID id, String title, String location) {
         this.id = id;
         this.title = title;
         this.location = location;

@@ -1,5 +1,7 @@
 package com.example.coursesmodule.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -14,6 +16,19 @@ public class Course {
     List<Approfundation> approfundationList;
 
     //constructor
+
+    public Course(@JsonProperty("title") String title,
+                  @JsonProperty("id") int id,
+                  @JsonProperty("credits") int credits,
+                  @JsonProperty("year") int year,
+                  @JsonProperty("semester") int semester) {
+        this.title = title;
+        this.id = id;
+        this.credits = credits;
+        this.year = year;
+        this.semester = semester;
+    }
+
     public Course(String title, int id, List<Resource> resources, int credits, Evaluation evaluationMethod, int year, int semester, List<Approfundation> approfundationList) {
         this.title = title;
         this.id = id;
