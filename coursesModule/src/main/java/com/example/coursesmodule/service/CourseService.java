@@ -1,6 +1,7 @@
 package com.example.coursesmodule.service;
 
 import com.example.coursesmodule.dao.CourseDao;
+import com.example.coursesmodule.model.Approfundation;
 import com.example.coursesmodule.model.Course;
 import com.example.coursesmodule.model.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +36,25 @@ public class CourseService {
     }
     public Optional<Resource> getResourceById(Course course, int resourceId) {
         return courseDao.getResourceById(course, resourceId);
+    }
+
+    public int addApprofundation(int id, Approfundation approfundation) {
+        return courseDao.addApprofundation(id, approfundation);
+    }
+
+    public List<Approfundation> getApprofundations(Course course) {
+        return courseDao.getApprofundations(course);
+    }
+
+    public Optional<Approfundation> getApprofundationById(Course course, int approfundationId) {
+        return courseDao.getApprofundationById(course, approfundationId);
+    }
+
+    public int deleteApprofundationById(int id, int approfundationId) {
+        return courseDao.deleteApprofundationById(id, approfundationId);
+    }
+
+    public int updateApprofundationById(int id, int approfundationId, Approfundation approfundation) {
+        return courseDao.updateApprofundationById(id, approfundationId, approfundation);
     }
 }

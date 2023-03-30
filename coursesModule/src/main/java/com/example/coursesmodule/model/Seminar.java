@@ -1,11 +1,21 @@
 package com.example.coursesmodule.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Seminar implements Approfundation {
 
+    private int id;
     private List<Resource> resources;
     private int numberWeeks;
+
+    public Seminar(@JsonProperty("id") int id,@JsonProperty("numberWeeks") int numberWeeks) {
+        this.resources = new ArrayList<>();
+        this.numberWeeks = numberWeeks;
+        this.id = id;
+    }
 
     //setters
     public void setResources(List<Resource> resources) {
@@ -15,12 +25,22 @@ public class Seminar implements Approfundation {
         this.numberWeeks = numberWeeks;
     }
 
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
+
     //getters
     public List<Resource> getResources() {
         return resources;
     }
     public int getNumberWeeks() {
         return numberWeeks;
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 
     //additional methods

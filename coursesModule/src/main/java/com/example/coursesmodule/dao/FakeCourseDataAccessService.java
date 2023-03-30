@@ -1,5 +1,6 @@
 package com.example.coursesmodule.dao;
 
+import com.example.coursesmodule.model.Approfundation;
 import com.example.coursesmodule.model.Course;
 import com.example.coursesmodule.model.Resource;
 import org.springframework.stereotype.Repository;
@@ -56,5 +57,52 @@ public class FakeCourseDataAccessService implements CourseDao {
         return course.getResources().stream()
                 .filter(resource -> resource.getId() == resourceId)
                 .findFirst();
+    }
+
+    @Override
+    public int addApprofundation(int id, Approfundation approfundation) {
+        // check if the approfundation already exists
+        if (selectCourseById(id).get().getApprofundationList().stream()
+                .anyMatch(approfundation1 -> approfundation1.getId() == approfundation.getId())) {
+            return 0;
+        }
+        selectCourseById(id).get().addApprofundation(approfundation);
+        return 1;
+    }
+
+    @Override
+    public List<Approfundation> getApprofundations(Course course) {
+        return course.getApprofundationList();
+    }
+
+    @Override
+    public Optional<Approfundation> getApprofundationById(Course course, int approfundationId) {
+        return course.getApprofundationList().stream()
+                .filter(approfundation -> approfundation.getId() == approfundationId)
+                .findFirst();
+    }
+
+    @Override
+    public int deleteApprofundationById(int id, int approfundationId) {
+        Optional<Approfundation> approfundationMaybe = getApprofundationById(selectCourseById(id).get(), approfundationId);
+        if (approfundationMaybe.isEmpty()) {
+            return 0;
+        }
+        selectCourseById(id).get().getApprofundationList().remove(approfundationMaybe.get());
+        return 1;
+    }
+
+    @Override
+    public int updateApprofundationById(int id, int approfundationId, Approfundation approfundation) {
+        return getApprofundationById(selectCourseById(id).get(), approfundationId)
+                .map(a -> {
+                    int indexOfApprofundationToUpdate = selectCourseById(id).get().getApprofundationList().indexOf(a);
+                    if (indexOfApprofundationToUpdate >= 0) {
+                        selectCourseById(id).get().getApprofundationList().set(indexOfApprofundationToUpdate, approfundation);
+                        return 1;
+                    }
+                    return 0;
+                })
+                .orElse(0);
     }
 }

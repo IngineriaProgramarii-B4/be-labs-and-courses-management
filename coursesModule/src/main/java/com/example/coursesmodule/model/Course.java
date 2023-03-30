@@ -29,6 +29,7 @@ public class Course {
         this.year = year;
         this.semester = semester;
         this.resources=new ArrayList<>();
+        this.approfundationList=new ArrayList<>();
     }
 
     public Course(String title, int id, List<Resource> resources, int credits, Evaluation evaluationMethod, int year, int semester, List<Approfundation> approfundationList) {
