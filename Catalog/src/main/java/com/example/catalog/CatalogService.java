@@ -3,36 +3,41 @@ package com.example.catalog;
 import com.example.grades.Grade;
 import com.example.subject.Subject;
 import com.example.userImpl.student.Student;
+import com.example.userImpl.student.StudentService;
 import com.example.userImpl.teacher.Teacher;
 import com.example.userImpl.teacher.TeacherService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class CatalogService {
-    public Catalog catalogDB(){
-        Catalog catalog = new Catalog();
-        Student student = new Student(0,301232,"student1@gmail.com", "Mihai");
-        Student student1 = new Student(1,301233,"student2@gmail.com", "Andrei");
+    private final StudentService studentService;
+    private final TeacherService teacherService;
+    @Autowired
+    public CatalogService(StudentService studentService, TeacherService teacherService) {
+        this.studentService = studentService;
+        this.teacherService = teacherService;
+        initCatalogDB();
+    }
 
-        Teacher teacher = new Teacher(0,"teacher1@gmail.com", "Ciobi");
-        Teacher teacher1 = new Teacher(1,"teacher2@gmail.com", "Olariu");
+    private final Catalog catalog = new Catalog();
+
+    public void initCatalogDB(){
 
         Subject subject = new Subject("IP");
-        subject.addTeacher(teacher);
+        subject.addTeacher(teacherService.getTeacherById(0));
         Subject subject1 = new Subject("PA");
-        subject1.addTeacher(teacher1);
+        subject1.addTeacher(teacherService.getTeacherById(1));
 
-        student.addGrade(new Grade(5, subject));
-        student.addGrade(new Grade(7,subject1));
+        studentService.getStudentById(0).addGrade(new Grade(5, subject, "12.12.2004"));
+        studentService.getStudentById(0).addGrade(new Grade(7,subject1, "12.12.2005"));
 
-        student1.addGrade(new Grade(9, subject));
-        student1.addGrade(new Grade(4,subject1));
+        studentService.getStudentById(1).addGrade(new Grade(9, subject, "08.12.2007"));
+        studentService.getStudentById(1).addGrade(new Grade(4,subject1, "07.12.2009"));
 
-        catalog.addEntry(student); catalog.addEntry(student1);
-
+        catalog.setEntries(studentService.getStudentDataBase());
+    }
+    public Catalog getCatalog(){
         return catalog;
     }
 }
