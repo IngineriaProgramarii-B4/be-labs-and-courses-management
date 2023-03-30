@@ -1,14 +1,12 @@
 package com.example.userImpl.teacher;
 
-import com.example.userImpl.student.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.rmi.ServerException;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +21,7 @@ public class TeacherController {
 
     @GetMapping
     public List<Teacher> getTeachers(){
-        return teacherService.teachersDataBase();
+        return teacherService.getTeacherDataBase();
     }
     @GetMapping("/{id}")
     public Teacher getTeacherById(@PathVariable("id") int id){
@@ -33,6 +31,27 @@ public class TeacherController {
         } else {
             throw new NullPointerException();
         }
+    }
+    @PostMapping(path = "",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Teacher> create(@RequestBody Teacher newTeacher) throws ServerException {
+
+        Teacher user = teacherService.save(newTeacher);
+        if (user == null) {
+            throw new ServerException("Cannot save.");
+        } else {
+            return new ResponseEntity<>(user, HttpStatus.CREATED);
+        }
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Teacher> delete(@PathVariable("id") int id){
+        Teacher isRemoved = teacherService.delete(getTeacherById(id));
+        if (isRemoved == null){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(isRemoved, HttpStatus.OK);
     }
 }
 

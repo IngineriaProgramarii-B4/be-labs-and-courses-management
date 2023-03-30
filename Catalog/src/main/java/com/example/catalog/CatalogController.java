@@ -16,5 +16,5 @@ public class CatalogController {
     }
 
     @GetMapping
-    public Catalog getCatalog(){return catalogService.catalogDB();}
+    public Catalog getCatalog(){return catalogService.getCatalog();}
 }

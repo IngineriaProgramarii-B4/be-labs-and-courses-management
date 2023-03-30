@@ -20,7 +20,6 @@ public class Student implements User {
         this.email = email;
         this.name = name;
     }
-
     public int getIdStud() {
         return idStud;
     }
@@ -35,6 +34,26 @@ public class Student implements User {
 
     public void setNrMatricol(long nrMatricol) {
         this.nrMatricol = nrMatricol;
+    }
+    public List<Grade> getGrades() {
+        return grades;
+    }
+
+    public List<Grade> getGradesBySubject(String subject) {
+        List<Grade> gradesList = new ArrayList<>();
+        for (Grade grade : this.getGrades()) {
+            if (grade.getSubject().getName().equals(subject)) {
+                gradesList.add(grade);
+            }
+        }
+        return gradesList;
+    }
+    public void setGrades(List<Grade> grades) {
+        this.grades = grades;
+    }
+    public void addGrade(Grade grade){
+        grades.add(grade);
+        grade.setId(grades.size() - 1);
     }
 
     @Override
@@ -52,7 +71,6 @@ public class Student implements User {
         return name;
     }
 
-
     @Override
     public void setName(String name) {
         this.name = name;
@@ -62,18 +80,6 @@ public class Student implements User {
     public int getId() {
         return idStud;
     }
-    public List<Grade> getGrades() {
-        return grades;
-    }
-
-    public void setGrades(List<Grade> grades) {
-        this.grades = grades;
-    }
-
-    public void addGrade(Grade grade){
-        grades.add(grade);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

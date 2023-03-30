@@ -1,5 +1,6 @@
 package com.example.userImpl.student;
 
+import com.example.grades.Grade;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,6 +13,8 @@ public class StudentService {
     public StudentService(){
         initStudentDataBase();
     }
+
+    // Baza de date fictiva cu doua intrari. Se poate elimina din moment ce exista HTTP PUT handler. Implicit la fel si pentru TeacherService.
     public List<Student> initStudentDataBase() {
 
         Student student = new Student(0,301232,"student1@gmail.com", "Mihai");
@@ -34,12 +37,37 @@ public class StudentService {
 
     public Student delete(Student student){
         try {
-            Student deleted = student;
             studentList.remove(student);
-            return deleted;
+            return student;
         }
         catch (NullPointerException e) {
             return null;
         }
+    }
+
+    public void addGrade(int id, Grade grade) {
+        studentList.get(id).addGrade(grade);
+    }
+
+    public Grade deleteGrade(int id, int gradeId) {
+        List<Grade> grades = studentList.get(id).getGrades();
+        try {
+            Grade toRemove = new Grade();
+            for (Grade grade : grades ) {
+                if (grade.getId() == gradeId) {
+                    toRemove = grade;
+                    break;
+                }
+            }
+            grades.remove(toRemove);
+            return toRemove;
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+
+    public Grade getGradeById(int id, int gradeId) {
+        return studentList.get(id).getGrades().get(gradeId);
     }
 }
