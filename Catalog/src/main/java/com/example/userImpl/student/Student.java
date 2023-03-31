@@ -56,6 +56,10 @@ public class Student implements User {
         grade.setId(grades.size() - 1);
     }
 
+    public void setGrade(int value,int gradeID){
+        grades.get(gradeID).setValue(value);
+    }
+
     @Override
     public String getEmail() {
         return email;

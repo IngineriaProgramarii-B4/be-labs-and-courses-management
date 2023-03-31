@@ -3,6 +3,12 @@ package com.example.userImpl.student;
 import com.example.grades.Grade;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 @Service
@@ -69,5 +75,29 @@ public class StudentService {
 
     public Grade getGradeById(int id, int gradeId) {
         return studentList.get(id).getGrades().get(gradeId);
+    }
+
+    public Grade updateGrade(int id,Integer value,String evaluationDate,Integer gradeId){
+        if(value != null) {
+            if((value<1 || value>10)) {
+                throw new IllegalStateException("The value is not between 1 and 10");
+            } else if(value!=getGradeById(id,gradeId).getValue()) {
+                getStudentById(id).setGrade(value, gradeId);
+            }
+        }
+
+        boolean validDate=true;
+        if(evaluationDate != null && !evaluationDate.equals(getStudentById(id).getGrades().get(gradeId).getEvaluationDate())){
+            DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            try {
+                LocalDate date=LocalDate.parse(evaluationDate,formatter);
+            } catch (DateTimeParseException exception){
+                validDate=false;
+            }
+            if(validDate) {
+                getStudentById(id).getGrades().get(gradeId).setEvaluationDate(evaluationDate);
+            }
+        }
+        return getGradeById(id,gradeId);
     }
 }
