@@ -35,6 +35,7 @@ public class StudentController {
             throw new NullPointerException();
         }
     }
+
     @GetMapping("/{id}/{subject}")
     public List<Grade> getStudentByIdSubjectGrades(@PathVariable("id") int id, @PathVariable String subject) {
         Optional<Student> student = Optional.ofNullable(studentService.getStudentById(id));
@@ -113,6 +114,20 @@ public class StudentController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(isRemoved, HttpStatus.OK);
+    }
+
+    //Modifica valoarea unei note si/sau data de notare
+    @PutMapping("/{id}/grades/{gradeId}")
+    public ResponseEntity<Grade> updateGradeValue(@PathVariable("id") int id, @PathVariable("gradeId") int gradeId,@RequestParam(required = false) String evaluationDate,@RequestParam(required = false) Integer value){
+        Optional<Student> student = Optional.ofNullable(studentService.getStudentById(id));
+        if (student.isPresent()) {
+            Optional<Grade> grade = Optional.ofNullable(studentService.getGradeById(id, gradeId));
+            if (grade.isPresent()){
+               Grade updatedGrade= studentService.updateGrade(id,value,evaluationDate,gradeId);
+                return new ResponseEntity<>(grade.get(), HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 }
 
