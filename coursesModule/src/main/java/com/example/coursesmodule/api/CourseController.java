@@ -46,6 +46,10 @@ public class CourseController {
         return courseService.getCourseById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
     }
+    @GetMapping(path="year={year}/semester={semester}")
+    public List<Course> getCoursesByYearAndSemester(@PathVariable("year") int year, @PathVariable("semester") int semester) {
+        return courseService.getCoursesByYearAndSemester(year, semester);
+    }
 
     @DeleteMapping(path = "courseId={id}")
     public void deleteCourseById(@PathVariable("id") int id) {

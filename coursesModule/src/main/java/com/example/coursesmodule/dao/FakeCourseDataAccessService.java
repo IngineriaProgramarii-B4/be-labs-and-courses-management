@@ -47,6 +47,13 @@ public class FakeCourseDataAccessService implements CourseDao {
     }
 
     @Override
+    public List<Course> getCoursesByYearAndSemester(int year, int semester) {
+        return DB.stream()
+                .filter(course -> course.getYear() == year && course.getSemester() == semester)
+                .toList();
+    }
+
+    @Override
     public int deleteCourseById(int id) {
         Optional<Course> courseMaybe = selectCourseById(id);
         if (courseMaybe.isEmpty()) {
@@ -167,4 +174,6 @@ public class FakeCourseDataAccessService implements CourseDao {
                 })
                 .orElse(0);
     }
+
+
 }

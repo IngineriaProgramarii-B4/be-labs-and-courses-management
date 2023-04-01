@@ -32,6 +32,9 @@ public class CourseService {
     public Optional<Course> getCourseById(int id) {
         return courseDao.selectCourseById(id);
     }
+    public List<Course> getCoursesByYearAndSemester(int year, int semester) {
+        return courseDao.getCoursesByYearAndSemester(year, semester);
+    }
     public int deleteCourseById(int id) {
         return courseDao.deleteCourseById(id);
     }
@@ -83,4 +86,5 @@ public class CourseService {
     public int updateApprofundationById(int id, int approfundationId, Approfundation approfundation) {
         return verifyApprofundationValid(approfundation) == 0 ? 0 : courseDao.updateApprofundationById(id, approfundationId, approfundation);
     }
+
 }

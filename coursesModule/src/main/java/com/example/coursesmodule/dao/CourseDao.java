@@ -37,4 +37,6 @@ public interface CourseDao {
     int deleteApprofundationById(int id, int approfundationId);
 
     int updateApprofundationById(int id, int approfundationId, Approfundation approfundation);
+
+    List<Course> getCoursesByYearAndSemester(int year, int semester);
 }
