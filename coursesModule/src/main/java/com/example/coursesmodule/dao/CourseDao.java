@@ -13,8 +13,20 @@ public interface CourseDao {
     List<Course> selectAllCourses();
 
     Optional<Course> selectCourseById(int id);
-    void addResource(int id, Resource resource);
+
+    int deleteCourseById(int id);
+
+    int updateCourseById(int id, Course course);
+
+    int addResource(int id, Resource resource);
+
+    List<Resource> getResources(Course course);
+
     Optional<Resource> getResourceById(Course course, int resourceId);
+
+    int deleteResourceById(int id, int resourceId);
+
+    int updateResourceById(int id, int resourceId, Resource resource);
 
     int addApprofundation(int id, Approfundation approfundation);
 

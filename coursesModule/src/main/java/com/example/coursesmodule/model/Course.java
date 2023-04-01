@@ -14,6 +14,7 @@ public class Course {
     Evaluation evaluationMethod;
     int year;
     int semester;
+    String description;
     List<Approfundation> approfundationList;
 
     //constructor
@@ -22,25 +23,28 @@ public class Course {
                   @JsonProperty("id") int id,
                   @JsonProperty("credits") int credits,
                   @JsonProperty("year") int year,
-                  @JsonProperty("semester") int semester) {
+                  @JsonProperty("semester") int semester,
+                  @JsonProperty("description") String description) {
         this.title = title;
         this.id = id;
         this.credits = credits;
         this.year = year;
         this.semester = semester;
+        this.description = description;
         this.resources=new ArrayList<>();
         this.approfundationList=new ArrayList<>();
     }
 
-    public Course(String title, int id, List<Resource> resources, int credits, Evaluation evaluationMethod, int year, int semester, List<Approfundation> approfundationList) {
-        this.title = title;
-        this.id = id;
-        this.resources = resources;
-        this.credits = credits;
-        this.evaluationMethod = evaluationMethod;
-        this.year = year;
-        this.semester = semester;
-        this.approfundationList = approfundationList;
+    public Course(String title, int id, List<Resource> resources, int credits, Evaluation evaluationMethod, int year, int semester, String description , List<Approfundation> approfundationList) {
+        setTitle(title);
+        setId(id);
+        setResources(resources);
+        setCredits(credits);
+        setEvaluationMethod(evaluationMethod);
+        setYear(year);
+        setSemester(semester);
+        setDescription(description);
+        setApprofundationList(approfundationList);
     }
 
     //setters
@@ -65,6 +69,7 @@ public class Course {
     public void setSemester(int semester) {
         this.semester = semester;
     }
+    public void setDescription(String description) { this.description = description; }
     public void setApprofundationList(List<Approfundation> approfundationList) {
         this.approfundationList = approfundationList;
     }
@@ -91,6 +96,7 @@ public class Course {
     public int getSemester() {
         return semester;
     }
+    public String getDescription() { return description;}
     public List<Approfundation> getApprofundationList() {
         return approfundationList;
     }
@@ -110,10 +116,4 @@ public class Course {
         approfundationList.remove(approfundation);
     }
 
-    public Resource getResourceById(String id) {
-        for (Resource resource : resources)
-            if (Objects.equals(resource.getId(), id))
-                return resource;
-        return null;
-    }
 }
