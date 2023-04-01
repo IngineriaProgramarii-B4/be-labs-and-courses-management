@@ -3,6 +3,7 @@ package com.example.coursesmodule.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,6 +29,7 @@ public class Course {
         this.title = title;
         this.id = id;
         this.credits = credits;
+        this.evaluationMethod = new Evaluation(new HashMap<>());
         this.year = year;
         this.semester = semester;
         this.description = description;
@@ -35,16 +37,22 @@ public class Course {
         this.approfundationList=new ArrayList<>();
     }
 
-    public Course(String title, int id, List<Resource> resources, int credits, Evaluation evaluationMethod, int year, int semester, String description , List<Approfundation> approfundationList) {
-        setTitle(title);
-        setId(id);
-        setResources(resources);
-        setCredits(credits);
-        setEvaluationMethod(evaluationMethod);
-        setYear(year);
-        setSemester(semester);
-        setDescription(description);
-        setApprofundationList(approfundationList);
+    public Course(@JsonProperty("title") String title,
+                  @JsonProperty("id") int id,
+                  @JsonProperty("credits") int credits,
+                  @JsonProperty("percentage") HashMap<Object, Float> percentage,
+                  @JsonProperty("year") int year,
+                  @JsonProperty("semester") int semester,
+                  @JsonProperty("description") String description) {
+        this.title = title;
+        this.id = id;
+        this.credits = credits;
+        this.evaluationMethod = new Evaluation(percentage);
+        this.year = year;
+        this.semester = semester;
+        this.description = description;
+        this.resources=new ArrayList<>();
+        this.approfundationList=new ArrayList<>();
     }
 
     //setters
@@ -114,6 +122,10 @@ public class Course {
     }
     public void removeApprofundation(Approfundation approfundation) {
         approfundationList.remove(approfundation);
+    }
+
+    public void removeEvaluationMethod() {
+        this.evaluationMethod = new Evaluation(new HashMap<>());
     }
 
 }

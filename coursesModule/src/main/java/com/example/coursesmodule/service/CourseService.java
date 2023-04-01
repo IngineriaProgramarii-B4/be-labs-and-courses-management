@@ -3,6 +3,7 @@ package com.example.coursesmodule.service;
 import com.example.coursesmodule.dao.CourseDao;
 import com.example.coursesmodule.model.Approfundation;
 import com.example.coursesmodule.model.Course;
+import com.example.coursesmodule.model.Evaluation;
 import com.example.coursesmodule.model.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,6 +21,9 @@ public class CourseService {
         this.courseDao = courseDao;
     }
 
+    /**
+     * COURSE
+     */
     public int verifyCourseValid(Course course){
         return course.getId() <= 0 || course.getTitle().isEmpty() ? 0 : 1;
     }
@@ -42,6 +46,9 @@ public class CourseService {
         return verifyCourseValid(course) == 0 ? 0 : courseDao.updateCourseById(id, course);
     }
 
+    /**
+     * RESOURCE
+     */
     public int verifyResourceValid(Resource resource){
         return resource.getId() <= 0 || resource.getTitle().isEmpty() ? 0 : 1;
     }
@@ -62,10 +69,12 @@ public class CourseService {
         return verifyResourceValid(resource) == 0 ? 0 : courseDao.updateResourceById(id, resourceId, resource);
     }
 
+    /**
+     * APPROFUNDATION
+     */
     public int verifyApprofundationValid(Approfundation approfundation){
         return approfundation.getNumberWeeks() <= 0 || approfundation.getId() <= 0 ? 0 : 1;
     }
-
 
     public int addApprofundation(int id, Approfundation approfundation) {
         return verifyApprofundationValid(approfundation) == 0 ? 0 : courseDao.addApprofundation(id, approfundation);
@@ -87,4 +96,33 @@ public class CourseService {
         return verifyApprofundationValid(approfundation) == 0 ? 0 : courseDao.updateApprofundationById(id, approfundationId, approfundation);
     }
 
+    /**
+     * EVALUATION
+     */
+    public int verifyEvaluationMethodValid(Evaluation evaluationMethod) {
+        float totalValue = 0;
+        for (Object component : evaluationMethod.getPercentage().keySet())
+            totalValue += evaluationMethod.getPercentage().get(component);
+
+        return totalValue == 100.0f ? 0 : 1;
+    }
+
+    public int addEvaluationMethod(int id, Evaluation evaluationMethod) {
+        return verifyEvaluationMethodValid(evaluationMethod) == 1 ? 0 : courseDao.addEvaluationMethod(id, evaluationMethod);
+    }
+
+    public Evaluation getEvaluationMethod(Course course) {
+        return courseDao.getEvaluationMethod(course);
+    }
+    public List<Object> getEvaluationComponent(Course course, Object component) {
+        return courseDao.getEvaluationComponent(course, component);
+    }
+
+    public int deleteEvaluationMethod(int id) {
+        return courseDao.deleteEvaluationMethod(id);
+    }
+
+    public int updateEvaluationMethod(int id, Evaluation evaluationMethod) {
+        return verifyEvaluationMethodValid(evaluationMethod) == 0 ? 0 : courseDao.updateEvaluationMethod(id, evaluationMethod);
+    }
 }

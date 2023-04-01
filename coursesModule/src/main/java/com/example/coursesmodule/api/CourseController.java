@@ -192,4 +192,58 @@ public class CourseController {
             throw new ResponseStatusException(NOT_FOUND, "Approfundation not found");
         }
     }
+
+    /**
+     * EVALUATION
+     */
+    @PostMapping(path = "courseId={id}/evaluation")
+    public void addEvaluationMethod(@PathVariable("id") int id,
+                                    @Valid @NonNull @RequestBody Evaluation evaluationMethod) {
+        //verify that the course exists
+        courseService.getCourseById(id)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
+        //verify if course doesn't have evaluation already
+        if(courseService.addEvaluationMethod(id, evaluationMethod) == 0) {
+            throw new ResponseStatusException(NOT_ACCEPTABLE, "Course already has Evaluation");
+        }
+    }
+
+    @GetMapping(path = "courseId={id}/evaluation")
+    public Evaluation getEvaluationMethod(@PathVariable("id") int id) {
+        //verify that the course exists
+        Course course = courseService.getCourseById(id)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
+        return course.getEvaluationMethod();
+    }
+
+    @GetMapping(path = "courseId={id}/evaluation/component={component}")
+    public List<Object> getEvaluationComponent(@PathVariable("id") int id,
+                                               @PathVariable("component") Object component) {
+        //verify that the course exists
+        Course course = courseService.getCourseById(id)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
+        //verify that the course evaluation component
+        if (courseService.getEvaluationComponent(course, component) == null)
+            throw new ResponseStatusException(NOT_FOUND, "Evaluation component not found");
+        return courseService.getEvaluationComponent(course, component);
+    }
+
+    @DeleteMapping(path = "courseId={id}/evaluation")
+    public void deleteEvaluationMethod(@PathVariable("id") int id) {
+        //verify that the course exists
+        courseService.getCourseById(id)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
+        //verify that the course evaluation exists
+        if (courseService.deleteEvaluationMethod(id) == 0)
+            throw new ResponseStatusException(NOT_FOUND, "Evaluation not found");
+    }
+
+    @PutMapping(path = "courseId={id}/evaluation")
+    public void updateEvaluationMethod(@PathVariable("id") int id,
+                                       @Valid @NonNull @RequestBody Evaluation evaluationMethod) {
+        //verify that the course exists
+        courseService.getCourseById(id)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
+        courseService.updateEvaluationMethod(id, evaluationMethod);
+    }
 }

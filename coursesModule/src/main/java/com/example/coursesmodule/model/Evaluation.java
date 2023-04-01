@@ -1,15 +1,19 @@
 package com.example.coursesmodule.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.HashMap;
 
 public class Evaluation {
+    @NotNull
     private HashMap<Object, Float> percentage;
     private int numberOfComponents;
 
     //constructors
-    Evaluation() {
-        percentage = new HashMap<>();
-        numberOfComponents = 0;
+    Evaluation(@JsonProperty("percentage") HashMap<Object, Float> percentage) {
+        this.percentage = new HashMap<>(percentage);
+        numberOfComponents = percentage.size();
     }
 
     //setters
@@ -29,8 +33,7 @@ public class Evaluation {
     }
 
     //additional methods
-    public void addPercentage(Object object, Float number) {
-        percentage.put(object, number);
-        numberOfComponents++;
+    public boolean containsComponent(Object component) {
+        return percentage.containsKey(component);
     }
 }

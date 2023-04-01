@@ -2,10 +2,12 @@ package com.example.coursesmodule.dao;
 
 import com.example.coursesmodule.model.Approfundation;
 import com.example.coursesmodule.model.Course;
+import com.example.coursesmodule.model.Evaluation;
 import com.example.coursesmodule.model.Resource;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +29,10 @@ public class FakeCourseDataAccessService implements CourseDao {
         DB.add(new Course("English II", 11, 4, 1, 2,""));
         DB.add(new Course("Probabilities and Statistics", 12, 4, 1, 2,""));
     }
+
+    /**
+     * COURSE
+     */
     @Override
     public int insertCourse(Course course) {
         DB.add(new Course(course.getTitle(), course.getId(),
@@ -78,6 +84,9 @@ public class FakeCourseDataAccessService implements CourseDao {
                 .orElse(0);
     }
 
+    /**
+     * RESOURCE
+     */
     @Override
     public int addResource(int id, Resource resource) {
         //check if the resource already exists
@@ -126,8 +135,9 @@ public class FakeCourseDataAccessService implements CourseDao {
                 .findFirst();
     }
 
-
-
+    /**
+     * APPROFUNDATION
+     */
     @Override
     public int addApprofundation(int id, Approfundation approfundation) {
         // check if the approfundation already exists
@@ -175,5 +185,43 @@ public class FakeCourseDataAccessService implements CourseDao {
                 .orElse(0);
     }
 
+    /**
+     * EVALUATION
+     */
+    @Override
+    public int addEvaluationMethod(int id, Evaluation evaluationMethod) {
+        //check if course doesn't already have a non-empty evaluation method
+        if (selectCourseById(id).get().getEvaluationMethod().getNumberOfComponents() == 0) {
+            return 0;
+        }
+        selectCourseById(id).get().setEvaluationMethod(evaluationMethod);
+        return 1;
+    }
 
+    @Override
+    public Evaluation getEvaluationMethod(Course course) {
+        return course.getEvaluationMethod();
+    }
+
+    @Override
+    public List<Object> getEvaluationComponent(Course course, Object component) {
+        //returns list of two objects in the form: (component, value) if component is part of the evaluation method
+        if (!course.getEvaluationMethod().containsComponent(component))
+            return null;
+        return Arrays.asList(component, course.getEvaluationMethod().getPercentage().get(component));
+    }
+
+    @Override
+    public int deleteEvaluationMethod(int id) {
+        if (selectCourseById(id).get().getEvaluationMethod().getNumberOfComponents() == 0)
+            return 0;
+        selectCourseById(id).get().removeEvaluationMethod();
+        return 1;
+    }
+
+    @Override
+    public int updateEvaluationMethod(int id, Evaluation evaluationMethod) {
+        selectCourseById(id).get().setEvaluationMethod(evaluationMethod);
+        return 1;
+    }
 }
