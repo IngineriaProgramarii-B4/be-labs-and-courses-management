@@ -6,7 +6,6 @@ import com.example.coursesmodule.model.Resource;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface CourseDao {
     int insertCourse(Course course);

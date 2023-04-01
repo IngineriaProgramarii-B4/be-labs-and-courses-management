@@ -2,7 +2,9 @@ package com.example.coursesmodule.api;
 
 import com.example.coursesmodule.model.*;
 import com.example.coursesmodule.service.CourseService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -47,21 +49,20 @@ public class CourseController {
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
         return courseService.getResourceById(course, resourceid)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Resource not found"));
-
     }
 
-    @PostMapping(path = "courseid={id}/seminar")
-    public void addApprofundation(@PathVariable("id") int id, @RequestBody Seminar seminar) {
-        Course course = courseService.getCourseById(id)
+    @PostMapping(path = "courseid={id}/seminars")
+    public void addApprofundation(@PathVariable("id") int id,@Valid @NonNull @RequestBody Seminar seminar) {
+        courseService.getCourseById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
         if(courseService.addApprofundation(id, seminar) == 0) {
             throw new ResponseStatusException(NOT_ACCEPTABLE, "Approfundation ID already exists");
         }
     }
 
-    @PostMapping(path = "courseid={id}/laboratory")
-    public void addApprofundation(@PathVariable("id") int id, @RequestBody Laboratory laboratory) {
-        Course course = courseService.getCourseById(id)
+    @PostMapping(path = "courseid={id}/laboratories")
+    public void addApprofundation(@PathVariable("id") int id, @Valid @NonNull @RequestBody Laboratory laboratory) {
+        courseService.getCourseById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
         if(courseService.addApprofundation(id, laboratory) == 0) {
             throw new ResponseStatusException(NOT_ACCEPTABLE, "Approfundation ID already exists");
@@ -87,29 +88,29 @@ public class CourseController {
     @DeleteMapping(path = "courseid={id}/approfundationid={approfundationid}")
     public void deleteApprofundationById(@PathVariable("id") int id,
                                          @PathVariable("approfundationid") int approfundationid) {
-        Course course = courseService.getCourseById(id)
+        courseService.getCourseById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
         if(courseService.deleteApprofundationById(id, approfundationid) == 0) {
             throw new ResponseStatusException(NOT_FOUND, "Approfundation not found");
         }
     }
 
-    @PutMapping(path = "courseid={id}/approfundationid={approfundationid}/seminar")
+    @PutMapping(path = "courseid={id}/approfundationid={approfundationid}/seminars")
     public void updateApprofundationById(@PathVariable("id") int id,
                                          @PathVariable("approfundationid") int approfundationid,
-                                         @RequestBody Seminar approfundation) {
-        Course course = courseService.getCourseById(id)
+                                         @Valid @NonNull @RequestBody Seminar approfundation) {
+        courseService.getCourseById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
         if(courseService.updateApprofundationById(id, approfundationid, approfundation) == 0) {
             throw new ResponseStatusException(NOT_FOUND, "Approfundation not found");
         }
     }
 
-    @PutMapping(path = "courseid={id}/approfundationid={approfundationid}/laboratory")
+    @PutMapping(path = "courseid={id}/approfundationid={approfundationid}/laboratories")
     public void updateApprofundationById(@PathVariable("id") int id,
                                          @PathVariable("approfundationid") int approfundationid,
-                                         @RequestBody Laboratory approfundation) {
-        Course course = courseService.getCourseById(id)
+                                         @Valid @NonNull @RequestBody Laboratory approfundation) {
+        courseService.getCourseById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
         if(courseService.updateApprofundationById(id, approfundationid, approfundation) == 0) {
             throw new ResponseStatusException(NOT_FOUND, "Approfundation not found");

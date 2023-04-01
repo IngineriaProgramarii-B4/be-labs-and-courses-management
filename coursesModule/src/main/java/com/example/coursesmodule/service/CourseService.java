@@ -38,8 +38,13 @@ public class CourseService {
         return courseDao.getResourceById(course, resourceId);
     }
 
+    public int verifyApprofundationValid(Approfundation approfundation){
+        return approfundation.getNumberWeeks() <= 0 || approfundation.getId() <= 0 ? 0 : 1;
+    }
+
+
     public int addApprofundation(int id, Approfundation approfundation) {
-        return courseDao.addApprofundation(id, approfundation);
+        return verifyApprofundationValid(approfundation) == 0 ? 0 : courseDao.addApprofundation(id, approfundation);
     }
 
     public List<Approfundation> getApprofundations(Course course) {
@@ -55,6 +60,6 @@ public class CourseService {
     }
 
     public int updateApprofundationById(int id, int approfundationId, Approfundation approfundation) {
-        return courseDao.updateApprofundationById(id, approfundationId, approfundation);
+        return verifyApprofundationValid(approfundation) == 0 ? 0 : courseDao.updateApprofundationById(id, approfundationId, approfundation);
     }
 }

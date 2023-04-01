@@ -1,20 +1,25 @@
 package com.example.coursesmodule.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Laboratory implements Approfundation {
 
+    private final String type;
+    @NotNull
     private int id;
     private List<Resource> resources;
+    @NotNull
     private int numberWeeks;
 
     public Laboratory(@JsonProperty("id") int id,@JsonProperty("numberWeeks") int numberWeeks) {
         this.resources = new ArrayList<>();
         this.numberWeeks = numberWeeks;
         this.id = id;
+        this.type = "Laboratory";
     }
 
     //setters
@@ -31,6 +36,9 @@ public class Laboratory implements Approfundation {
     }
 
     //getters
+    public String getType() {
+        return type;
+    }
     public List<Resource> getResources() {
         return resources;
     }

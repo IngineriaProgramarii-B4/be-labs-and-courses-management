@@ -88,7 +88,7 @@ public class FakeCourseDataAccessService implements CourseDao {
         if (approfundationMaybe.isEmpty()) {
             return 0;
         }
-        selectCourseById(id).get().getApprofundationList().remove(approfundationMaybe.get());
+        selectCourseById(id).get().removeApprofundation(approfundationMaybe.get());
         return 1;
     }
 
