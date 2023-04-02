@@ -127,71 +127,7 @@ public class CourseController {
     /**
      * APPROFUNDATION
      */
-    @PostMapping(path = "courseId={id}/seminars")
-    public void addApprofundation(@PathVariable("id") int id,@Valid @NonNull @RequestBody Seminar seminar) {
-        courseService.getCourseById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
-        if(courseService.addApprofundation(id, seminar) == 0) {
-            throw new ResponseStatusException(NOT_ACCEPTABLE, "Approfundation ID already exists");
-        }
-    }
 
-    @PostMapping(path = "courseId={id}/laboratories")
-    public void addApprofundation(@PathVariable("id") int id, @Valid @NonNull @RequestBody Laboratory laboratory) {
-        courseService.getCourseById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
-        if(courseService.addApprofundation(id, laboratory) == 0) {
-            throw new ResponseStatusException(NOT_ACCEPTABLE, "Approfundation ID already exists");
-        }
-    }
-
-    @GetMapping(path = "courseId={id}/approfundations")
-    public List<Approfundation> getApprofundations(@PathVariable("id") int id) {
-        Course course = courseService.getCourseById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
-        return courseService.getApprofundations(course);
-    }
-
-    @GetMapping(path = "courseId={id}/approfundationId={approfundationId}")
-    public Approfundation getApprofundationById(@PathVariable("id") int id,
-                                            @PathVariable("approfundationId") int approfundationId) {
-        Course course = courseService.getCourseById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
-        return courseService.getApprofundationById(course, approfundationId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Approfundation not found"));
-    }
-
-    @DeleteMapping(path = "courseId={id}/approfundationId={approfundationId}")
-    public void deleteApprofundationById(@PathVariable("id") int id,
-                                         @PathVariable("approfundationId") int approfundationId) {
-        courseService.getCourseById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
-        if(courseService.deleteApprofundationById(id, approfundationId) == 0) {
-            throw new ResponseStatusException(NOT_FOUND, "Approfundation not found");
-        }
-    }
-
-    @PutMapping(path = "courseId={id}/approfundationId={approfundationId}/seminars")
-    public void updateApprofundationById(@PathVariable("id") int id,
-                                         @PathVariable("approfundationId") int approfundationId,
-                                         @Valid @NonNull @RequestBody Seminar approfundation) {
-        courseService.getCourseById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
-        if(courseService.updateApprofundationById(id, approfundationId, approfundation) == 0) {
-            throw new ResponseStatusException(NOT_FOUND, "Approfundation not found");
-        }
-    }
-
-    @PutMapping(path = "courseId={id}/approfundationId={approfundationId}/laboratories")
-    public void updateApprofundationById(@PathVariable("id") int id,
-                                         @PathVariable("approfundationId") int approfundationId,
-                                         @Valid @NonNull @RequestBody Laboratory approfundation) {
-        courseService.getCourseById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
-        if(courseService.updateApprofundationById(id, approfundationId, approfundation) == 0) {
-            throw new ResponseStatusException(NOT_FOUND, "Approfundation not found");
-        }
-    }
 
     /**
      * EVALUATION

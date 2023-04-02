@@ -72,29 +72,7 @@ public class CourseService {
     /**
      * APPROFUNDATION
      */
-    public int verifyApprofundationValid(Approfundation approfundation){
-        return approfundation.getNumberWeeks() <= 0 || approfundation.getId() <= 0 ? 0 : 1;
-    }
 
-    public int addApprofundation(int id, Approfundation approfundation) {
-        return verifyApprofundationValid(approfundation) == 0 ? 0 : courseDao.addApprofundation(id, approfundation);
-    }
-
-    public List<Approfundation> getApprofundations(Course course) {
-        return courseDao.getApprofundations(course);
-    }
-
-    public Optional<Approfundation> getApprofundationById(Course course, int approfundationId) {
-        return courseDao.getApprofundationById(course, approfundationId);
-    }
-
-    public int deleteApprofundationById(int id, int approfundationId) {
-        return courseDao.deleteApprofundationById(id, approfundationId);
-    }
-
-    public int updateApprofundationById(int id, int approfundationId, Approfundation approfundation) {
-        return verifyApprofundationValid(approfundation) == 0 ? 0 : courseDao.updateApprofundationById(id, approfundationId, approfundation);
-    }
 
     /**
      * EVALUATION
