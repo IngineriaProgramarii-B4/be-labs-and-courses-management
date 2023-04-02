@@ -185,6 +185,7 @@ public class FakeCourseDataAccessService implements CourseDao {
                 .orElse(0);
     }
 
+
     /**
      * EVALUATION
      */
@@ -224,4 +225,7 @@ public class FakeCourseDataAccessService implements CourseDao {
         selectCourseById(id).get().setEvaluationMethod(evaluationMethod);
         return 1;
     }
+    /*
+      END EVALUATION
+     */
 }
