@@ -1,9 +1,6 @@
 package com.example.coursesmodule.dao;
 
-import com.example.coursesmodule.model.Approfundation;
-import com.example.coursesmodule.model.Course;
-import com.example.coursesmodule.model.Evaluation;
-import com.example.coursesmodule.model.Resource;
+import com.example.coursesmodule.model.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,55 +8,66 @@ import java.util.Optional;
 public interface CourseDao {
 
     /**
+     * SUBJECT
+     */
+    int insertSubject(Subject subject);
+
+    List<Subject> selectAllSubjects();
+
+    Optional<Subject> selectSubjectById(int subjectId);
+
+    List<Subject> getSubjectsByYearAndSemester(int year, int semester);
+
+    int deleteSubjectById(int subjectId);
+
+    int updateSubjectById(int subjectId, Subject subject);
+
+    /**
      * COURSE
      */
-    int insertCourse(Course course);
+    int addCourse(int subjectId, Course course);
 
-    List<Course> selectAllCourses();
+    Optional<Course> getCourse(int subjectId);
 
-    Optional<Course> selectCourseById(int id);
+    int deleteCourse(int subjectId);
 
-    List<Course> getCoursesByYearAndSemester(int year, int semester);
-
-    int deleteCourseById(int id);
-
-    int updateCourseById(int id, Course course);
+    int updateCourse(int subjectId, Course course);
 
     /**
      * RESOURCE
      */
-    int addResource(int id, Resource resource);
+    int addCourseResource(int subjectId, Resource resource);
 
-    List<Resource> getResources(Course course);
+    List<Resource> getCourseResources(int subjectId);
 
-    Optional<Resource> getResourceById(Course course, int resourceId);
+    Optional<Resource> getCourseResourceById(int subjectId, int resourceId);
 
-    int deleteResourceById(int id, int resourceId);
+    int deleteCourseResourceById(int subjectId, int resourceId);
 
-    int updateResourceById(int id, int resourceId, Resource resource);
+    int updateCourseResourceById(int subjectId, int resourceId, Resource resource);
 
     /**
      * APPROFUNDATION
      */
-    int addApprofundation(int id, Approfundation approfundation);
+    int addApprofundation(int subjectId, Approfundation approfundation);
 
-    List<Approfundation> getApprofundations(Course course);
+    List<Approfundation> getApprofundations(int subjectId);
 
-    Optional<Approfundation> getApprofundationById(Course course, int approfundationId);
+    Optional<Approfundation> getApprofundationById(int subjectId, int approfundationId);
 
-    int deleteApprofundationById(int id, int approfundationId);
+    int deleteApprofundationById(int subjectId, int approfundationId);
 
-    int updateApprofundationById(int id, int approfundationId, Approfundation approfundation);
+    int updateApprofundationById(int subjectId, int approfundationId, Approfundation approfundation);
 
-    List<Resource> getResourcesForApprofundationId(int id, int approfundationId);
+    List<Resource> getResourcesForApprofundationId(int subjectId, int approfundationId);
 
-    Optional<Resource> getResourceByIdForApprofundationId(int id, int approfundationId, int resourceId);
+    Optional<Resource> getResourceByIdForApprofundationId(int subjectId, int approfundationId, int resourceId);
 
-    int addResourceForApprofundationId(int id, int approfundationId, Resource resource);
+    int addResourceForApprofundationId(int subjectId, int approfundationId, Resource resource);
 
-    int updateResourceForApprofundationId(int id, int approfundationId, Resource resource);
+    int updateResourceForApprofundationId(int subjectId, int approfundationId, Resource resource);
 
-    int deleteResourceForApprofundationId(int id, int approfundationId, int resourceId);
+    int deleteResourceForApprofundationId(int subjectId, int approfundationId, int resourceId);
 
     /**
      * EVALUATION
