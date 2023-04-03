@@ -33,6 +33,9 @@ public class FakeCourseDataAccessService implements CourseDao {
      */
     @Override
     public int insertSubject(Subject subject) {
+        if (selectSubjectById(subject.getId()).isPresent()) {
+            return 0;
+        }
         DB.add(subject);
         return 1;
     }

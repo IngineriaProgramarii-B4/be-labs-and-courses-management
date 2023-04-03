@@ -7,9 +7,12 @@ import java.util.*;
 public class Course{
     List<Resource> resources;
 
+    int numberOfWeeks;
+
     //constructor
 
-    public Course() {
+    public Course(@JsonProperty("weeks") int numberOfWeeks) {
+        this.numberOfWeeks = numberOfWeeks;
         this.resources=new ArrayList<>();
     }
 
@@ -18,9 +21,17 @@ public class Course{
         this.resources = resources;
     }
 
+    public void setNumberOfWeeks(int numberOfWeeks) {
+        this.numberOfWeeks = numberOfWeeks;
+    }
+
     //getters
     public List<Resource> getCourseResources() {
         return resources;
+    }
+
+    public int getNumberOfWeeks() {
+        return numberOfWeeks;
     }
 
     //additional methods
