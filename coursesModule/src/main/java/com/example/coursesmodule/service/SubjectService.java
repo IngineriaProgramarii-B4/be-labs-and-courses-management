@@ -18,13 +18,17 @@ public class SubjectService {
         this.courseDao = courseDao;
     }
 
-    /**
-     * SUBJECT
+    /*
+      SUBJECT
      */
     public int verifySubjectValid(Subject subject){
         return subject.getId() <= 0 || subject.getTitle().isEmpty() ? 0 : 1;
     }
     public int addSubject(Subject subject) {
+        if(verifySubjectValid(subject) == 0)
+            return 0;
+        if(courseDao.verifySubjectId(subject.getId() ) == 1)
+            return 0;
         return courseDao.insertSubject(subject);
     }
 
@@ -41,10 +45,17 @@ public class SubjectService {
     }
 
     public int deleteSubjectById(int subjectId) {
+        if(courseDao.verifySubjectId(subjectId) == 0)
+            return 0;
         return courseDao.deleteSubjectById(subjectId);
     }
 
     public int updateSubjectById(int subjectId, Subject subject) {
+        if(verifySubjectValid(subject) == 0)
+            return 0;
+        // verify if the subject id exists already and is different from subjectId
+        if(courseDao.verifySubjectId(subject.getId() ) == 1 && subject.getId() != subjectId)
+            return 0;
         return courseDao.updateSubjectById(subjectId, subject);
     }
 }

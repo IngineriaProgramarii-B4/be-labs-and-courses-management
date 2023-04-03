@@ -2,9 +2,6 @@ package com.example.coursesmodule.service;
 
 import com.example.coursesmodule.dao.CourseDao;
 import com.example.coursesmodule.model.Approfundation;
-import com.example.coursesmodule.model.Course;
-import com.example.coursesmodule.model.Resource;
-import com.example.coursesmodule.model.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -45,6 +42,7 @@ public class ApprofundationService {
     public int updateApprofundationById(int id, int approfundationId, Approfundation approfundation) {
         return verifyApprofundationValid(approfundation) == 0 ? 0 : courseDao.updateApprofundationById(id, approfundationId, approfundation);
     }
+}
 
     ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -68,5 +66,3 @@ public class ApprofundationService {
     public int deleteResourceForApprofundationId(int id, int approfundationId, int resourceId) {
         return courseDao.deleteResourceForApprofundationId(id, approfundationId, resourceId);
     }*/
-
-}

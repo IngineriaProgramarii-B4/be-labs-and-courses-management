@@ -15,17 +15,20 @@ public class Approfundation {
     @NotNull
     private int numberWeeks;
 
-    public Approfundation(@JsonProperty("id") int id, @JsonProperty("numberWeeks") int numberWeeks) {
-        this.resources = new ArrayList<>();
+    public Approfundation(@JsonProperty("id") int id,
+                          @JsonProperty("numberWeeks") int numberWeeks,
+                          @JsonProperty("type") String type) {
+        // this.resources = new ArrayList<>();
         this.numberWeeks = numberWeeks;
         this.id = id;
-        this.type = "Laboratory";
+        this.type = type;
     }
 
     //setters
     public void setResources(List<Resource> resources) {
         this.resources = resources;
     }
+
     public void setNumberWeeks(int numberWeeks) {
         this.numberWeeks = numberWeeks;
     }
@@ -39,9 +42,11 @@ public class Approfundation {
     public String getType() {
         return type;
     }
+
     public List<Resource> getResources() {
         return resources;
     }
+
     public int getNumberWeeks() {
         return numberWeeks;
     }
@@ -50,12 +55,11 @@ public class Approfundation {
         return id;
     }
 
-    //additional methods
     public void addResource(Resource resource) {
         this.resources.add(resource);
     }
+
     public void removeResource(Resource resource) {
         this.resources.remove(resource);
     }
-
 }

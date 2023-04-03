@@ -1,3 +1,4 @@
+
 package com.example.coursesmodule.api;
 
 import com.example.coursesmodule.model.*;
@@ -9,9 +10,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-
-import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
@@ -28,9 +26,6 @@ public class CourseController {
         this.subjectService = subjectService;
     }
 
-    /**
-     * COURSE
-     */
     @PostMapping
     public void addCourse(@PathVariable("subjectId") int subjectId,
                           @Valid @NonNull @RequestBody Course course) {
@@ -42,94 +37,47 @@ public class CourseController {
 
     @GetMapping
     public Course getCourse(@PathVariable("subjectId") int subjectId) {
-        //verify that the course exists
-        return courseService.getCourse(subjectId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
+        if(subjectService.getSubjectById(subjectId).isEmpty()) {
+            throw new ResponseStatusException(NOT_FOUND, "Subject not found");
+        }
+        Course course = courseService.getCourse(subjectId);
+        if(course == null) {
+            throw new ResponseStatusException(NOT_FOUND, "Course not found");
+        }
+        return course;
     }
 
     @DeleteMapping
     public void deleteCourse(@PathVariable("subjectId") int subjectId) {
+        if(subjectService.getSubjectById(subjectId).isEmpty()) {
+            throw new ResponseStatusException(NOT_FOUND, "Subject not found");
+        }
         //verify that the course exists
-        Course course = courseService.getCourse(subjectId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
+        Course course = courseService.getCourse(subjectId);
+        if(course == null) {
+            throw new ResponseStatusException(NOT_FOUND, "Course not found");
+        }
         courseService.deleteCourse(subjectId);
     }
 
     @PutMapping
     public void updateCourse(@PathVariable("subjectId") int subjectId,
                              @Valid @NonNull @RequestBody Course course) {
+        if(subjectService.getSubjectById(subjectId).isEmpty()) {
+            throw new ResponseStatusException(NOT_FOUND, "Subject not found");
+        }
         //verify that the course exists
-        Course course1 = courseService.getCourse(subjectId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
+        Course course1 = courseService.getCourse(subjectId);
+        if(course1 == null) {
+            throw new ResponseStatusException(NOT_FOUND, "Course not found");
+        }
         courseService.updateCourse(subjectId, course);
     }
-
-    /**
-     *  COURSE'S RESOURCES
-     */
-
-    @PostMapping(path = "resources")
-    public void addResource(@PathVariable("subjectId") int subjectId,
-                            @Valid @NonNull @RequestBody Resource resource) {
-        //verify that the course exists
-        Course course = courseService.getCourse(subjectId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
-        //verify that the resource is valid
-        if(courseService.verifyResourceValid(resource) == 0) {
-            throw new ResponseStatusException(NOT_ACCEPTABLE, "Resource ID already exists");
-        }
-        courseService.addCourseResource(subjectId, resource);
-    }
-
-    @GetMapping(path = "resources/{resourceId}")
-    public Resource getCourseResourceById(@PathVariable("subjectId") int subjectId,
-                                          @PathVariable("resourceId") int resourceId) {
-        //verify that the course exists
-        Course course = courseService.getCourse(subjectId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
-        //verify that the resource exists
-        return courseService.getCourseResourceById(subjectId, resourceId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Resource not found"));
-    }
-
-    @GetMapping(path = "resources")
-    public List<Resource> getCourseResources(@PathVariable("subjectId") int subjectId) {
-        //verify that the course exists
-        Course course = courseService.getCourse(subjectId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
-        return courseService.getCourseResources(subjectId);
-    }
-
-    @DeleteMapping(path = "resources/{resourceId}")
-    public void deleteCourseResourceById(@PathVariable("subjectId") int subjectId,
-                                         @PathVariable("resourceId") int resourceId) {
-        //verify that the course exists
-        Course course = courseService.getCourse(subjectId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
-        //verify that the resource exists
-        Resource resource = courseService.getCourseResourceById(subjectId, resourceId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Resource not found"));
-        courseService.deleteCourseResourceById(subjectId, resourceId);
-    }
-
-    @PutMapping(path = "resources/{resourceId}")
-    public void updateCourseResourceById(@PathVariable("subjectId") int subjectId,
-                                         @PathVariable("resourceId") int resourceId,
-                                         @Valid @NonNull @RequestBody Resource resource) {
-        //verify that the course exists
-        Course course = courseService.getCourse(subjectId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
-        //verify that the resource exists
-        Resource resource1 = courseService.getCourseResourceById(subjectId, resourceId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Resource not found"));
-        courseService.updateCourseResourceById(subjectId, resourceId, resource);
-    }
+}
 
 
-    /*************************************
-      EVALUATION*/
-     /*
-    @PostMapping(path = "courseId={id}/evaluation")
+
+ /*   @PostMapping(path = "courseId={id}/evaluation")
     public void addEvaluationMethod(@PathVariable("id") int id,
                                     @Valid @NonNull @RequestBody Evaluation evaluationMethod) {
         //verify that the course exists
@@ -178,5 +126,5 @@ public class CourseController {
         courseService.getCourseById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
         courseService.updateEvaluationMethod(id, evaluationMethod);
-    }*/
-}
+    }
+} */

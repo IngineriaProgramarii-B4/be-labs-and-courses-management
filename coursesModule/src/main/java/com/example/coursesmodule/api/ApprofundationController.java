@@ -1,8 +1,6 @@
 package com.example.coursesmodule.api;
 
 import com.example.coursesmodule.model.Approfundation;
-import com.example.coursesmodule.model.Course;
-import com.example.coursesmodule.model.Resource;
 import com.example.coursesmodule.service.ApprofundationService;
 import com.example.coursesmodule.service.SubjectService;
 import jakarta.validation.Valid;
@@ -17,7 +15,7 @@ import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
-@RequestMapping(path = "api/v1/subjects")
+@RequestMapping(path = "api/v1/subjects/{subjectId}/approfundations")
 public class ApprofundationController {
 
     private final ApprofundationService approfundationService;
@@ -30,8 +28,8 @@ public class ApprofundationController {
         this.subjectService = subjectService;
     }
 
-    @PostMapping(path = "subjectId={id}/approfundations")
-    public void addApprofundation(@PathVariable("id") int id, @Valid @NonNull @RequestBody Approfundation approfundation) {
+    @PostMapping
+    public void addApprofundation(@PathVariable("subjectId") int id, @Valid @NonNull @RequestBody Approfundation approfundation) {
         subjectService.getSubjectById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
         if(approfundationService.addApprofundation(id, approfundation) == 0) {
@@ -39,15 +37,15 @@ public class ApprofundationController {
         }
     }
 
-    @GetMapping(path = "subjectId={id}/approfundations")
-    public List<Approfundation> getApprofundations(@PathVariable("id") int id) {
+    @GetMapping
+    public List<Approfundation> getApprofundations(@PathVariable("subjectId") int id) {
         subjectService.getSubjectById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
         return approfundationService.getApprofundations(id);
     }
 
-    @GetMapping(path = "subjectId={id}/approfundationId={approfundationId}")
-    public Approfundation getApprofundationById(@PathVariable("id") int id,
+    @GetMapping(path = "approfundationId={approfundationId}")
+    public Approfundation getApprofundationById(@PathVariable("subjectId") int id,
                                                 @PathVariable("approfundationId") int approfundationId) {
         subjectService.getSubjectById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
@@ -55,8 +53,8 @@ public class ApprofundationController {
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Approfundation not found"));
     }
 
-    @DeleteMapping(path = "subjectId={id}/approfundationId={approfundationId}")
-    public void deleteApprofundationById(@PathVariable("id") int id,
+    @DeleteMapping(path = "approfundationId={approfundationId}")
+    public void deleteApprofundationById(@PathVariable("subjectId") int id,
                                          @PathVariable("approfundationId") int approfundationId) {
         subjectService.getSubjectById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
@@ -65,8 +63,8 @@ public class ApprofundationController {
         }
     }
 
-    @PutMapping(path = "subjectId={id}/approfundationId={approfundationId}")
-    public void updateApprofundationById(@PathVariable("id") int id,
+    @PutMapping(path = "approfundationId={approfundationId}")
+    public void updateApprofundationById(@PathVariable("subjectId") int id,
                                          @PathVariable("approfundationId") int approfundationId,
                                          @Valid @NonNull @RequestBody Approfundation approfundation) {
         subjectService.getSubjectById(id)
@@ -75,7 +73,7 @@ public class ApprofundationController {
             throw new ResponseStatusException(NOT_FOUND, "Approfundation not found");
         }
     }
-
+}
 
     /*
     @GetMapping(path = "subjectId={id}/approfundationId={approfundationId}/resources")
@@ -129,4 +127,5 @@ public class ApprofundationController {
             throw new ResponseStatusException(NOT_FOUND, "Resource not found");
         }
     }*/
-}
+
+

@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface CourseDao {
 
-    /**
-     * SUBJECT
+    /*
+      SUBJECT
      */
     int insertSubject(Subject subject);
 
@@ -22,20 +22,23 @@ public interface CourseDao {
 
     int updateSubjectById(int subjectId, Subject subject);
 
-    /**
-     * COURSE
+    int verifySubjectId(int subjectId);
+
+    /*
+      COURSE
      */
     int addCourse(int subjectId, Course course);
 
-    Optional<Course> getCourse(int subjectId);
+    Course getCourse(int subjectId);
 
     int deleteCourse(int subjectId);
 
     int updateCourse(int subjectId, Course course);
 
-    /**
-     * RESOURCE
+    /*
+      RESOURCE FOR COURSE
      */
+
     int addCourseResource(int subjectId, Resource resource);
 
     List<Resource> getCourseResources(int subjectId);
@@ -46,9 +49,10 @@ public interface CourseDao {
 
     int updateCourseResourceById(int subjectId, int resourceId, Resource resource);
 
-    /**
-     * APPROFUNDATION
+    /*
+      APPROFUNDATION
      */
+
     int addApprofundation(int subjectId, Approfundation approfundation);
 
     List<Approfundation> getApprofundations(int subjectId);
@@ -59,7 +63,11 @@ public interface CourseDao {
 
     int updateApprofundationById(int subjectId, int approfundationId, Approfundation approfundation);
 
-    List<Resource> getResourcesForApprofundationId(int subjectId, int approfundationId);
+    /*
+      RESOURCE FOR APPROFUNDATION
+     */
+
+    /*List<Resource> getResourcesForApprofundationId(int subjectId, int approfundationId);
 
     Optional<Resource> getResourceByIdForApprofundationId(int subjectId, int approfundationId, int resourceId);
 
@@ -67,17 +75,18 @@ public interface CourseDao {
 
     int updateResourceForApprofundationId(int subjectId, int approfundationId, Resource resource);
 
-    int deleteResourceForApprofundationId(int subjectId, int approfundationId, int resourceId);
+    int deleteResourceForApprofundationId(int subjectId, int approfundationId, int resourceId);*/
 
-    /**
-     * EVALUATION
+    /*
+      EVALUATION
      */
-    int addEvaluationMethod(int id, Evaluation evaluationMethod);
+
+    /*int addEvaluationMethod(int id, Evaluation evaluationMethod);
 
     Evaluation getEvaluationMethod(Course course);
     List<Object> getEvaluationComponent(Course course, Object component);
 
     int deleteEvaluationMethod(int id);
 
-    int updateEvaluationMethod(int id, Evaluation evaluationMethod);
+    int updateEvaluationMethod(int id, Evaluation evaluationMethod);*/
 }

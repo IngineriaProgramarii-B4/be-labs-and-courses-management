@@ -1,16 +1,16 @@
 package com.example.coursesmodule.api;
 
+
+
 import com.example.coursesmodule.model.Subject;
 import com.example.coursesmodule.service.SubjectService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
@@ -32,18 +32,14 @@ public class SubjectController {
     @PostMapping
     public void addSubject(@RequestBody Subject subject)
     {
-        //check if subject already exists
-        if (subjectService.getSubjectById(subject.getId()).isPresent()) {
-            throw new ResponseStatusException(NOT_FOUND, "Subject already exists");
-        }
-        subjectService.getSubjectById(subject.getId())
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Subject not found"));
-        subjectService.addSubject(subject);
+        if(subjectService.addSubject(subject) == 0)
+            throw new ResponseStatusException(NOT_ACCEPTABLE, "Subject already exists or is invalid");
     }
 
     @DeleteMapping("subjectId={id}")
     public void deleteSubjectById(@PathVariable("id") int subjectId) {
-        subjectService.deleteSubjectById(subjectId);
+        if(subjectService.deleteSubjectById(subjectId) == 0)
+            throw new ResponseStatusException(NOT_FOUND, "Subject not found");
     }
 
     @PutMapping("subjectId={id}")
@@ -51,12 +47,14 @@ public class SubjectController {
         //verify that the subject already exists
         subjectService.getSubjectById(subjectId)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Subject not found"));
-        subjectService.updateSubjectById(subjectId, subject);
+        if(subjectService.updateSubjectById(subjectId, subject) == 0)
+            throw new ResponseStatusException(NOT_ACCEPTABLE, "Subject is invalid");
     }
 
     @GetMapping(path = "subjectId={id}")
     public Subject getSubjectById(@PathVariable("id") int id) {
-        return subjectService.getSubjectById(id).orElse(null);
+        return subjectService.getSubjectById(id)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Subject not found"));
     }
 
     @GetMapping(path = "/year={year}&semester={semester}")

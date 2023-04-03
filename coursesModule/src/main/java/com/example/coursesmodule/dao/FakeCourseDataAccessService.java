@@ -28,20 +28,20 @@ public class FakeCourseDataAccessService implements CourseDao {
         DB.add(new Subject("Probabilities and Statistics", 12, 4, 1, 2,""));
 
     }
-    /**
-     * SUBJECT
+    /*
+      SUBJECT
      */
     @Override
     public int insertSubject(Subject subject) {
-        if (selectSubjectById(subject.getId()).isPresent()) {
-            return 0;
-        }
-        DB.add(subject);
+        DB.add(new Subject(subject.getTitle(), subject.getId(), subject.getYear(), subject.getSemester(), subject.getCredits(), subject.getDescription()));
         return 1;
     }
+
+    @Override
     public List<Subject> selectAllSubjects() {
         return DB;
     }
+
     @Override
     public Optional<Subject> selectSubjectById(int id) {
         return DB.stream()
@@ -81,32 +81,38 @@ public class FakeCourseDataAccessService implements CourseDao {
     }
 
 
-    /**
-     * COURSE
+    @Override
+    public int verifySubjectId(int subjectId) {
+        return selectSubjectById(subjectId).isPresent() ? 1 : 0;
+    }
+
+
+    /*
+      COURSE
      */
 
     @Override
     public int addCourse(int subjectId, Course course) {
         //check if subject already has a course
-        if (selectSubjectById(subjectId).get().getCourse().isPresent()) {
+        if(selectSubjectById(subjectId).get().getCourse() != null){
             return 0;
         }
-        selectSubjectById(subjectId).get().addCourse(course);
+        selectSubjectById(subjectId).get().setCourse(course);
         return 1;
     }
 
     @Override
-    public Optional<Course> getCourse(int subjectId) {
+    public Course getCourse(int subjectId) {
         return selectSubjectById(subjectId).get().getCourse();
     }
 
     @Override
     public int deleteCourse(int id) {
-        Optional<Course> courseMaybe = selectSubjectById(id).get().getCourse();
-        if (courseMaybe.isEmpty()) {
+        Course courseMaybe = selectSubjectById(id).get().getCourse();
+        if (courseMaybe == null) {
             return 0;
         }
-        selectSubjectById(id).get().removeCourse(courseMaybe.get());
+        selectSubjectById(id).get().removeCourse();
         return 1;
     }
 
@@ -116,8 +122,8 @@ public class FakeCourseDataAccessService implements CourseDao {
                 .map(s -> {
                     int indexOfCourseToUpdate = DB.indexOf(s);
                     if (indexOfCourseToUpdate >= 0) {
-                        selectSubjectById(id).get().removeCourse(selectSubjectById(id).get().getCourse().get());
-                        selectSubjectById(id).get().addCourse(course);
+                        selectSubjectById(id).get().removeCourse();
+                        selectSubjectById(id).get().setCourse(course);
                         return 1;
                     }
                     return 0;
@@ -125,61 +131,81 @@ public class FakeCourseDataAccessService implements CourseDao {
                 .orElse(0);
     }
 
-    /**
-     * RESOURCE
+    /*
+      RESOURCE - COURSE
      */
+
+
     @Override
     public int addCourseResource(int subjectId, Resource resource) {
         //check if the subject has a course
-        if (selectSubjectById(subjectId).get().getCourse().isEmpty()) {
+        Optional<Subject> subjectMaybe = selectSubjectById(subjectId);
+        if (subjectMaybe.isEmpty()) {
             return 0;
         }
-        selectSubjectById(subjectId).get().getCourse().get().addCourseResource(resource);
+        if (subjectMaybe.get().getCourse() == null) {
+            return 0;
+        }
+        subjectMaybe.get().getCourse().addResource(resource);
         return 1;
     }
 
     @Override
     public List<Resource> getCourseResources(int subjectId) {
         //check if the subject has a course
-        if (selectSubjectById(subjectId).get().getCourse().isEmpty()) {
+        Optional<Subject> subjectMaybe = selectSubjectById(subjectId);
+        if (subjectMaybe.isEmpty()) {
             return null;
         }
-        return selectSubjectById(subjectId).get().getCourse().get().getCourseResources();
+        if (subjectMaybe.get().getCourse() == null) {
+            return null;
+        }
+        return subjectMaybe.get().getCourse().getResources();
     }
 
     @Override
     public Optional<Resource> getCourseResourceById(int subjectId, int resourceId) {
         //check if the subject has a course
-        if (selectSubjectById(subjectId).get().getCourse().isEmpty()) {
+        Optional<Subject> subjectMaybe = selectSubjectById(subjectId);
+        if (subjectMaybe.isEmpty()) {
             return null;
         }
-        return selectSubjectById(subjectId).get().getCourse().get().getCourseResourceById(resourceId);
+        if (subjectMaybe.get().getCourse() == null) {
+            return null;
+        }
+        return subjectMaybe.get().getCourse().getCourseResourceById(resourceId);
     }
     @Override
     public int deleteCourseResourceById(int subjectId, int resourceId) {
         //check if the subject has a course
-        if (selectSubjectById(subjectId).get().getCourse().isEmpty()) {
+        Optional<Subject> subjectMaybe = selectSubjectById(subjectId);
+        if (subjectMaybe.isEmpty()) {
             return 0;
         }
-        selectSubjectById(subjectId).get().getCourse().get().removeCourseResource(resourceId);
+        if (subjectMaybe.get().getCourse() == null) {
+            return 0;
+        }
+        subjectMaybe.get().getCourse().removeCourseResource(resourceId);
         return 1;
     }
 
     @Override
     public int updateCourseResourceById(int subjectId, int resourceId, Resource resource) {
         //check if the subject has a course
-        if (selectSubjectById(subjectId).get().getCourse().isEmpty()) {
+        Optional<Subject> subjectMaybe = selectSubjectById(subjectId);
+        if (subjectMaybe.isEmpty()) {
             return 0;
         }
-        selectSubjectById(subjectId).get().getCourse().get().updateCourseResource(resourceId, resource);
+        if (subjectMaybe.get().getCourse() == null) {
+            return 0;
+        }
+        subjectMaybe.get().getCourse().updateCourseResource(resourceId, resource);
         return 1;
     }
 
-    /**
-     * APPROFUNDATION
+    /*
+      APPROFUNDATION
      */
-    ///////////////////////////////////////////////////////
-
 
     @Override
     public int addApprofundation(int subjectId, Approfundation approfundation) {
@@ -228,70 +254,14 @@ public class FakeCourseDataAccessService implements CourseDao {
                 .orElse(0);
     }
 
-    ///////////////////////////////////////////////////////
-
-    @Override
-    public List<Resource> getResourcesForApprofundationId(int subjectId, int approfundationId) {
-        return null;
-    }
-
-    @Override
-    public Optional<Resource> getResourceByIdForApprofundationId(int subjectId, int approfundationId, int resourceId) {
-        return Optional.empty();
-    }
-
-    @Override
-    public int addResourceForApprofundationId(int subjectId, int approfundationId, Resource resource) {
-        return 0;
-    }
-
-    @Override
-    public int updateResourceForApprofundationId(int subjectId, int approfundationId, Resource resource) {
-        return 0;
-    }
-
-    @Override
-    public int deleteResourceForApprofundationId(int subjectId, int approfundationId, int resourceId) {
-        return 0;
-    }
-
-    /**
-     * EVALUATION
+    /*
+      RESOURCE FOR APPROFUNDATION
      */
 
-    @Override
-    public int addEvaluationMethod(int id, Evaluation evaluationMethod) {
-        return 0;
-    }
 
-    @Override
-    public Evaluation getEvaluationMethod(Course course) {
-        return null;
-    }
-
-    @Override
-    public List<Object> getEvaluationComponent(Course course, Object component) {
-        return null;
-    }
-
-    @Override
-    public int deleteEvaluationMethod(int id) {
-        return 0;
-    }
-
-    @Override
-    public int updateEvaluationMethod(int id, Evaluation evaluationMethod) {
-        return 0;
-    }
-    /*
-    *//**
-     * APPROFUNDATION
-     *//*
-
-
-    @Override
+   /* @Override
     public List<Resource> getResourcesForApprofundationId(int id, int approfundationId) {
-        return selectCourseById(id).get().getApprofundationList().stream()
+        return selectSubjectById(id).get().getApprofundationList().stream()
                 .filter(approfundation -> approfundation.getId() == approfundationId)
                 .findFirst()
                 .get()
@@ -300,7 +270,7 @@ public class FakeCourseDataAccessService implements CourseDao {
 
     @Override
     public Optional<Resource> getResourceByIdForApprofundationId(int id, int approfundationId, int resourceId) {
-        return selectCourseById(id).get().getApprofundationList().stream()
+        return selectSubjectById(id).get().getApprofundationList().stream()
                 .filter(approfundation -> approfundation.getId() == approfundationId)
                 .findFirst()
                 .get()
@@ -312,7 +282,7 @@ public class FakeCourseDataAccessService implements CourseDao {
     @Override
     public int addResourceForApprofundationId(int id, int approfundationId, Resource resource) {
         //check if the resource already exists
-        if (selectCourseById(id).get().getApprofundationList().stream()
+        if (selectSubjectById(id).get().getApprofundationList().stream()
                 .filter(approfundation -> approfundation.getId() == approfundationId)
                 .findFirst()
                 .get()
@@ -328,13 +298,13 @@ public class FakeCourseDataAccessService implements CourseDao {
     public int updateResourceForApprofundationId(int id, int approfundationId, Resource resource) {
         return getResourceByIdForApprofundationId(id, approfundationId, resource.getId())
                 .map(r -> {
-                    int indexOfResourceToUpdate = selectCourseById(id).get().getApprofundationList().stream()
+                    int indexOfResourceToUpdate = selectSubjectById(id).get().getApprofundationList().stream()
                             .filter(approfundation -> approfundation.getId() == approfundationId)
                             .findFirst()
                             .get()
                             .getResources().indexOf(r);
                     if (indexOfResourceToUpdate >= 0) {
-                        selectCourseById(id).get().getApprofundationList().stream()
+                        selectSubjectById(id).get().getApprofundationList().stream()
                                 .filter(approfundation -> approfundation.getId() == approfundationId)
                                 .findFirst()
                                 .get()
@@ -353,18 +323,20 @@ public class FakeCourseDataAccessService implements CourseDao {
         if (resourceMaybe.isEmpty()) {
             return 0;
         }
-        selectCourseById(id).get().getApprofundationList().stream()
+        selectSubjectById(id).get().getApprofundationList().stream()
                 .filter(approfundation -> approfundation.getId() == approfundationId)
                 .findFirst()
                 .get()
                 .removeResource(resourceMaybe.get());
         return 1;
-    }
+    }*/
 
 
-    *//**
-     * EVALUATION
-     *//*
+    /*
+      EVALUATION
+     */
+
+    /*
     @Override
     public int addEvaluationMethod(int id, Evaluation evaluationMethod) {
         //check if course doesn't already have a non-empty evaluation method
@@ -401,7 +373,5 @@ public class FakeCourseDataAccessService implements CourseDao {
         selectCourseById(id).get().setEvaluationMethod(evaluationMethod);
         return 1;
     }*/
-    /*
-      END EVALUATION
-     */
+
 }

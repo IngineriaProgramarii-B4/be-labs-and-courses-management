@@ -19,14 +19,13 @@ public class CourseService {
         this.courseDao = courseDao;
     }
 
-    /**
-     * COURSE
-     */
+
+
     public int addCourse(int subjectId, Course course) {
         return courseDao.addCourse(subjectId, course);
     }
 
-    public Optional<Course> getCourse(int subjectId) {
+    public Course getCourse(int subjectId) {
         return courseDao.getCourse(subjectId);
     }
 
@@ -38,34 +37,18 @@ public class CourseService {
         return courseDao.updateCourse(subjectId, course);
     }
 
-    /**
-     * RESOURCE
+    /*
+      RESOURCE
      */
-    public int verifyResourceValid(Resource resource){
-        return resource.getId() <= 0 || resource.getTitle().isEmpty() ? 0 : 1;
-    }
-    public void addCourseResource(int subjectId, Resource resource) {
-        courseDao.addCourseResource(subjectId, resource);
-    }
 
-    public List<Resource> getCourseResources(int subjectId) {
+    /*
 
-        return courseDao.getCourseResources(subjectId);
-    }
-    public Optional<Resource> getCourseResourceById(int subjectId, int resourceId) {
-        return courseDao.getCourseResourceById(subjectId, resourceId);
-    }
-    public int deleteCourseResourceById(int subjectId, int resourceId) {
-        return courseDao.deleteCourseResourceById(subjectId, resourceId);
-    }
-    public int updateCourseResourceById(int subjectId, int resourceId, Resource resource) {
-        return verifyResourceValid(resource) == 0 ? 0 : courseDao.updateCourseResourceById(subjectId, resourceId, resource);
-    }
+    */
 
 
-    /**
-     * EVALUATION
-     */
+
+      /*EVALUATION*/
+
     /*public int verifyEvaluationMethodValid(Evaluation evaluationMethod) {
         float totalValue = 0;
         for (Object component : evaluationMethod.getPercentage().keySet())

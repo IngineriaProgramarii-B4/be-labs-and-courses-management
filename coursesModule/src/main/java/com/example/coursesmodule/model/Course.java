@@ -5,14 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.*;
 
 public class Course{
+    int numberWeeks;
     List<Resource> resources;
-
-    int numberOfWeeks;
 
     //constructor
 
-    public Course(@JsonProperty("weeks") int numberOfWeeks) {
-        this.numberOfWeeks = numberOfWeeks;
+    public Course(@JsonProperty("numberWeeks") int numberWeeks) {
+        this.numberWeeks = numberWeeks;
         this.resources=new ArrayList<>();
     }
 
@@ -21,23 +20,33 @@ public class Course{
         this.resources = resources;
     }
 
-    public void setNumberOfWeeks(int numberOfWeeks) {
-        this.numberOfWeeks = numberOfWeeks;
+    public void setNumberWeeks(int numberOfWeeks) {
+        this.numberWeeks = numberOfWeeks;
     }
 
     //getters
-    public List<Resource> getCourseResources() {
+    public List<Resource> getResources() {
         return resources;
     }
 
-    public int getNumberOfWeeks() {
-        return numberOfWeeks;
+    public int getNumberWeeks() {
+        return numberWeeks;
     }
 
-    //additional methods
-    public void addCourseResource(Resource resource) {
+
+    public void addResource(Resource resource) {
         resources.add(resource);
     }
+
+    public Optional<Resource> getCourseResourceById(int resourceId) {
+        for (Resource resource : resources) {
+            if (resource.getId() == resourceId) {
+                return Optional.of(resource);
+            }
+        }
+        return Optional.empty();
+    }
+
     public void removeCourseResource(int resourceId) {
         for (Resource resource : resources) {
             if (resource.getId() == resourceId) {
@@ -54,14 +63,5 @@ public class Course{
                 break;
             }
         }
-    }
-
-    public Optional<Resource> getCourseResourceById(int resourceId) {
-        for (Resource resource : resources) {
-            if (resource.getId() == resourceId) {
-                return Optional.of(resource);
-            }
-        }
-        return Optional.empty();
     }
 }
