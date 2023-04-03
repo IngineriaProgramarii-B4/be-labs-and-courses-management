@@ -33,7 +33,7 @@ public class FakeCourseDataAccessService implements CourseDao {
      */
     @Override
     public int insertSubject(Subject subject) {
-        DB.add(new Subject(subject.getTitle(), subject.getId(), subject.getCredits(), subject.getYear(), subject.getSemester(), subject.getDescription()));
+        DB.add(subject);
         return 1;
     }
     public List<Subject> selectAllSubjects() {
@@ -175,30 +175,57 @@ public class FakeCourseDataAccessService implements CourseDao {
     /**
      * APPROFUNDATION
      */
+    ///////////////////////////////////////////////////////
+
+
     @Override
     public int addApprofundation(int subjectId, Approfundation approfundation) {
-        return 0;
+        // check if the approfundation already exists in subject
+        if (selectSubjectById(subjectId).get().getApprofundationList().contains(approfundation)) {
+            return 0;
+        }
+        selectSubjectById(subjectId).get().addApprofundation(approfundation);
+        return 1;
     }
 
     @Override
     public List<Approfundation> getApprofundations(int subjectId) {
-        return null;
+        return selectSubjectById(subjectId).get().getApprofundationList();
     }
 
     @Override
     public Optional<Approfundation> getApprofundationById(int subjectId, int approfundationId) {
-        return Optional.empty();
+        return selectSubjectById(subjectId).get().
+                getApprofundationList().stream()
+                .filter(approfundation -> approfundation.getId() == approfundationId)
+                .findFirst();
     }
 
     @Override
-    public int deleteApprofundationById(int subjectId, int approfundationId) {
-        return 0;
+    public int deleteApprofundationById(int id, int approfundationId) {
+        Optional<Approfundation> approfundationMaybe = getApprofundationById(id, approfundationId);
+        if (approfundationMaybe.isEmpty()) {
+            return 0;
+        }
+        selectSubjectById(id).get().removeApprofundation(approfundationMaybe.get());
+        return 1;
     }
 
     @Override
-    public int updateApprofundationById(int subjectId, int approfundationId, Approfundation approfundation) {
-        return 0;
+    public int updateApprofundationById(int id, int approfundationId, Approfundation approfundation) {
+        return getApprofundationById(id, approfundationId)
+                .map(a -> {
+                    int indexOfApprofundationToUpdate = selectSubjectById(id).get().getApprofundationList().indexOf(a);
+                    if (indexOfApprofundationToUpdate >= 0) {
+                        selectSubjectById(id).get().getApprofundationList().set(indexOfApprofundationToUpdate, approfundation);
+                        return 1;
+                    }
+                    return 0;
+                })
+                .orElse(0);
     }
+
+    ///////////////////////////////////////////////////////
 
     @Override
     public List<Resource> getResourcesForApprofundationId(int subjectId, int approfundationId) {
@@ -257,52 +284,7 @@ public class FakeCourseDataAccessService implements CourseDao {
     *//**
      * APPROFUNDATION
      *//*
-    @Override
-    public int addApprofundation(int subjectId, Approfundation approfundation) {
-        // check if the approfundation already exists in subject
-        if (selectSubjectById(subjectId).get().getApprofundationList().contains(approfundation)) {
-            return 0;
-        }
-        selectSubjectById(subjectId).get().addApprofundation(approfundation);
-        return 1;
-    }
 
-    @Override
-    public List<Approfundation> getApprofundations(int subjectId) {
-        return selectSubjectById(subjectId).get().getApprofundationList();
-    }
-
-    @Override
-    public Optional<Approfundation> getApprofundationById(int subjectId, int approfundationId) {
-        return selectSubjectById(subjectId).get().
-                getApprofundationList().stream()
-                .filter(approfundation -> approfundation.getId() == approfundationId)
-                .findFirst();
-    }
-
-    @Override
-    public int deleteApprofundationById(int id, int approfundationId) {
-        Optional<Approfundation> approfundationMaybe = getApprofundationById(selectCourseById(id).get(), approfundationId);
-        if (approfundationMaybe.isEmpty()) {
-            return 0;
-        }
-        selectCourseById(id).get().removeApprofundation(approfundationMaybe.get());
-        return 1;
-    }
-
-    @Override
-    public int updateApprofundationById(int id, int approfundationId, Approfundation approfundation) {
-        return getApprofundationById(selectCourseById(id).get(), approfundationId)
-                .map(a -> {
-                    int indexOfApprofundationToUpdate = selectCourseById(id).get().getApprofundationList().indexOf(a);
-                    if (indexOfApprofundationToUpdate >= 0) {
-                        selectCourseById(id).get().getApprofundationList().set(indexOfApprofundationToUpdate, approfundation);
-                        return 1;
-                    }
-                    return 0;
-                })
-                .orElse(0);
-    }
 
     @Override
     public List<Resource> getResourcesForApprofundationId(int id, int approfundationId) {

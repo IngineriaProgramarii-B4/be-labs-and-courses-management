@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "api/v1/subjects")
 public class SubjectController {
@@ -18,8 +20,8 @@ public class SubjectController {
     }
 
     @GetMapping
-    public void getAllSubjects() {
-        subjectService.getAllSubjects();
+    public List<Subject> getAllSubjects() {
+        return subjectService.getAllSubjects();
     }
 
     @PostMapping
@@ -27,12 +29,12 @@ public class SubjectController {
         subjectService.addSubject(subject);
     }
 
-    @DeleteMapping
+    @DeleteMapping("subjectId={id}")
     public void deleteSubjectById(@RequestParam("subjectId") int subjectId) {
         subjectService.deleteSubjectById(subjectId);
     }
 
-    @PutMapping
+    @PutMapping("subjectId={id}")
     public void updateSubjectById(@RequestParam("subjectId") int subjectId, @RequestBody Subject subject) {
         subjectService.updateSubjectById(subjectId, subject);
     }
@@ -43,7 +45,7 @@ public class SubjectController {
     }
 
     @GetMapping(path = "?year={year}&semester={semester}")
-    public void getSubjectsByYearAndSemester(@PathVariable("year") int year, @PathVariable("semester") int semester) {
-        subjectService.getSubjectsByYearAndSemester(year, semester);
+    public List<Subject> getSubjectsByYearAndSemester(@PathVariable("year") int year, @PathVariable("semester") int semester) {
+        return subjectService.getSubjectsByYearAndSemester(year, semester);
     }
 }
