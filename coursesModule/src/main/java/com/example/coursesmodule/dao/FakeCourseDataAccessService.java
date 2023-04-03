@@ -185,6 +185,78 @@ public class FakeCourseDataAccessService implements CourseDao {
                 .orElse(0);
     }
 
+    @Override
+    public List<Resource> getResourcesForApprofundationId(int id, int approfundationId) {
+        return selectCourseById(id).get().getApprofundationList().stream()
+                .filter(approfundation -> approfundation.getId() == approfundationId)
+                .findFirst()
+                .get()
+                .getResources();
+    }
+
+    @Override
+    public Optional<Resource> getResourceByIdForApprofundationId(int id, int approfundationId, int resourceId) {
+        return selectCourseById(id).get().getApprofundationList().stream()
+                .filter(approfundation -> approfundation.getId() == approfundationId)
+                .findFirst()
+                .get()
+                .getResources().stream()
+                .filter(resource -> resource.getId() == resourceId)
+                .findFirst();
+    }
+
+    @Override
+    public int addResourceForApprofundationId(int id, int approfundationId, Resource resource) {
+        //check if the resource already exists
+        if (selectCourseById(id).get().getApprofundationList().stream()
+                .filter(approfundation -> approfundation.getId() == approfundationId)
+                .findFirst()
+                .get()
+                .getResources().stream()
+                .anyMatch(resource1 -> resource1.getId() == resource.getId())) {
+            return 0;
+        }
+
+        return 0;
+    }
+
+    @Override
+    public int updateResourceForApprofundationId(int id, int approfundationId, Resource resource) {
+        return getResourceByIdForApprofundationId(id, approfundationId, resource.getId())
+                .map(r -> {
+                    int indexOfResourceToUpdate = selectCourseById(id).get().getApprofundationList().stream()
+                            .filter(approfundation -> approfundation.getId() == approfundationId)
+                            .findFirst()
+                            .get()
+                            .getResources().indexOf(r);
+                    if (indexOfResourceToUpdate >= 0) {
+                        selectCourseById(id).get().getApprofundationList().stream()
+                                .filter(approfundation -> approfundation.getId() == approfundationId)
+                                .findFirst()
+                                .get()
+                                .getResources().set(indexOfResourceToUpdate, new Resource(resource.getId(),
+                                resource.getTitle(), resource.getLocation()));
+                        return 1;
+                    }
+                    return 0;
+                })
+                .orElse(0);
+    }
+
+    @Override
+    public int deleteResourceForApprofundationId(int id, int approfundationId, int resourceId) {
+        Optional<Resource> resourceMaybe = getResourceByIdForApprofundationId(id, approfundationId, resourceId);
+        if (resourceMaybe.isEmpty()) {
+            return 0;
+        }
+        selectCourseById(id).get().getApprofundationList().stream()
+                .filter(approfundation -> approfundation.getId() == approfundationId)
+                .findFirst()
+                .get()
+                .removeResource(resourceMaybe.get());
+        return 1;
+    }
+
 
     /**
      * EVALUATION

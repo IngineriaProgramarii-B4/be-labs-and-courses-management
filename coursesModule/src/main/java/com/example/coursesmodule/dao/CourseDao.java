@@ -51,6 +51,16 @@ public interface CourseDao {
 
     int updateApprofundationById(int id, int approfundationId, Approfundation approfundation);
 
+    List<Resource> getResourcesForApprofundationId(int id, int approfundationId);
+
+    Optional<Resource> getResourceByIdForApprofundationId(int id, int approfundationId, int resourceId);
+
+    int addResourceForApprofundationId(int id, int approfundationId, Resource resource);
+
+    int updateResourceForApprofundationId(int id, int approfundationId, Resource resource);
+
+    int deleteResourceForApprofundationId(int id, int approfundationId, int resourceId);
+
     /**
      * EVALUATION
      */
