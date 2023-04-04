@@ -81,12 +81,15 @@ public interface CourseDao {
       EVALUATION
      */
 
-    /*int addEvaluationMethod(int id, Evaluation evaluationMethod);
+    int addEvaluationMethod(int subjectId, Evaluation evaluationMethod);
+    int addEvaluationComponent(int subjectId, String component, float value);
 
-    Evaluation getEvaluationMethod(Course course);
-    List<Object> getEvaluationComponent(Course course, Object component);
+    Evaluation getEvaluationMethod(Subject subject);
+    List<Object> getEvaluationComponent(Subject subject, String component);
 
-    int deleteEvaluationMethod(int id);
+    int deleteEvaluationMethod(int subjectId);
+    int deleteEvaluationComponent(int subjectId, String component);
 
-    int updateEvaluationMethod(int id, Evaluation evaluationMethod);*/
+    int updateEvaluationMethod(int subjectId, Evaluation evaluationMethod);
+    int updateEvaluationComponent(int subjectId, String component, float value);
 }

@@ -44,35 +44,4 @@ public class CourseService {
     /*
 
     */
-
-
-
-      /*EVALUATION*/
-
-    /*public int verifyEvaluationMethodValid(Evaluation evaluationMethod) {
-        float totalValue = 0;
-        for (Object component : evaluationMethod.getPercentage().keySet())
-            totalValue += evaluationMethod.getPercentage().get(component);
-
-        return totalValue == 100.0f ? 0 : 1;
-    }
-
-    public int addEvaluationMethod(int id, Evaluation evaluationMethod) {
-        return verifyEvaluationMethodValid(evaluationMethod) == 1 ? 0 : courseDao.addEvaluationMethod(id, evaluationMethod);
-    }
-
-    public Evaluation getEvaluationMethod(Course course) {
-        return courseDao.getEvaluationMethod(course);
-    }
-    public List<Object> getEvaluationComponent(Course course, Object component) {
-        return courseDao.getEvaluationComponent(course, component);
-    }
-
-    public int deleteEvaluationMethod(int id) {
-        return courseDao.deleteEvaluationMethod(id);
-    }
-
-    public int updateEvaluationMethod(int id, Evaluation evaluationMethod) {
-        return verifyEvaluationMethodValid(evaluationMethod) == 0 ? 0 : courseDao.updateEvaluationMethod(id, evaluationMethod);
-    }*/
 }

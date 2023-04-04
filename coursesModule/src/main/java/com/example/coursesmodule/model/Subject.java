@@ -14,7 +14,7 @@ public class Subject {
     String description;
     Course course;
     List<Approfundation> approfundationList;
-    // Evaluation evaluationMethod;
+    Evaluation evaluationMethod;
 
 
     //constructor
@@ -28,13 +28,14 @@ public class Subject {
         this.title = title;
         this.id = id;
         this.credits = credits;
-        // this.evaluationMethod = new Evaluation(new HashMap<>());
         this.year = year;
         this.semester = semester;
         this.description = description;
         this.approfundationList=new ArrayList<>();
         this.course = null;
+        this.evaluationMethod = null;
     }
+
     //setters
     public void setTitle(String title) {
         this.title = title;
@@ -48,9 +49,9 @@ public class Subject {
         this.credits = credits;
     }
 
-    /*public void setEvaluationMethod(Evaluation evaluationMethod) {
+    public void setEvaluationMethod(Evaluation evaluationMethod) {
         this.evaluationMethod = evaluationMethod;
-    }*/
+    }
 
     public void setYear(int year) {
         this.year = year;
@@ -82,9 +83,9 @@ public class Subject {
         return credits;
     }
 
-    /*public Evaluation getEvaluationMethod() {
+    public Evaluation getEvaluationMethod() {
         return evaluationMethod;
-    }*/
+    }
 
     public int getYear() {
         return year;
@@ -115,7 +116,7 @@ public class Subject {
         approfundationList.remove(approfundation);
     }
 
-    /*public void removeEvaluationMethod() {
-        this.evaluationMethod = new Evaluation(new HashMap<>());
-    }*/
+    public void removeEvaluationMethod() {
+        this.evaluationMethod = null;
+    }
 }

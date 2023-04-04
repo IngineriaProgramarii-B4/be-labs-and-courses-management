@@ -336,42 +336,72 @@ public class FakeCourseDataAccessService implements CourseDao {
       EVALUATION
      */
 
-    /*
     @Override
-    public int addEvaluationMethod(int id, Evaluation evaluationMethod) {
+    public int addEvaluationMethod(int subjectId, Evaluation evaluationMethod) {
         //check if course doesn't already have a non-empty evaluation method
-        if (selectCourseById(id).get().getEvaluationMethod().getNumberOfComponents() == 0) {
+        if (selectSubjectById(subjectId).get().getEvaluationMethod() != null) {
             return 0;
         }
-        selectCourseById(id).get().setEvaluationMethod(evaluationMethod);
+        selectSubjectById(subjectId).get().setEvaluationMethod(evaluationMethod);
         return 1;
     }
 
     @Override
-    public Evaluation getEvaluationMethod(Course course) {
-        return course.getEvaluationMethod();
-    }
-
-    @Override
-    public List<Object> getEvaluationComponent(Course course, Object component) {
-        //returns list of two objects in the form: (component, value) if component is part of the evaluation method
-        if (!course.getEvaluationMethod().containsComponent(component))
-            return null;
-        return Arrays.asList(component, course.getEvaluationMethod().getPercentage().get(component));
-    }
-
-    @Override
-    public int deleteEvaluationMethod(int id) {
-        if (selectCourseById(id).get().getEvaluationMethod().getNumberOfComponents() == 0)
+    public int addEvaluationComponent(int subjectId, String component, float value) {
+        if (selectSubjectById(subjectId).get().getEvaluationMethod() == null)
             return 0;
-        selectCourseById(id).get().removeEvaluationMethod();
+        if (selectSubjectById(subjectId).get().getEvaluationMethod().containsComponent(component))
+            return 0;
+        selectSubjectById(subjectId).get().getEvaluationMethod().addComponent(component, value);
         return 1;
     }
 
     @Override
-    public int updateEvaluationMethod(int id, Evaluation evaluationMethod) {
-        selectCourseById(id).get().setEvaluationMethod(evaluationMethod);
-        return 1;
-    }*/
+    public Evaluation getEvaluationMethod(Subject subject) {
+        return subject.getEvaluationMethod();
+    }
 
+    @Override
+    public List<Object> getEvaluationComponent(Subject subject, String component) {
+        //returns list of two objects in the form: (component, value) if component is part of the evaluation method
+        if (subject.getEvaluationMethod() == null)
+            return null;
+        if (!subject.getEvaluationMethod().containsComponent(component))
+            return null;
+        return Arrays.asList(component, subject.getEvaluationMethod().getPercentage().get(component));
+    }
+
+    @Override
+    public int deleteEvaluationMethod(int subjectId) {
+        if (selectSubjectById(subjectId).get().getEvaluationMethod() == null)
+            return 0;
+        selectSubjectById(subjectId).get().removeEvaluationMethod();
+        return 1;
+    }
+
+    @Override
+    public int deleteEvaluationComponent(int subjectId, String component) {
+        if (selectSubjectById(subjectId).get().getEvaluationMethod() == null)
+            return 0;
+        if (!selectSubjectById(subjectId).get().getEvaluationMethod().containsComponent(component))
+            return 0;
+        selectSubjectById(subjectId).get().getEvaluationMethod().removeComponent(component);
+        return 1;
+    }
+
+    @Override
+    public int updateEvaluationMethod(int subjectId, Evaluation evaluationMethod) {
+        selectSubjectById(subjectId).get().setEvaluationMethod(evaluationMethod);
+        return 1;
+    }
+
+    @Override
+    public int updateEvaluationComponent(int subjectId, String component, float value) {
+        if (selectSubjectById(subjectId).get().getEvaluationMethod() == null)
+            return 0;
+        if (!selectSubjectById(subjectId).get().getEvaluationMethod().containsComponent(component))
+            return 0;
+        selectSubjectById(subjectId).get().getEvaluationMethod().updateComponent(component, value);
+        return 1;
+    }
 }

@@ -57,7 +57,7 @@ public class SubjectController {
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Subject not found"));
     }
 
-    @GetMapping(path = "/year={year}&semester={semester}")
+    @GetMapping(path = "year={year}&semester={semester}")
     public List<Subject> getSubjectsByYearAndSemester(@PathVariable("year") int year, @PathVariable("semester") int semester) {
         return subjectService.getSubjectsByYearAndSemester(year, semester);
     }

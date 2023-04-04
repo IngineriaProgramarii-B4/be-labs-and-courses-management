@@ -7,17 +7,17 @@ import java.util.HashMap;
 
 public class Evaluation {
     @NotNull
-    private HashMap<Object, Float> percentage;
+    private HashMap<String, Float> percentage;
     private int numberOfComponents;
 
     //constructors
-    Evaluation(@JsonProperty("percentage") HashMap<Object, Float> percentage) {
+    Evaluation(@JsonProperty("percentage") HashMap<String, Float> percentage) {
         this.percentage = new HashMap<>(percentage);
         numberOfComponents = percentage.size();
     }
 
     //setters
-    public void setPercentage(HashMap<Object, Float> percentage) {
+    public void setPercentage(HashMap<String, Float> percentage) {
         this.percentage = percentage;
     }
     public void setNumberOfComponents(int numberOfComponents) {
@@ -25,7 +25,7 @@ public class Evaluation {
     }
 
     //getters
-    public HashMap<Object, Float> getPercentage() {
+    public HashMap<String, Float> getPercentage() {
         return percentage;
     }
     public int getNumberOfComponents() {
@@ -35,5 +35,20 @@ public class Evaluation {
     //additional methods
     public boolean containsComponent(Object component) {
         return percentage.containsKey(component);
+    }
+
+    public void addComponent(String component, float value) {
+        percentage.put(component, value);
+        numberOfComponents++;
+    }
+
+    public void removeComponent(String component) {
+        percentage.remove(component);
+        numberOfComponents--;
+    }
+
+    public void updateComponent(String component, float value) {
+        percentage.remove(component);
+        percentage.put(component, value);
     }
 }
