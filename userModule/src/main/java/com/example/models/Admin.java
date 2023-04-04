@@ -1,7 +1,8 @@
 package com.example.models;
 
-//@Entity
-//@Tabel
+import jakarta.persistence.Entity;
+
+@Entity
 public class Admin extends AcademicStaff {
     private String department;
 
@@ -14,11 +15,10 @@ public class Admin extends AcademicStaff {
                  String lastname,
                  String email,
                  String username,
-                 String password,
                  String office,
                  String department) {
 
-        super(id, firstname, lastname, email, username, password, office);
+        super(id, firstname, lastname, email, username, office);
         this.department = department;
     }
 
@@ -40,7 +40,6 @@ public class Admin extends AcademicStaff {
                 ", lastname='" + lastname + '\'' +
                 ", email='" + email + '\'' +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
                 '}';
     }
 }

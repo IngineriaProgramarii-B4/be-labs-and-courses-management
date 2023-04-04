@@ -4,10 +4,8 @@ import jakarta.persistence.*;
 
 import java.io.File;
 import java.util.UUID;
-
-//@MappedSuperclass
-@Table
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class AppUser {
     @Id
     @SequenceGenerator(
@@ -24,7 +22,6 @@ public abstract class AppUser {
     protected String lastname;
     protected String email;
     protected String username;
-    protected String password;
 
     public int getId() {
         return id;
@@ -66,14 +63,6 @@ public abstract class AppUser {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
 //    public void login(String username, String password) {
 //        //todo
 //    }
@@ -106,13 +95,12 @@ public abstract class AppUser {
 
     } //default ctor
 
-    public AppUser(int id, String firstname, String lastname, String email, String username, String password) {
+    public AppUser(int id, String firstname, String lastname, String email, String username) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.username = username;
-        this.password = password;
     }
 
 }
