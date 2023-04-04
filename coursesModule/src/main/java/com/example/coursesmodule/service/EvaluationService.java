@@ -4,6 +4,7 @@ import com.example.coursesmodule.dao.CourseDao;
 import com.example.coursesmodule.model.Evaluation;
 import com.example.coursesmodule.model.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public class EvaluationService {
     private final CourseDao courseDao;
 
     @Autowired
-    public EvaluationService(CourseDao courseDao) {
+    public EvaluationService(@Qualifier("fakeDao")  CourseDao courseDao) {
         this.courseDao = courseDao;
     }
 

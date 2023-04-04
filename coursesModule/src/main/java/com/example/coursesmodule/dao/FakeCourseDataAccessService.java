@@ -26,7 +26,8 @@ public class FakeCourseDataAccessService implements CourseDao {
         DB.add(new Subject("Algorithms Design", 10, 5, 1, 2,""));
         DB.add(new Subject("English II", 11, 4, 1, 2,""));
         DB.add(new Subject("Probabilities and Statistics", 12, 4, 1, 2,""));
-
+        // add an approfundation to the subject with id 1
+        DB.get(0).addApprofundation(new Approfundation(1,5, "Lab"));
     }
     /*
       SUBJECT
@@ -219,11 +220,18 @@ public class FakeCourseDataAccessService implements CourseDao {
 
     @Override
     public List<Approfundation> getApprofundations(int subjectId) {
-        return selectSubjectById(subjectId).get().getApprofundationList();
+        Optional<Subject> subjectMaybe = selectSubjectById(subjectId);
+        if (subjectMaybe.isEmpty()) {
+            return null;
+        }
+        return subjectMaybe.get().getApprofundationList();
     }
 
     @Override
     public Optional<Approfundation> getApprofundationById(int subjectId, int approfundationId) {
+        if (selectSubjectById(subjectId).isEmpty()) {
+            return Optional.empty();
+        }
         return selectSubjectById(subjectId).get().
                 getApprofundationList().stream()
                 .filter(approfundation -> approfundation.getId() == approfundationId)
@@ -259,66 +267,53 @@ public class FakeCourseDataAccessService implements CourseDao {
      */
 
 
-   /* @Override
+    @Override
     public List<Resource> getResourcesForApprofundationId(int id, int approfundationId) {
-        return selectSubjectById(id).get().getApprofundationList().stream()
-                .filter(approfundation -> approfundation.getId() == approfundationId)
-                .findFirst()
-                .get()
-                .getResources();
+        Optional<Approfundation> approfundationMaybe = getApprofundationById(id, approfundationId);
+        if (approfundationMaybe.isEmpty()) {
+            return null;
+        }
+
+        return approfundationMaybe.get().getResources();
     }
+
 
     @Override
     public Optional<Resource> getResourceByIdForApprofundationId(int id, int approfundationId, int resourceId) {
-        return selectSubjectById(id).get().getApprofundationList().stream()
-                .filter(approfundation -> approfundation.getId() == approfundationId)
-                .findFirst()
-                .get()
-                .getResources().stream()
-                .filter(resource -> resource.getId() == resourceId)
-                .findFirst();
+        Optional<Approfundation> approfundationMaybe = getApprofundationById(id, approfundationId);
+        if (approfundationMaybe.isEmpty()) {
+            return Optional.empty();
+        }
+        return approfundationMaybe.get().getResourceById(resourceId);
     }
+
 
     @Override
     public int addResourceForApprofundationId(int id, int approfundationId, Resource resource) {
-        //check if the resource already exists
-        if (selectSubjectById(id).get().getApprofundationList().stream()
+        Optional<Approfundation> approfundationMaybe = getApprofundationById(id, approfundationId);
+        if (approfundationMaybe.isEmpty()) {
+            return 0;
+        }
+        approfundationMaybe.get().addResource(resource);
+        return 1;
+    }
+
+    @Override
+    public int updateResourceByIdForApprofundationId(int id, int approfundationId, int resourceId, Resource resource) {
+        Optional<Resource> resourceMaybe = getResourceByIdForApprofundationId(id, approfundationId, resourceId);
+        if (resourceMaybe.isEmpty()) {
+            return 0;
+        }
+        selectSubjectById(id).get().getApprofundationList().stream()
                 .filter(approfundation -> approfundation.getId() == approfundationId)
                 .findFirst()
                 .get()
-                .getResources().stream()
-                .anyMatch(resource1 -> resource1.getId() == resource.getId())) {
-            return 0;
-        }
-
-        return 0;
+                .updateResource(resourceId, resource);
+        return 1;
     }
 
     @Override
-    public int updateResourceForApprofundationId(int id, int approfundationId, Resource resource) {
-        return getResourceByIdForApprofundationId(id, approfundationId, resource.getId())
-                .map(r -> {
-                    int indexOfResourceToUpdate = selectSubjectById(id).get().getApprofundationList().stream()
-                            .filter(approfundation -> approfundation.getId() == approfundationId)
-                            .findFirst()
-                            .get()
-                            .getResources().indexOf(r);
-                    if (indexOfResourceToUpdate >= 0) {
-                        selectSubjectById(id).get().getApprofundationList().stream()
-                                .filter(approfundation -> approfundation.getId() == approfundationId)
-                                .findFirst()
-                                .get()
-                                .getResources().set(indexOfResourceToUpdate, new Resource(resource.getId(),
-                                resource.getTitle(), resource.getLocation()));
-                        return 1;
-                    }
-                    return 0;
-                })
-                .orElse(0);
-    }
-
-    @Override
-    public int deleteResourceForApprofundationId(int id, int approfundationId, int resourceId) {
+    public int deleteResourceByIdForApprofundationId(int id, int approfundationId, int resourceId) {
         Optional<Resource> resourceMaybe = getResourceByIdForApprofundationId(id, approfundationId, resourceId);
         if (resourceMaybe.isEmpty()) {
             return 0;
@@ -329,22 +324,11 @@ public class FakeCourseDataAccessService implements CourseDao {
                 .get()
                 .removeResource(resourceMaybe.get());
         return 1;
-    }*/
-
+    }
 
     /*
       EVALUATION
      */
-
-    @Override
-    public int addEvaluationMethod(int subjectId, Evaluation evaluationMethod) {
-        //check if course doesn't already have a non-empty evaluation method
-        if (selectSubjectById(subjectId).get().getEvaluationMethod() != null) {
-            return 0;
-        }
-        selectSubjectById(subjectId).get().setEvaluationMethod(evaluationMethod);
-        return 1;
-    }
 
     @Override
     public int addEvaluationComponent(int subjectId, String component, float value) {
@@ -359,6 +343,16 @@ public class FakeCourseDataAccessService implements CourseDao {
     @Override
     public Evaluation getEvaluationMethod(Subject subject) {
         return subject.getEvaluationMethod();
+    }
+
+    @Override
+    public int addEvaluationMethod(int subjectId, Evaluation evaluationMethod) {
+        //check if course doesn't already have a non-empty evaluation method
+        if (selectSubjectById(subjectId).get().getEvaluationMethod() != null) {
+            return 0;
+        }
+        selectSubjectById(subjectId).get().setEvaluationMethod(evaluationMethod);
+        return 1;
     }
 
     @Override

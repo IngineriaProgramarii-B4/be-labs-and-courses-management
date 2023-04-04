@@ -46,23 +46,4 @@ public class ApprofundationService {
 
     ///////////////////////////////////////////////////////////////////////////////////////
 
-    /*
-    public List<Resource> getResourcesForAprofundationId(int id, int approfundationId) {
-        return courseDao.getResourcesForApprofundationId(id, approfundationId);
-    }
 
-    public Optional<Resource> getResourceByIdForApprofundationId(int id, int approfundationId , int resourceId) {
-        return courseDao.getResourceByIdForApprofundationId(id, approfundationId, resourceId);
-    }
-
-    public int addResourceForApprofundationId(int id, int approfundationId, Resource resource) {
-        return courseDao.addResourceForApprofundationId(id, approfundationId, resource);
-    }
-
-    public int updateResourceForApprofundationId(int id, int approfundationId, Resource resource) {
-        return courseDao.updateResourceForApprofundationId(id, approfundationId, resource);
-    }
-
-    public int deleteResourceForApprofundationId(int id, int approfundationId, int resourceId) {
-        return courseDao.deleteResourceForApprofundationId(id, approfundationId, resourceId);
-    }*/

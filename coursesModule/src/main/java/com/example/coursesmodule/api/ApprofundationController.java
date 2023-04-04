@@ -75,57 +75,6 @@ public class ApprofundationController {
     }
 }
 
-    /*
-    @GetMapping(path = "subjectId={id}/approfundationId={approfundationId}/resources")
-    public List<Resource> getApprofundationResources(@PathVariable("id") int id,
-                                                     @PathVariable("approfundationId") int approfundationId) {
-        Course course = approfundationService.getCourseById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
-        return approfundationService.getResourcesForAprofundationId(id, approfundationId);
-    }
 
-    @GetMapping(path = "subjectId={id}/approfundationId={approfundationId}/resourceId={resourceId}")
-    public Resource getApprofundationResourceById(@PathVariable("id") int id,
-                                                  @PathVariable("approfundationId") int approfundationId,
-                                                  @PathVariable("resourceId") int resourceId) {
-        Course course = approfundationService.getCourseById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
-        return approfundationService.getResourceByIdForApprofundationId(id, approfundationId, resourceId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Resource not found"));
-    }
-
-    @PostMapping(path = "subjectId={id}/approfundationId={approfundationId}/resources")
-    public void addApprofundationResource(@PathVariable("id") int id,
-                                          @PathVariable("approfundationId") int approfundationId,
-                                          @Valid @NonNull @RequestBody Resource resource) {
-        Course course = approfundationService.getCourseById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
-        if(approfundationService.addResourceForApprofundationId(id, approfundationId, resource) == 0) {
-            throw new ResponseStatusException(NOT_ACCEPTABLE, "Resource ID already exists");
-        }
-    }
-
-    @PutMapping(path = "subjectId={id}/approfundationId={approfundationId}/resourceId={resourceId}")
-    public void updateApprofundationResourceById(@PathVariable("id") int id,
-                                                 @PathVariable("approfundationId") int approfundationId,
-                                                 @PathVariable("resourceId") int resourceId,
-                                                 @Valid @NonNull @RequestBody Resource resource) {
-        Course course = approfundationService.getCourseById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
-        if(approfundationService.updateResourceForApprofundationId(id, approfundationId, resource) == 0) {
-            throw new ResponseStatusException(NOT_FOUND, "Resource not found");
-        }
-    }
-
-    @DeleteMapping(path = "subjectId={id}/approfundationId={approfundationId}/resourceId={resourceId}")
-    public void deleteApprofundationResourceById(@PathVariable("id") int id,
-                                                 @PathVariable("approfundationId") int approfundationId,
-                                                 @PathVariable("resourceId") int resourceId) {
-        Course course = approfundationService.getCourseById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Course not found"));
-        if(approfundationService.deleteResourceForApprofundationId(id, approfundationId, resourceId) == 0) {
-            throw new ResponseStatusException(NOT_FOUND, "Resource not found");
-        }
-    }*/
 
 

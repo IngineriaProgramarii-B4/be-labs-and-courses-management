@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Approfundation {
 
@@ -18,7 +19,7 @@ public class Approfundation {
     public Approfundation(@JsonProperty("id") int id,
                           @JsonProperty("numberWeeks") int numberWeeks,
                           @JsonProperty("type") String type) {
-        // this.resources = new ArrayList<>();
+        this.resources = new ArrayList<>();
         this.numberWeeks = numberWeeks;
         this.id = id;
         this.type = type;
@@ -61,5 +62,33 @@ public class Approfundation {
 
     public void removeResource(Resource resource) {
         this.resources.remove(resource);
+    }
+
+
+    public Optional<Resource> getResourceById(int resourceId) {
+        for (Resource resource : resources) {
+            if (resource.getId() == resourceId) {
+                return Optional.of(resource);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public void removeResource(int resourceId) {
+        for (Resource resource : resources) {
+            if (resource.getId() == resourceId) {
+                resources.remove(resource);
+                break;
+            }
+        }
+    }
+
+    public void updateResource(int resourceId, Resource resource) {
+        for (Resource res : resources) {
+            if (res.getId() == resourceId) {
+                res = resource;
+                break;
+            }
+        }
     }
 }
