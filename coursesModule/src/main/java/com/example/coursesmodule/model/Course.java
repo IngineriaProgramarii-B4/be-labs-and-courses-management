@@ -2,20 +2,31 @@ package com.example.coursesmodule.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.*;
 
+@Entity
+@Table(name = "Course")
 public class Course{
+
+    @Id
+    private final int subjectId;
+
+    @Column(name = "NumberOfWeeks")
     int numberWeeks;
+
     List<Resource> resources;
 
-    //constructor
-
-    public Course(@JsonProperty("numberWeeks") int numberWeeks) {
+    public Course(@JsonProperty("numberWeeks") int numberWeeks, @JsonProperty("subjectId") int subjectId) {
         this.numberWeeks = numberWeeks;
         this.resources=new ArrayList<>();
+        this.subjectId = subjectId;
     }
 
-    //setters
+
     public void setResources(List<Resource> resources) {
         this.resources = resources;
     }
@@ -24,7 +35,10 @@ public class Course{
         this.numberWeeks = numberOfWeeks;
     }
 
-    //getters
+    public int getSubjectId() {
+        return subjectId;
+    }
+
     public List<Resource> getResources() {
         return resources;
     }

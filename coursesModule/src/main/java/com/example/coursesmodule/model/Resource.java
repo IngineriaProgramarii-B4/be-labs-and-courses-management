@@ -2,23 +2,41 @@ package com.example.coursesmodule.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Entity
+@Table(name = "Resource")
 public class Resource {
+    @Id
     private int id;
+
+    @Column(name = "subjectId", nullable = false)
+    private final int subjectId;
+
+    @Column(name = "Title")
     private String title;
+
+    @Column(name = "Location")
     private String location;
+
+    @Column(name = "TimeStamp")
     private LocalDateTime timeStamp;
 
     //constructor
     public Resource(@JsonProperty("id") int id,
                     @JsonProperty("title") String title,
-                    @JsonProperty("location") String location) {
+                    @JsonProperty("location") String location,
+                    @JsonProperty("subjectId") int subjectId) {
         this.id = id;
         this.title = title;
         this.location = location;
         this.timeStamp = LocalDateTime.now();
+        this.subjectId = subjectId;
     }
 
     //setters
@@ -36,6 +54,11 @@ public class Resource {
     }
 
     //getters
+
+    public int getSubjectId() {
+        return subjectId;
+    }
+
     public int getId() {
         return id;
     }

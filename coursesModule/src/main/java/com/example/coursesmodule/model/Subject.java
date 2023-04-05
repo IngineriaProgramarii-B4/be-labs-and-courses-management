@@ -2,16 +2,32 @@ package com.example.coursesmodule.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.*;
 import java.util.*;
 
+@Entity
+@Table(name = "Subject")
 public class Subject {
-
+    @Column(name = "Title")
     String title;
+
+    @Id
+    @GeneratedValue
     int id;
+
+    @Column(name = "Credits")
     int credits;
+
+    @Column(name = "Year")
     int year;
+
+    @Column(name = "Semester")
     int semester;
+
+    @Column(name = "Description")
     String description;
+
+
     Course course;
     List<Approfundation> approfundationList;
     Evaluation evaluationMethod;

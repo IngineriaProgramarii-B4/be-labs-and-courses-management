@@ -27,7 +27,7 @@ public class FakeCourseDataAccessService implements CourseDao {
         DB.add(new Subject("English II", 11, 4, 1, 2,""));
         DB.add(new Subject("Probabilities and Statistics", 12, 4, 1, 2,""));
         // add an approfundation to the subject with id 1
-        DB.get(0).addApprofundation(new Approfundation(1,5, "Lab"));
+        DB.get(0).addApprofundation(new Approfundation(1,5, "Lab", 1));
     }
     /*
       SUBJECT
