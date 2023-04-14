@@ -1,7 +1,7 @@
 package com.example.controllers;
 
 import com.example.models.Admin;
-import com.example.models.AppUser;
+import com.example.models.User;
 import com.example.models.Student;
 import com.example.models.Teacher;
 import com.example.services.UsersService;
@@ -48,17 +48,17 @@ public class UsersController {
 
     @GetMapping(value = "/teachers")
     public List<Teacher> getProfessorsByParams(@RequestParam Map<String, Object> params) {
-        List<Teacher> professors = usersService.getProfessorByParams(params);
+        List<Teacher> teachers = usersService.getTeacherByParams(params);
 
-        if (professors.isEmpty()) {
+        if (teachers.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return professors;
+        return teachers;
     }
 
     @GetMapping(value = "/users")
-    public List<AppUser> getUsersByParams(@RequestParam Map<String, Object> params) {
-        List<AppUser> users = usersService.getUsersByParams(params);
+    public List<User> getUsersByParams(@RequestParam Map<String, Object> params) {
+        List<User> users = usersService.getUsersByParams(params);
 
         if (users.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -66,8 +66,17 @@ public class UsersController {
         return users;
     }
 
-    @PostMapping(value = "/updated/student")
-    public void updateUser(@RequestBody Student student) {
+    @PutMapping(value = "/student")
+    public void updateStudent(@RequestBody Student student) {
         usersService.saveStudent(student);
+    }
+    @PutMapping(value = "/teacher")
+    public void updateTeacher(@RequestBody Teacher teacher) {
+        System.out.println(teacher);
+        usersService.saveTeacher(teacher);
+    }
+    @PutMapping(value = "/admin")
+    public void updateAdmin(@RequestBody Admin admin) {
+        usersService.saveAdmin(admin);
     }
 }

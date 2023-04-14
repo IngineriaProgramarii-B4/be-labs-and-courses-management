@@ -1,11 +1,13 @@
 package com.example.models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "teachers")
 public class Teacher extends AcademicStaff {
     private Set<String> teachedSubjects = new HashSet<>();
     private String title;
@@ -14,8 +16,8 @@ public class Teacher extends AcademicStaff {
 
     }
 
-    public Teacher(int id, String firstname, String lastname, String email, String username, String office, Set<String> teachedSubjects, String title) {
-        super(id, firstname, lastname, email, username, office);
+    public Teacher(String firstname, String lastname, String email, String username, String office, Set<String> teachedSubjects, String title) {
+        super(firstname, lastname, email, username, office, 1);
         this.teachedSubjects = teachedSubjects;
         this.title = title;
     }

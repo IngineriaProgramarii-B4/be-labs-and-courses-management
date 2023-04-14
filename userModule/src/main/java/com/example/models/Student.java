@@ -1,27 +1,27 @@
 package com.example.models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class Student extends AppUser {
+@Table(name = "students")
+public class Student extends User {
     private Set<String> enrolledCourses = new HashSet<>();
     private int year;
     private int semester;
     private String registrationNumber;
-    /* constructor */
 
-    public Student(int id, String firstname, String lastname, String email, String username, int year, int semester, String registrationNumber, Set<String> enrolledCourses) {
-        super(id, firstname, lastname, email, username);
+    public Student(String firstname, String lastname, String email, String username, int year, int semester, String registrationNumber, Set<String> enrolledCourses) {
+        super(firstname, lastname, email, username, 2);
         this.enrolledCourses = enrolledCourses;
         this.year = year;
         this.semester = semester;
         this.registrationNumber = registrationNumber;
     }
 
-    /* default ctor */
     public Student() {
 
     }

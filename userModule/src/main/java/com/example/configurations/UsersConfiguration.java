@@ -17,7 +17,7 @@ public class UsersConfiguration {
     @Bean
     CommandLineRunner commandLineRunner(UsersRepository usersRepository) {
         return args -> {
-            Student stud1 = new Student(1,
+            Student stud1 = new Student(
                     "Florin",
                     "Rotaru",
                     "florin.eugen@uaic.ro",
@@ -26,7 +26,7 @@ public class UsersConfiguration {
                     4,
                     "123FAKE92929",
                     new HashSet<>(Arrays.asList("IP", "PA", "SGBD", "TW", "SE")));
-            Teacher teacher1 = new Teacher(2,
+            Teacher teacher1 = new Teacher(
                     "Ciobaca",
                     "Stefan",
                     "stefan.ciobaca@uaic.com",
@@ -34,7 +34,7 @@ public class UsersConfiguration {
                     "C401",
                     new HashSet<>(Arrays.asList("PA", "PF")),
                     "Prof");
-            Student stud2 = new Student(3,
+            Student stud2 = new Student(
                     "Antip",
                     "Andrei",
                     "andrei.antip@uaic.ro",
@@ -43,7 +43,7 @@ public class UsersConfiguration {
                     2,
                     "123BOSS135",
                     new HashSet<>(Arrays.asList("OOP", "SO", "PS", "FAI")));
-            Student stud3 = new Student(5,
+            Student stud3 = new Student(
                     "Olariu",
                     "Andreea",
                     "andreea.olariu@uaic.ro",
@@ -52,7 +52,7 @@ public class UsersConfiguration {
                     1,
                     "12300000GSGVGDS1",
                     new HashSet<>(Arrays.asList("RC", "LFAC", "BD", "AG", "QC")));
-            Admin admin1 = new Admin(4,
+            Admin admin1 = new Admin(
                     "Cuzic",
                     "Diana",
                     "diana.cuzic@gmail.com",

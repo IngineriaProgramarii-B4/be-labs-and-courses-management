@@ -3,15 +3,14 @@ package com.example.models;
 import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class AcademicStaff extends AppUser {
+public abstract class AcademicStaff extends User {
     protected String office;
 
     public AcademicStaff() {
-
     }
 
-    public AcademicStaff(int id, String firstname, String lastname, String email, String username, String office) {
-        super(id, firstname, lastname, email, username);
+    public AcademicStaff(String firstname, String lastname, String email, String username, String office, int type) {
+        super(firstname, lastname, email, username, type);
         this.office = office;
     }
 
