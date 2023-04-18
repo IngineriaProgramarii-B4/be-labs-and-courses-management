@@ -7,10 +7,15 @@ public abstract class AcademicStaff extends User {
     protected String office;
 
     public AcademicStaff() {
+
     }
 
-    public AcademicStaff(String firstname, String lastname, String email, String username, String office, int type) {
-        super(firstname, lastname, email, username, type);
+    public AcademicStaff(String firstname,
+                         String lastname,
+                         String email,
+                         String username,
+                         String office) {
+        super(firstname, lastname, email, username);
         this.office = office;
     }
 

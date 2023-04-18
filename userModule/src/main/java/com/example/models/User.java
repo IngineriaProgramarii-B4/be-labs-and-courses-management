@@ -2,6 +2,7 @@ package com.example.models;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -17,22 +18,21 @@ public abstract class User {
     protected String username;
 
     /*
-    * 0 - admin
-    * 1 - teacher
-    * 2 - student
-    * */
+     * 0 - admin
+     * 1 - teacher
+     * 2 - student
+     * */
     protected int type;
 
     public User() {
 
     }
 
-    public User(String firstname, String lastname, String email, String username, int type) {
+    public User(String firstname, String lastname, String email, String username) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.username = username;
-        this.type = type;
     }
 
     public UUID getId() {
@@ -75,12 +75,20 @@ public abstract class User {
         this.username = username;
     }
 
-    public int getType() {
-        return type;
+    @Override
+    public boolean equals(Object user) {
+        if (this == user)
+            return true;
+        if (user == null || getClass() != user.getClass())
+            return false;
+
+        User user1 = (User) user;
+        return type == user1.type && Objects.equals(id, user1.id) && Objects.equals(firstname, user1.firstname) && Objects.equals(lastname, user1.lastname) && Objects.equals(email, user1.email) && Objects.equals(username, user1.username);
     }
 
-    public void setType(int type) {
-        this.type = type;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstname, lastname, email, username, type);
     }
 
     //    public void login(String username, String password) {
@@ -110,5 +118,4 @@ public abstract class User {
 //    void seeResource(File resource) {
 //
 //    }
-
 }

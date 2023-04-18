@@ -31,8 +31,6 @@ public class UsersController {
         if (students.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-
-        System.out.println(students.get(0));
         return students;
     }
 
@@ -48,7 +46,7 @@ public class UsersController {
 
     @GetMapping(value = "/teachers")
     public List<Teacher> getProfessorsByParams(@RequestParam Map<String, Object> params) {
-        List<Teacher> teachers = usersService.getTeacherByParams(params);
+        List<Teacher> teachers = usersService.getTeachersByParams(params);
 
         if (teachers.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -70,11 +68,12 @@ public class UsersController {
     public void updateStudent(@RequestBody Student student) {
         usersService.saveStudent(student);
     }
+
     @PutMapping(value = "/teacher")
     public void updateTeacher(@RequestBody Teacher teacher) {
-        System.out.println(teacher);
         usersService.saveTeacher(teacher);
     }
+
     @PutMapping(value = "/admin")
     public void updateAdmin(@RequestBody Admin admin) {
         usersService.saveAdmin(admin);

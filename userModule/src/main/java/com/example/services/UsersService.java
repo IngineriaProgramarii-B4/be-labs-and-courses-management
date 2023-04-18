@@ -97,7 +97,7 @@ public class UsersService {
         return admins;
     }
 
-    public List<Teacher> getTeacherByParams(Map<String, Object> params) {
+    public List<Teacher> getTeachersByParams(Map<String, Object> params) {
         UUID id = null;
         String firstname = (String) params.get("firstname");
         String lastname = (String) params.get("lastname");
@@ -113,7 +113,7 @@ public class UsersService {
             }
         }
 
-        List<Teacher> teachers = teachersRepository.findProfessorsByParams(id, firstname, lastname, email, username, office, title);
+        List<Teacher> teachers = teachersRepository.findTeachersByParams(id, firstname, lastname, email, username, office, title);
 
         return teachers;
     }

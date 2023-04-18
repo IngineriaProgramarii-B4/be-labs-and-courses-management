@@ -9,25 +9,31 @@ import java.util.Set;
 @Entity
 @Table(name = "teachers")
 public class Teacher extends AcademicStaff {
-    private Set<String> teachedSubjects = new HashSet<>();
+    private Set<String> taughtSubjects = new HashSet<>();
     private String title;
 
     public Teacher() {
 
     }
 
-    public Teacher(String firstname, String lastname, String email, String username, String office, Set<String> teachedSubjects, String title) {
-        super(firstname, lastname, email, username, office, 1);
-        this.teachedSubjects = teachedSubjects;
+    public Teacher(String firstname,
+                   String lastname,
+                   String email,
+                   String username,
+                   String office,
+                   Set<String> taughtSubjects,
+                   String title) {
+        super(firstname, lastname, email, username, office);
+        this.taughtSubjects = taughtSubjects;
         this.title = title;
     }
 
-    public Set<String> getTeachedSubjects() {
-        return teachedSubjects;
+    public Set<String> getTaughtSubjects() {
+        return taughtSubjects;
     }
 
-    public void setTeachedSubjects(Set<String> teachedSubjects) {
-        this.teachedSubjects = teachedSubjects;
+    public void setTaughtSubjects(Set<String> taughtSubjects) {
+        this.taughtSubjects = taughtSubjects;
     }
 
     public String getTitle() {
@@ -40,7 +46,16 @@ public class Teacher extends AcademicStaff {
 
     @Override
     public String toString() {
-        return "Teacher{" + "teachedSubjects=" + teachedSubjects + ", title='" + title + '\'' + ", office='" + office + '\'' + ", id=" + id + ", firstname='" + firstname + '\'' + ", lastname='" + lastname + '\'' + ", email='" + email + '\'' + ", username='" + username + '\'' + '}';
+        return "Professor{" +
+                "taughtSubjects=" + taughtSubjects +
+                ", title='" + title + '\'' +
+                ", office='" + office + '\'' +
+                ", id=" + id +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                '}';
     }
 
     public void manageEvaluationSystem() {
