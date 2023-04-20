@@ -2,35 +2,44 @@ package com.example.models;
 
 import jakarta.persistence.*;
 
-import java.io.File;
 import java.util.UUID;
 
-//@MappedSuperclass
-@Table
 @Entity
-public abstract class AppUser {
+@Table(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class User {
     @Id
-    @SequenceGenerator(
-            name = "user_sequence",
-            sequenceName = "user_squence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "user_sequence"
-    )
-    protected int id; //could be of UUID type
+    @GeneratedValue(strategy = GenerationType.UUID)
+    protected UUID id;
     protected String firstname;
     protected String lastname;
     protected String email;
     protected String username;
-    protected String password;
 
-    public int getId() {
+    /*
+    * 0 - admin
+    * 1 - teacher
+    * 2 - student
+    * */
+    protected int type;
+
+    public User() {
+
+    }
+
+    public User(String firstname, String lastname, String email, String username, int type) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.username = username;
+        this.type = type;
+    }
+
+    public UUID getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -66,15 +75,15 @@ public abstract class AppUser {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
+    public int getType() {
+        return type;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setType(int type) {
+        this.type = type;
     }
 
-//    public void login(String username, String password) {
+    //    public void login(String username, String password) {
 //        //todo
 //    }
 //
@@ -101,18 +110,5 @@ public abstract class AppUser {
 //    void seeResource(File resource) {
 //
 //    }
-
-    public AppUser() {
-
-    } //default ctor
-
-    public AppUser(int id, String firstname, String lastname, String email, String username, String password) {
-        this.id = id;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.email = email;
-        this.username = username;
-        this.password = password;
-    }
 
 }

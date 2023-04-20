@@ -1,7 +1,10 @@
 package com.example.models;
 
-//@Entity
-//@Tabel
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "admins")
 public class Admin extends AcademicStaff {
     private String department;
 
@@ -9,16 +12,9 @@ public class Admin extends AcademicStaff {
 
     }
 
-    public Admin(int id,
-                 String firstname,
-                 String lastname,
-                 String email,
-                 String username,
-                 String password,
-                 String office,
-                 String department) {
+    public Admin(String firstname, String lastname, String email, String username, String office, String department) {
 
-        super(id, firstname, lastname, email, username, password, office);
+        super(firstname, lastname, email, username, office, 0);
         this.department = department;
     }
 
@@ -32,15 +28,6 @@ public class Admin extends AcademicStaff {
 
     @Override
     public String toString() {
-        return "Admin{" +
-                "department='" + department + '\'' +
-                ", office='" + office + '\'' +
-                ", id=" + id +
-                ", firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", email='" + email + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                '}';
+        return "Admin{" + "department='" + department + '\'' + ", office='" + office + '\'' + ", id=" + id + ", firstname='" + firstname + '\'' + ", lastname='" + lastname + '\'' + ", email='" + email + '\'' + ", username='" + username + '\'' + '}';
     }
 }

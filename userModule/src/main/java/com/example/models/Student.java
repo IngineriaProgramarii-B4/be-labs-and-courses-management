@@ -1,36 +1,27 @@
 package com.example.models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class Student extends AppUser {
-    private  Set<String> enrolledCourses = new HashSet<>();
+@Table(name = "students")
+public class Student extends User {
+    private Set<String> enrolledCourses = new HashSet<>();
     private int year;
     private int semester;
     private String registrationNumber;
-    /* constructor */
 
-    public Student(int id,
-                   String firstname,
-                   String lastname,
-                   String email,
-                   String username,
-                   String password,
-                   int year,
-                   int semester,
-                   String registrationNumber,
-                   Set<String> enrolledCourses) {
-        super(id, firstname, lastname, email, username, password);
+    public Student(String firstname, String lastname, String email, String username, int year, int semester, String registrationNumber, Set<String> enrolledCourses) {
+        super(firstname, lastname, email, username, 2);
         this.enrolledCourses = enrolledCourses;
         this.year = year;
         this.semester = semester;
         this.registrationNumber = registrationNumber;
     }
 
-    /* default ctor */
     public Student() {
 
     }
@@ -67,25 +58,13 @@ public class Student extends AppUser {
         this.registrationNumber = registrationNumber;
     }
 
-    public void addEnrolledCourse(String course)
-    {
+    public void addEnrolledCourse(String course) {
         enrolledCourses.add(course);
     }
 
     @Override
     public String toString() {
-        return "Student{" +
-                "enrolledCourses=" + enrolledCourses +
-                ", year=" + year +
-                ", semester=" + semester +
-                ", registrationNumber='" + registrationNumber + '\'' +
-                ", id=" + id +
-                ", firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", email='" + email + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                '}';
+        return "Student{" + "enrolledCourses=" + enrolledCourses + ", year=" + year + ", semester=" + semester + ", registrationNumber='" + registrationNumber + '\'' + ", id=" + id + ", firstname='" + firstname + '\'' + ", lastname='" + lastname + '\'' + ", email='" + email + '\'' + ", username='" + username + '\'' + '}';
     }
 
     public void setElectives(Integer year, Integer semester) {
