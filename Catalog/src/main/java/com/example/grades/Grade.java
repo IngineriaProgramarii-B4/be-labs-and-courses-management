@@ -1,10 +1,28 @@
 package com.example.grades;
 
 import com.example.subject.Subject;
+import jakarta.persistence.*;
+import org.springframework.stereotype.Component;
 
+@Entity
 public class Grade {
+    @Id
+    @SequenceGenerator(
+            name="grade_sequence",
+            sequenceName = "grade_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.AUTO,
+            generator = "grade_sequence"
+    )
+    private int databaseGradeId;
+
     private int gradeId;
     private int value;
+
+    //CascadeType.MERGE : copiaza obiectul intr-un obiect cu acelasi identificator
+    @ManyToOne(cascade = {CascadeType.MERGE})
     private Subject subject;
 
     private String evaluationDate;

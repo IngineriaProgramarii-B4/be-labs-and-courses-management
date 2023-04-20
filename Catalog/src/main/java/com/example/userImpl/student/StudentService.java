@@ -1,49 +1,50 @@
 package com.example.userImpl.student;
 
 import com.example.grades.Grade;
+import com.example.grades.GradeRepository;
+import com.example.user.User;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 @Service
+@Component
 public class StudentService {
 
-    private final List<Student> studentList = new ArrayList<>();
+    private final StudentRepository studentRepository;
+    private GradeRepository gradeRepository;
 
-    public StudentService(){
-        initStudentDataBase();
+    @Autowired
+    public StudentService(StudentRepository studentRepository,GradeRepository gradeRepository){
+        this.studentRepository = studentRepository;
+        this.gradeRepository=gradeRepository;
     }
 
-    // Baza de date fictiva cu doua intrari. Se poate elimina din moment ce exista HTTP PUT handler. Implicit la fel si pentru TeacherService.
-    public List<Student> initStudentDataBase() {
-
-        Student student = new Student(0,301232,"student1@gmail.com", "Mihai");
-        Student student1 = new Student(1,301233,"student2@gmail.com", "Andrei");
-        studentList.add(student); studentList.add(student1);
-
-        return studentList;
-    }
 
     public List<Student> getStudentDataBase(){
-        return studentList;
+        return studentRepository.getAllStudents();
     }
     public Student getStudentById(int id){
-        return studentList.get(id);
+        Student student=(Student)this.studentRepository.getStudentById(id).orElse((Student)null);
+        return student;
     }
+
+
     public Student save(Student student) {
-        studentList.add(student);
+        studentRepository.save(student);
         return student;
     }
 
     public Student delete(Student student){
         try {
-            studentList.remove(student);
+            studentRepository.delete(student);
             return student;
         }
         catch (NullPointerException e) {
@@ -51,43 +52,61 @@ public class StudentService {
         }
     }
 
+    @Transactional
     public void addGrade(int id, Grade grade) {
-        studentList.get(id).addGrade(grade);
+        Student student=studentRepository.findById(id).orElseThrow(()->new IllegalStateException("Student with id "+id+" doesn't exist"));
+        student.addGrade(grade);
     }
 
+    @Transactional
     public Grade deleteGrade(int id, int gradeId) {
-        List<Grade> grades = studentList.get(id).getGrades();
-        try {
-            Grade toRemove = new Grade();
-            for (Grade grade : grades ) {
-                if (grade.getId() == gradeId) {
-                    toRemove = grade;
-                    break;
-                }
+        List<Grade> grades;
+        Student student=studentRepository.getStudentById(id).orElseThrow(()-> new IllegalStateException("Student with id "+id+" doesn't exist"));
+            grades=student.getGrades();
+            try {
+                Grade toRemove = new Grade();
+//                for (Grade grade : grades) {
+//                    if (grade.getId() == gradeId) {
+//                        toRemove = grade;
+//                        break;
+//                    }
+//                }
+                toRemove=getGradeById(id,gradeId);
+                grades.remove(toRemove);
+                return toRemove;
+            } catch (Exception e) {
+                return null;
             }
-            grades.remove(toRemove);
-            return toRemove;
-        }
-        catch (Exception e) {
-            return null;
-        }
     }
 
     public Grade getGradeById(int id, int gradeId) {
-        return studentList.get(id).getGrades().get(gradeId);
+        Student student=studentRepository.getStudentById(id).orElseThrow(() -> new IllegalStateException("Student with id "+id+"does not exist"));
+        //return student.getGrades().get(gradeId);
+        Grade grade=student.getGradeById(gradeId);
+        if(grade != null){
+            return grade;
+        } else{
+            throw new IllegalStateException("There is no grade with the id "+gradeId);
+        }
+        //return studentRepository.findById(id).get().getGrades().get(gradeId);
     }
 
-    public Grade updateGrade(int id,Integer value,String evaluationDate,Integer gradeId){
+    @Transactional
+    public Grade updateGrade(int id,Integer value,String evaluationDate,int gradeId){
+        Student student=studentRepository.findById(id).orElseThrow(()->new IllegalStateException("Student with id "+id+" does not exist"));
+        Integer originalId=gradeId;
+        Grade grade=getGradeById(id,gradeId);
         if(value != null) {
             if((value<1 || value>10)) {
                 throw new IllegalStateException("The value is not between 1 and 10");
             } else if(value!=getGradeById(id,gradeId).getValue()) {
-                getStudentById(id).setGrade(value, gradeId);
+                grade.setValue(value);
+                //getGradeById(id,gradeId).setValue(value);
             }
         }
 
         boolean validDate=true;
-        if(evaluationDate != null && !evaluationDate.equals(getStudentById(id).getGrades().get(gradeId).getEvaluationDate())){
+        if(evaluationDate != null && !evaluationDate.equals(grade.getEvaluationDate())){
             DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd.MM.yyyy");
             try {
                 LocalDate date=LocalDate.parse(evaluationDate,formatter);
@@ -95,9 +114,12 @@ public class StudentService {
                 validDate=false;
             }
             if(validDate) {
-                getStudentById(id).getGrades().get(gradeId).setEvaluationDate(evaluationDate);
+                //student.getGrades().get(gradeId).setEvaluationDate(evaluationDate);
+                //getGradeById(id,gradeId).setEvaluationDate(evaluationDate);
+                grade.setEvaluationDate(evaluationDate);
             }
         }
+        //studentRepository.saveAll(studentRepository.getAllStudents());
         return getGradeById(id,gradeId);
     }
 }
