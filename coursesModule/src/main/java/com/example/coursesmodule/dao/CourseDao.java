@@ -14,82 +14,49 @@ public interface CourseDao {
 
     List<Subject> selectAllSubjects();
 
-    Optional<Subject> selectSubjectById(int subjectId);
+    Optional<Subject> selectSubjectByTitle(String title);
 
     List<Subject> getSubjectsByYearAndSemester(int year, int semester);
 
-    int deleteSubjectById(int subjectId);
+    int deleteSubjectByTitle(String title);
 
-    int updateSubjectById(int subjectId, Subject subject);
-
-    int verifySubjectId(int subjectId);
+    int updateSubjectByTitle(String title, Subject subject);
 
     /*
-      COURSE
+      Component
      */
-    int addCourse(int subjectId, Course course);
 
-    Course getCourse(int subjectId);
+    int addComponent(String title, Component component);
 
-    int deleteCourse(int subjectId);
+    List<Component> getComponents(String title);
 
-    int updateCourse(int subjectId, Course course);
+    Optional<Component> getComponentByType(String title, String type);
+
+    int deleteComponentByType(String title, String type);
+
+    int updateComponentByType(String title, String type, Component component);
 
     /*
-      RESOURCE FOR COURSE
+      RESOURCE FOR Component
      */
 
-    int addCourseResource(int subjectId, Resource resource);
+    List<Resource> getResourcesForComponentType(String title, String type);
 
-    List<Resource> getCourseResources(int subjectId);
+    Optional<Resource> getResourceByTitleForComponentType(String subjectTitle, String componentType, String resourceTitle);
 
-    Optional<Resource> getCourseResourceById(int subjectId, int resourceId);
+    int addResourceForComponentType(String title, String type, Resource resource);
 
-    int deleteCourseResourceById(int subjectId, int resourceId);
+    int updateResourceByTitleForComponentType(String subjectTitle, String componentType, String resourceTitle, Resource resource);
 
-    int updateCourseResourceById(int subjectId, int resourceId, Resource resource);
-
-    /*
-      APPROFUNDATION
-     */
-
-    int addApprofundation(int subjectId, Approfundation approfundation);
-
-    List<Approfundation> getApprofundations(int subjectId);
-
-    Optional<Approfundation> getApprofundationById(int subjectId, int approfundationId);
-
-    int deleteApprofundationById(int subjectId, int approfundationId);
-
-    int updateApprofundationById(int subjectId, int approfundationId, Approfundation approfundation);
-
-    /*
-      RESOURCE FOR APPROFUNDATION
-     */
-
-    List<Resource> getResourcesForApprofundationId(int subjectId, int approfundationId);
-
-    Optional<Resource> getResourceByIdForApprofundationId(int subjectId, int approfundationId, int resourceId);
-
-    int addResourceForApprofundationId(int subjectId, int approfundationId, Resource resource);
-
-    int updateResourceByIdForApprofundationId(int subjectId, int approfundationId, int resourceId, Resource resource);
-
-    int deleteResourceByIdForApprofundationId(int subjectId, int approfundationId, int resourceId);
+    int deleteResourceByTitleForComponentType(String subjectTitle, String componentType, String resourceTitle);
 
     /*
       EVALUATION
      */
 
-    int addEvaluationMethod(int subjectId, Evaluation evaluationMethod);
-    int addEvaluationComponent(int subjectId, String component, float value);
-
-    Evaluation getEvaluationMethod(Subject subject);
-    List<Object> getEvaluationComponent(Subject subject, String component);
-
-    int deleteEvaluationMethod(int subjectId);
-    int deleteEvaluationComponent(int subjectId, String component);
-
-    int updateEvaluationMethod(int subjectId, Evaluation evaluationMethod);
-    int updateEvaluationComponent(int subjectId, String component, float value);
+    int addEvaluationMethod(String title, Evaluation evaluationMethod);
+    Optional<Evaluation> getEvaluationMethodByComponent(String title, String component);
+    List<Evaluation> getEvaluationMethods(String title);
+    int deleteEvaluationMethod(String title, String component);
+    int updateEvaluationMethodByComponent(String title, String component, Evaluation evaluationMethod);
 }

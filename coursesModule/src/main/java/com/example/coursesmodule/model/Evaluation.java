@@ -1,54 +1,76 @@
 package com.example.coursesmodule.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.*;
 
-import java.util.HashMap;
-
+@Entity
+@Table(
+        name = "evaluation",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "evaluation_subject_id_component_unique",
+                        columnNames = {"subject_id","component"}
+                )
+        }
+)
 public class Evaluation {
-    @NotNull
-    private HashMap<String, Float> percentage;
-    private int numberOfComponents;
+    @Id
+    @SequenceGenerator(
+            name = "evaluation_sequence",
+            sequenceName = "evaluation_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "evaluation_sequence"
+    )
+    private Long id;
+    @Column(name = "component", nullable = false)
+    private String component;
+    @Column(name = "value", nullable = false)
+    private float value;
 
-    //constructors
-    Evaluation(@JsonProperty("percentage") HashMap<String, Float> percentage) {
-        this.percentage = new HashMap<>(percentage);
-        numberOfComponents = percentage.size();
-    }
-
-    //setters
-    public void setPercentage(HashMap<String, Float> percentage) {
-        this.percentage = percentage;
-    }
-    public void setNumberOfComponents(int numberOfComponents) {
-        this.numberOfComponents = numberOfComponents;
-    }
-
-    //getters
-    public HashMap<String, Float> getPercentage() {
-        return percentage;
-    }
-    public int getNumberOfComponents() {
-        return numberOfComponents;
+    public Evaluation() {
     }
 
-    //additional methods
-    public boolean containsComponent(Object component) {
-        return percentage.containsKey(component);
+    public Evaluation(@JsonProperty("id") Long id,
+                      @JsonProperty("component") String component,
+                      @JsonProperty("value") float value) {
+        this.id = id;
+        this.component = component;
+        this.value = value;
     }
 
-    public void addComponent(String component, float value) {
-        percentage.put(component, value);
-        numberOfComponents++;
+    public Long getId() {
+        return id;
     }
 
-    public void removeComponent(String component) {
-        percentage.remove(component);
-        numberOfComponents--;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void updateComponent(String component, float value) {
-        percentage.remove(component);
-        percentage.put(component, value);
+    public String getComponent() {
+        return component;
+    }
+
+    public void setComponent(String component) {
+        this.component = component;
+    }
+
+    public float getValue() {
+        return value;
+    }
+
+    public void setValue(float value) {
+        this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return "Evaluation{" +
+                "id=" + id +
+                ", component='" + component + '\'' +
+                ", value=" + value +
+                '}';
     }
 }

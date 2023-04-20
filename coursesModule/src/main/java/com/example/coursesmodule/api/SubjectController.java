@@ -1,7 +1,5 @@
 package com.example.coursesmodule.api;
 
-
-
 import com.example.coursesmodule.model.Subject;
 import com.example.coursesmodule.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,24 +34,24 @@ public class SubjectController {
             throw new ResponseStatusException(NOT_ACCEPTABLE, "Subject already exists or is invalid");
     }
 
-    @DeleteMapping("subjectId={id}")
-    public void deleteSubjectById(@PathVariable("id") int subjectId) {
-        if(subjectService.deleteSubjectById(subjectId) == 0)
+    @DeleteMapping("subjectTitle={title}")
+    public void deleteSubjectById(@PathVariable("title") String title) {
+        if(subjectService.deleteSubjectByTitle(title) == 0)
             throw new ResponseStatusException(NOT_FOUND, "Subject not found");
     }
 
-    @PutMapping("subjectId={id}")
-    public void updateSubjectById(@PathVariable("id") int subjectId, @RequestBody Subject subject) {
+    @PutMapping("subjectTitle={title}")
+    public void updateSubjectById(@PathVariable("title") String title, @RequestBody Subject subject) {
         //verify that the subject already exists
-        subjectService.getSubjectById(subjectId)
+        subjectService.getSubjectByTitle(title)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Subject not found"));
-        if(subjectService.updateSubjectById(subjectId, subject) == 0)
+        if(subjectService.updateSubjectByTitle(title, subject) == 0)
             throw new ResponseStatusException(NOT_ACCEPTABLE, "Subject is invalid");
     }
 
-    @GetMapping(path = "subjectId={id}")
-    public Subject getSubjectById(@PathVariable("id") int id) {
-        return subjectService.getSubjectById(id)
+    @GetMapping(path = "subjectTitle={title}")
+    public Subject getSubjectById(@PathVariable("title") String title) {
+        return subjectService.getSubjectByTitle(title)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Subject not found"));
     }
 

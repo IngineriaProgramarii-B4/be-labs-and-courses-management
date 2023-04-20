@@ -1,55 +1,68 @@
 package com.example.coursesmodule.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 
-import javax.persistence.*;
+
 import java.util.*;
 
 @Entity
-@Table(name = "Subject")
+@Table(name = "subject")
 public class Subject {
-    @Column(name = "Title")
-    String title;
-
     @Id
-    @GeneratedValue
+    @SequenceGenerator(
+            name = "subject_sequence",
+            sequenceName = "subject_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "subject_sequence"
+    )
     int id;
-
-    @Column(name = "Credits")
+    @Column(name = "title", nullable = false, unique = true)
+    String title;
+    @Column(name = "credits", nullable = false)
     int credits;
-
-    @Column(name = "Year")
+    @Column(name = "year", nullable = false)
     int year;
-
-    @Column(name = "Semester")
+    @Column(name = "semester", nullable = false)
     int semester;
-
-    @Column(name = "Description")
+    @Column(
+            name = "description",
+            nullable = false,
+            columnDefinition = "TEXT"
+    )
     String description;
+    // describe a One-to-Many relationship between Subject and Approfundation
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "subject_id", referencedColumnName = "id")
+    List<Component> componentList = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "subject_id", referencedColumnName = "id")
+    List<Evaluation> evaluationList = new ArrayList<>();
 
+    //constructors
+    public Subject() {
+    }
 
-    Course course;
-    List<Approfundation> approfundationList;
-    Evaluation evaluationMethod;
-
-
-    //constructor
-
-    public Subject(@JsonProperty("title") String title,
-                  @JsonProperty("id") int id,
-                  @JsonProperty("credits") int credits,
-                  @JsonProperty("year") int year,
-                  @JsonProperty("semester") int semester,
-                  @JsonProperty("description") String description) {
-        this.title = title;
+    public Subject(@JsonProperty("id") int id,
+                   @JsonProperty("title") String title,
+                   @JsonProperty("credits") int credits,
+                   @JsonProperty("year") int year,
+                   @JsonProperty("semester") int semester,
+                   @JsonProperty("description") String description,
+                   @JsonProperty("components") List<Component> componentList,
+                   @JsonProperty("evaluations") List<Evaluation> evaluationList
+    ) {
         this.id = id;
+        this.title = title;
         this.credits = credits;
         this.year = year;
         this.semester = semester;
         this.description = description;
-        this.approfundationList=new ArrayList<>();
-        this.course = null;
-        this.evaluationMethod = null;
+        this.componentList = componentList;
+        this.evaluationList = evaluationList;
     }
 
     //setters
@@ -65,8 +78,8 @@ public class Subject {
         this.credits = credits;
     }
 
-    public void setEvaluationMethod(Evaluation evaluationMethod) {
-        this.evaluationMethod = evaluationMethod;
+    public void setEvaluationList(List<Evaluation> evaluationList) {
+        this.evaluationList = evaluationList;
     }
 
     public void setYear(int year) {
@@ -79,10 +92,8 @@ public class Subject {
 
     public void setDescription(String description) { this.description = description; }
 
-    public void setCourse(Course course) { this.course = course; }
-
-    public void setApprofundationList(List<Approfundation> approfundationList) {
-        this.approfundationList = approfundationList;
+    public void setComponentList(List<Component> componentList) {
+        this.componentList = componentList;
     }
 
 
@@ -99,8 +110,8 @@ public class Subject {
         return credits;
     }
 
-    public Evaluation getEvaluationMethod() {
-        return evaluationMethod;
+    public List<Evaluation> getEvaluationList() {
+        return evaluationList;
     }
 
     public int getYear() {
@@ -113,26 +124,38 @@ public class Subject {
 
     public String getDescription() { return description;}
 
-    public Course getCourse() { return course; }
-
-    public void removeCourse() {
-        this.course = null;
+    public List<Component> getComponentList() {
+        return componentList;
     }
 
-    public List<Approfundation> getApprofundationList() {
-        return approfundationList;
+    public void addComponent(Component component) {
+        componentList.add(component);
+    }
+
+    public void removeComponent(Component component) {
+        componentList.remove(component);
+    }
+
+    public void addEvaluation(Evaluation evaluation) {
+        evaluationList.add(evaluation);
+    }
+
+    public void removeEvaluation(Evaluation evaluation) {
+        evaluationList.remove(evaluation);
     }
 
 
-   public void addApprofundation(Approfundation approfundation) {
-        approfundationList.add(approfundation);
-    }
-
-    public void removeApprofundation(Approfundation approfundation) {
-        approfundationList.remove(approfundation);
-    }
-
-    public void removeEvaluationMethod() {
-        this.evaluationMethod = null;
+    @Override
+    public String toString() {
+        return "Subject{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", credits=" + credits +
+                ", year=" + year +
+                ", semester=" + semester +
+                ", description='" + description + '\'' +
+                ", componentList=" + componentList +
+                ", evaluationList=" + evaluationList +
+                '}';
     }
 }

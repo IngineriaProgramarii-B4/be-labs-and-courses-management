@@ -1,29 +1,18 @@
-/*
+
 package com.example.coursesmodule.repository;
 
 import com.example.coursesmodule.model.Resource;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-@Repository
-public interface ResourceRepo extends CrudRepository<Resource, Integer> {
+import java.util.List;
+import java.util.Optional;
 
-//    // find by methods
-//
-//    public Resource findById(int id);
-//
-//    public Resource findAllBySubjectId(int subjectId);
-//
-//    // delete methods
-//
-//    public void deleteById(int id);
-//
-//    // update methods
-//
-//    public void updateById(int id, Resource resource);
-//
-//    // add methods
-//
-//    public void addById(int id, Resource resource);
+public interface ResourceRepo extends JpaRepository<Resource, Integer> {
+    @Query("SELECT r FROM Subject s JOIN s.componentList c JOIN c.resources r WHERE s.title = ?1 AND c.type = ?2")
+    List<Resource> findAllBySubjectTitleAndComponentType(String title, String type);
+
+    @Query("SELECT r FROM Subject s JOIN s.componentList c JOIN c.resources r WHERE s.title = ?1 AND c.type = ?2 AND r.title = ?3")
+    Optional<Resource> findBySubjectTitleAndComponentTypeAndResourceTitle(String subjectTitle, String componentType, String resourceTitle);
 }
-*/
+
