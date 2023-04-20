@@ -32,7 +32,6 @@ public class Grade {
         this.value = value;
         this.subject = subject;
         this.evaluationDate = evaluationDate;
-
     }
 
     public int getId() {
