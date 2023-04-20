@@ -2,15 +2,44 @@ package com.example.userImpl.teacher;
 
 import com.example.subject.Subject;
 import com.example.user.User;
+import jakarta.persistence.*;
 
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class Teacher implements User {
+    @Id
+    @SequenceGenerator(
+            name="teacher_sequence",
+            sequenceName = "teacher_sequence",
+            allocationSize=1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.AUTO,
+            generator="teacher_sequence"
+    )
     private int idProf;
     private String email;
     private String name;
+
+    @OneToMany(cascade = {CascadeType.MERGE})
     private List<Subject> teachedSubjects;
+
+    public Teacher(){
+
+    }
+
+    public Teacher(String email,String name){
+        this.email=email;
+        this.name=name;
+    }
+
+    public Teacher(String email,String name,List<Subject> teachedSubjects){
+        this.email=email;
+        this.name=name;
+        this.teachedSubjects=teachedSubjects;
+    }
 
     public Teacher(int idProf, String email, String name) {
         this.idProf = idProf;

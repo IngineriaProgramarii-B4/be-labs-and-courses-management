@@ -1,6 +1,7 @@
 package com.example.userImpl.teacher;
 
 import com.example.userImpl.student.Student;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -8,31 +9,30 @@ import java.util.List;
 
 @Service
 public class TeacherService {
-    private final List<Teacher> teacherList = new ArrayList<>();
 
-    public TeacherService(){
-        initTeachersDataBase();
+    private final TeacherRepository teacherRepository;
+
+    @Autowired
+    public TeacherService(TeacherRepository teacherRepository){
+        this.teacherRepository=teacherRepository;
     }
-    public void initTeachersDataBase() {
-        Teacher teacher = new Teacher(0,"teacher1@gmail.com", "Ciobi");
-        Teacher teacher1 = new Teacher(1,"teacher2@gmail.com", "Olariu");
-        teacherList.add(teacher); teacherList.add(teacher1);
-    }
+
     public List<Teacher> getTeacherDataBase(){
-        return teacherList;
+        return teacherRepository.getAllTeachers();
     }
     public Teacher getTeacherById(int id){
-        return teacherList.get(id);
+        Teacher teacher=(Teacher)this.teacherRepository.getTeacherById(id).orElseThrow(() -> new IllegalStateException("Teacher with id "+id+" doesn't exist."));
+        return teacher;
     }
 
     public Teacher save(Teacher teacher) {
-        teacherList.add(teacher);
+        teacherRepository.save(teacher);
         return teacher;
     }
 
     public Teacher delete(Teacher teacher){
         try {
-            teacherList.remove(teacher);
+            teacherRepository.delete(teacher);
             return teacher;
         }
         catch (NullPointerException e) {
