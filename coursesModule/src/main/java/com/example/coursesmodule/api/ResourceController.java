@@ -9,6 +9,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/subjects/{subjectTitle}/components/{componentType}/resources")
+@CrossOrigin(origins = "*", allowedHeaders = "",
+        methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS })
 public class ResourceController {
     private final ResourceService resourceService;
 

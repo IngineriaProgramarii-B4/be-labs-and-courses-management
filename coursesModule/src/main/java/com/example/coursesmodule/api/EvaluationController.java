@@ -13,6 +13,8 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 @RequestMapping(path = "api/v1/subjects/{subjectTitle}/evaluationMethods")
+@CrossOrigin(origins = "*", allowedHeaders = "",
+        methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS })
 public class EvaluationController {
 
     private final EvaluationService evaluationService;
