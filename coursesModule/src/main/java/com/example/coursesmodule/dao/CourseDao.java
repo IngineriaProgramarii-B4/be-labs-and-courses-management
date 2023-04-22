@@ -1,18 +1,62 @@
 package com.example.coursesmodule.dao;
 
-import com.example.coursesmodule.model.Course;
-import com.example.coursesmodule.model.Resource;
+import com.example.coursesmodule.model.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface CourseDao {
-    int insertCourse(Course course);
 
-    List<Course> selectAllCourses();
+    /*
+      SUBJECT
+     */
+    int insertSubject(Subject subject);
 
-    Optional<Course> selectCourseById(int id);
-    void addResource(int id, Resource resource);
-    Optional<Resource> getResourceById(Course course, int resourceId);
+    List<Subject> selectAllSubjects();
+
+    Optional<Subject> selectSubjectByTitle(String title);
+
+    List<Subject> getSubjectsByYearAndSemester(int year, int semester);
+
+    int deleteSubjectByTitle(String title);
+
+    int updateSubjectByTitle(String title, Subject subject);
+
+    /*
+      Component
+     */
+
+    int addComponent(String title, Component component);
+
+    List<Component> getComponents(String title);
+
+    Optional<Component> getComponentByType(String title, String type);
+
+    int deleteComponentByType(String title, String type);
+
+    int updateComponentByType(String title, String type, Component component);
+
+    /*
+      RESOURCE FOR Component
+     */
+
+    List<Resource> getResourcesForComponentType(String title, String type);
+
+    Optional<Resource> getResourceByTitleForComponentType(String subjectTitle, String componentType, String resourceTitle);
+
+    int addResourceForComponentType(String title, String type, Resource resource);
+
+    int updateResourceByTitleForComponentType(String subjectTitle, String componentType, String resourceTitle, Resource resource);
+
+    int deleteResourceByTitleForComponentType(String subjectTitle, String componentType, String resourceTitle);
+
+    /*
+      EVALUATION
+     */
+
+    int addEvaluationMethod(String title, Evaluation evaluationMethod);
+    Optional<Evaluation> getEvaluationMethodByComponent(String title, String component);
+    List<Evaluation> getEvaluationMethods(String title);
+    int deleteEvaluationMethod(String title, String component);
+    int updateEvaluationMethodByComponent(String title, String component, Evaluation evaluationMethod);
 }
