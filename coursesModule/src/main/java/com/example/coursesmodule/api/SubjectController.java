@@ -37,13 +37,13 @@ public class SubjectController {
     }
 
     @DeleteMapping("subjectTitle={title}")
-    public void deleteSubjectById(@PathVariable("title") String title) {
+    public void deleteSubjectByTitle(@PathVariable("title") String title) {
         if(subjectService.deleteSubjectByTitle(title) == 0)
             throw new ResponseStatusException(NOT_FOUND, "Subject not found");
     }
 
     @PutMapping("subjectTitle={title}")
-    public void updateSubjectById(@PathVariable("title") String title, @RequestBody Subject subject) {
+    public void updateSubjectByTitle(@PathVariable("title") String title, @RequestBody Subject subject) {
         //verify that the subject already exists
         subjectService.getSubjectByTitle(title)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Subject not found"));
@@ -52,7 +52,7 @@ public class SubjectController {
     }
 
     @GetMapping(path = "subjectTitle={title}")
-    public Subject getSubjectById(@PathVariable("title") String title) {
+    public Subject getSubjectByTitle(@PathVariable("title") String title) {
         return subjectService.getSubjectByTitle(title)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Subject not found"));
     }

@@ -8,6 +8,8 @@ class CoursesModuleApplicationTests {
 
     @Test
     void contextLoads() {
+
+
     }
 
 }
