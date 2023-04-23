@@ -12,6 +12,5 @@ import java.util.UUID;
 public interface UsersRepository extends JpaRepository<User, String> {
 
     @Query("select a from User a where (cast(?1 as uuid) is null or a.id = ?1) and (?2 is null or a.firstname = ?2) and (?3 is null or a.lastname = ?3) and (?4 is null or a.email = ?4) and (?5 is null or a.username = ?5)")
-    List<User> findUserByParams(UUID id, String firstname, String lastname, String email, String username);
-
+    List<User> findUsersByParams(UUID id, String firstname, String lastname, String email, String username);
 }

@@ -12,9 +12,14 @@ public class Admin extends AcademicStaff {
 
     }
 
-    public Admin(String firstname, String lastname, String email, String username, String office, String department) {
+    public Admin(String firstname,
+                 String lastname,
+                 String email,
+                 String username,
+                 String office,
+                 String department) {
 
-        super(firstname, lastname, email, username, office, 0);
+        super(firstname, lastname, email, username, office);
         this.department = department;
     }
 
@@ -28,6 +33,14 @@ public class Admin extends AcademicStaff {
 
     @Override
     public String toString() {
-        return "Admin{" + "department='" + department + '\'' + ", office='" + office + '\'' + ", id=" + id + ", firstname='" + firstname + '\'' + ", lastname='" + lastname + '\'' + ", email='" + email + '\'' + ", username='" + username + '\'' + '}';
+        return "Admin{" +
+                "department='" + department + '\'' +
+                ", office='" + office + '\'' +
+                ", id=" + id +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                '}';
     }
 }
