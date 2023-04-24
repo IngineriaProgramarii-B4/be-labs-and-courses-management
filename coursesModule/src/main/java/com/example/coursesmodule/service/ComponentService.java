@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -22,19 +22,25 @@ public class ComponentService {
         this.courseDao = courseDao;
     }
 
-    public int validateComponent(String title, Component component) {
-        if(component.getNumberWeeks() <= 0) return 0;
-        if(component.getType()!="Course" || component.getType()!="Seminar" || component.getType()!="Laboratory")
-            return 0;
+    public boolean validateComponent(String title, Component component) {
+        if(component.getNumberWeeks() <= 0) return false;
+        if(!Objects.equals(component.getType(), "Course") || !Objects.equals(component.getType(), "Seminar") || !Objects.equals(component.getType(), "Laboratory"))
+            return false;
         Optional<Subject> subject = courseDao.selectSubjectByTitle(title);
+        if(subject.isEmpty()) return false;
         for(Component comp : subject.get().getComponentList())
             if(comp.getType().equals(component.getType()))
-                return 0;
-        return 1;
+                return false;
+        return true;
+    }
+    public boolean validateType(String type){
+        return Objects.equals(type, "Course") || Objects.equals(type, "Seminar") || Objects.equals(type, "Laboratory");
     }
 
     public int addComponent(String title, Component component) {
-        return validateComponent(title, component) == 0 ? 0 : courseDao.addComponent(title, component);
+        if(validateComponent(title, component))
+            courseDao.addComponent(title, component);
+        return 0;
     }
 
     public List<Component> getComponents(String title) {
@@ -42,14 +48,18 @@ public class ComponentService {
     }
 
     public Optional<Component> getComponentByType(String title, String type) {
-        return courseDao.getComponentByType(title, type);
+        if(validateType(type))
+            return courseDao.getComponentByType(title, type);
+        return Optional.empty();
     }
 
     public int deleteComponentByType(String title, String type) {
-        return courseDao.deleteComponentByType(title, type);
+        if(validateType(type))
+            return courseDao.deleteComponentByType(title, type);
+        return 0;
     }
 
     public int updateComponentByType(String title, String type, Component component) {
-        return validateComponent(title, component) == 0 ? 0 : courseDao.updateComponentByType(title, type, component);
+        return !validateComponent(title, component) ? 0 : courseDao.updateComponentByType(title, type, component);
     }
 }

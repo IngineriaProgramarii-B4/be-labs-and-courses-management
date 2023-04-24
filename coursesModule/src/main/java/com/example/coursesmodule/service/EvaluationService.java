@@ -3,7 +3,6 @@ package com.example.coursesmodule.service;
 import com.example.coursesmodule.dao.CourseDao;
 import com.example.coursesmodule.model.Component;
 import com.example.coursesmodule.model.Evaluation;
-import com.example.coursesmodule.model.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -33,12 +32,21 @@ public class EvaluationService {
         return false;
     }
 
+    public boolean validateComponent(String title, String component){
+        for(Component comp : courseDao.getComponents(title))
+            if(comp.getType().equals(component))
+                return true;
+        return false;
+    }
+
     public List<Evaluation> getEvaluationMethods(String title){
         return courseDao.getEvaluationMethods(title);
     }
 
     public Optional<Evaluation> getEvaluationMethodByComponent(String title, String component){
-        return courseDao.getEvaluationMethodByComponent(title, component);
+        if(validateComponent(title, component))
+            return courseDao.getEvaluationMethodByComponent(title, component);
+        return Optional.empty();
     }
 
     public int addEvaluationMethod(String title, Evaluation evaluation){
@@ -48,7 +56,9 @@ public class EvaluationService {
     }
 
     public int deleteEvaluationMethodByComponent(String title, String component){
-        return courseDao.deleteEvaluationMethod(title, component);
+        if(validateComponent(title, component))
+            return courseDao.deleteEvaluationMethod(title, component);
+        return 0;
     }
 
     public int updateEvaluationMethodByComponent(String title, String component, Evaluation evaluation){

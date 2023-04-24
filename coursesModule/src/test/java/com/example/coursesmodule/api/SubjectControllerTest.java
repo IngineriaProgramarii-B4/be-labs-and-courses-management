@@ -90,7 +90,7 @@ public class SubjectControllerTest {
                             "components": [],
                             "evaluations": []
                         }"""))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     //passed
@@ -109,7 +109,8 @@ public class SubjectControllerTest {
     void deleteSubjectByTitle() throws Exception {
         String title = "Math";
         when(subjectService.deleteSubjectByTitle(title)).thenReturn(1);
-        subjectController.deleteSubjectByTitle(title);
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> subjectController.deleteSubjectByTitle(title));
+        assertEquals(HttpStatus.NO_CONTENT, exception.getStatusCode());
         verify(subjectService, times(1)).deleteSubjectByTitle(eq(title));
     }
 
@@ -179,9 +180,9 @@ public class SubjectControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
     }
 
-    //passed
+    //failed
     @Test
-    void getSubjectsByYearAndSemester() {
+    void getSubjectsByYearAndSemesterSuccessful() {
         List<Subject> subjects = new ArrayList<>();
         subjects.add(new Subject(1, "Math", 5, 1, 1, "description", new ArrayList<>(), new ArrayList<>()));
         subjects.add(new Subject(2, "English", 5, 1, 1, "description", new ArrayList<>(), new ArrayList<>()));
@@ -201,5 +202,12 @@ public class SubjectControllerTest {
         assertEquals(1, result.get(1).getSemester());
         assertEquals("description", result.get(1).getDescription());
 
+    }
+
+    //passed
+    @Test
+    void getSubjectsByYearAndSemesterUnsuccessful() {
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> subjectController.getSubjectsByYearAndSemester(4, 4));
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, exception.getStatusCode());
     }
 }

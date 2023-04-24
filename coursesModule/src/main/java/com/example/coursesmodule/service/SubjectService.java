@@ -21,7 +21,7 @@ public class SubjectService {
     public SubjectService(@Qualifier("postgres") CourseDao courseDao) {
         this.courseDao = courseDao;
     }
-    public boolean verifySubjectValid(Subject subject){
+    public boolean validateSubject(Subject subject){
         if(subject.getTitle().isEmpty())
             return false;
         List<Subject> subjects = getAllSubjects();
@@ -64,7 +64,7 @@ public class SubjectService {
 
 
     public int addSubject(Subject subject) {
-        if(!verifySubjectValid(subject))
+        if(!validateSubject(subject))
             return 0;
         return courseDao.insertSubject(subject);
     }
@@ -92,7 +92,7 @@ public class SubjectService {
     }
 
     public int updateSubjectByTitle(String title, Subject subject) {
-        if(!verifySubjectValid(subject))
+        if(!validateSubject(subject))
             return 0;
         System.out.println("title: " + title);
         System.out.println("subject: " + subject);

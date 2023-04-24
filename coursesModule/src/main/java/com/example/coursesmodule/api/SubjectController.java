@@ -8,8 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping(path = "api/v1/subjects")
@@ -34,17 +33,18 @@ public class SubjectController {
     {
         if(subjectService.addSubject(subject) == 0)
             throw new ResponseStatusException(NOT_ACCEPTABLE, "Subject already exists or is invalid");
+        throw new ResponseStatusException(CREATED, "Subject added successfully");
     }
 
     @DeleteMapping("subjectTitle={title}")
     public void deleteSubjectByTitle(@PathVariable("title") String title) {
         if(subjectService.deleteSubjectByTitle(title) == 0)
             throw new ResponseStatusException(NOT_FOUND, "Subject not found");
+        throw new ResponseStatusException(NO_CONTENT, "Subject deleted successfully");
     }
 
     @PutMapping("subjectTitle={title}")
     public void updateSubjectByTitle(@PathVariable("title") String title, @RequestBody Subject subject) {
-        //verify that the subject already exists
         subjectService.getSubjectByTitle(title)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Subject not found"));
         if(subjectService.updateSubjectByTitle(title, subject) == 0)
@@ -59,6 +59,9 @@ public class SubjectController {
 
     @GetMapping(path = "year={year}&semester={semester}")
     public List<Subject> getSubjectsByYearAndSemester(@PathVariable("year") int year, @PathVariable("semester") int semester) {
-        return subjectService.getSubjectsByYearAndSemester(year, semester);
+        if(subjectService.validateYearAndSemester(year, semester))
+            return subjectService.getSubjectsByYearAndSemester(year, semester);
+        else throw new ResponseStatusException(NOT_ACCEPTABLE, "Invalid year or semester");
+
     }
 }
