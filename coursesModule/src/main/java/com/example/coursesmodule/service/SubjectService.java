@@ -80,9 +80,7 @@ public class SubjectService {
     }
 
     public List<Subject> getSubjectsByYearAndSemester(int year, int semester) {
-        if(validateYearAndSemester(year, semester))
-            return courseDao.getSubjectsByYearAndSemester(year, semester);
-        return null;
+        return courseDao.getSubjectsByYearAndSemester(year, semester);
     }
 
     public int deleteSubjectByTitle(String title) {

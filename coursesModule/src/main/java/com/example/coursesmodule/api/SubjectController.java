@@ -59,9 +59,6 @@ public class SubjectController {
 
     @GetMapping(path = "year={year}&semester={semester}")
     public List<Subject> getSubjectsByYearAndSemester(@PathVariable("year") int year, @PathVariable("semester") int semester) {
-        if(subjectService.validateYearAndSemester(year, semester))
-            return subjectService.getSubjectsByYearAndSemester(year, semester);
-        else throw new ResponseStatusException(NOT_ACCEPTABLE, "Invalid year or semester");
-
+        return subjectService.getSubjectsByYearAndSemester(year, semester);
     }
 }

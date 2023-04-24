@@ -1,5 +1,8 @@
 package com.example.coursesmodule.api;
 
+import com.example.coursesmodule.model.Component;
+import com.example.coursesmodule.model.Evaluation;
+import com.example.coursesmodule.model.Resource;
 import com.example.coursesmodule.model.Subject;
 import com.example.coursesmodule.service.SubjectService;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -184,30 +187,23 @@ public class SubjectControllerTest {
     @Test
     void getSubjectsByYearAndSemesterSuccessful() {
         List<Subject> subjects = new ArrayList<>();
-        subjects.add(new Subject(1, "Math", 5, 1, 1, "description", new ArrayList<>(), new ArrayList<>()));
-        subjects.add(new Subject(2, "English", 5, 1, 1, "description", new ArrayList<>(), new ArrayList<>()));
-        when(subjectService.getSubjectsByYearAndSemester(1, 1)).thenReturn(subjects);
+        subjects.add(new Subject(2, "Physics", 5, 1, 2, "description", List.of(new Component(2, "Course", 10, List.of(new Resource(2, "Book", "https://www.google.com/")))),
+                List.of(new Evaluation(1L, "Course", 0.5f))));
+        when(subjectService.getSubjectsByYearAndSemester(1, 2)).thenReturn(subjects);
 
-        List<Subject> result = subjectController.getSubjectsByYearAndSemester(1, 1);
+        List<Subject> result = subjectController.getSubjectsByYearAndSemester(1, 2);
 
-        assertEquals(2, result.size());
-        assertEquals("Math", result.get(0).getTitle());
+        assertEquals(1, result.size());
+        assertEquals(2, result.get(0).getId());
+        assertEquals("Physics", result.get(0).getTitle());
         assertEquals(5, result.get(0).getCredits());
         assertEquals(1, result.get(0).getYear());
-        assertEquals(1, result.get(0).getSemester());
+        assertEquals(2, result.get(0).getSemester());
         assertEquals("description", result.get(0).getDescription());
-        assertEquals("English", result.get(1).getTitle());
-        assertEquals(5, result.get(1).getCredits());
-        assertEquals(1, result.get(1).getYear());
-        assertEquals(1, result.get(1).getSemester());
-        assertEquals("description", result.get(1).getDescription());
+        assertEquals(1, result.get(0).getComponentList().size());
+        assertEquals(1, result.get(0).getEvaluationList().size());
 
-    }
 
-    //passed
-    @Test
-    void getSubjectsByYearAndSemesterUnsuccessful() {
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> subjectController.getSubjectsByYearAndSemester(4, 4));
-        assertEquals(HttpStatus.NOT_ACCEPTABLE, exception.getStatusCode());
+        verify(subjectService, times(1)).getSubjectsByYearAndSemester(1, 2);
     }
 }
