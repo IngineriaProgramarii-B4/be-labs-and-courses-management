@@ -22,12 +22,19 @@ public class ComponentService {
         this.courseDao = courseDao;
     }
 
-    public int verifyComponent(Component component) {
-        return component.getNumberWeeks() <= 0 ? 0 : 1;
+    public int validateComponent(String title, Component component) {
+        if(component.getNumberWeeks() <= 0) return 0;
+        if(component.getType()!="Course" || component.getType()!="Seminar" || component.getType()!="Laboratory")
+            return 0;
+        Optional<Subject> subject = courseDao.selectSubjectByTitle(title);
+        for(Component comp : subject.get().getComponentList())
+            if(comp.getType().equals(component.getType()))
+                return 0;
+        return 1;
     }
 
     public int addComponent(String title, Component component) {
-        return verifyComponent(component) == 0 ? 0 : courseDao.addComponent(title, component);
+        return validateComponent(title, component) == 0 ? 0 : courseDao.addComponent(title, component);
     }
 
     public List<Component> getComponents(String title) {
@@ -43,6 +50,6 @@ public class ComponentService {
     }
 
     public int updateComponentByType(String title, String type, Component component) {
-        return verifyComponent(component) == 0 ? 0 : courseDao.updateComponentByType(title, type, component);
+        return validateComponent(title, component) == 0 ? 0 : courseDao.updateComponentByType(title, type, component);
     }
 }

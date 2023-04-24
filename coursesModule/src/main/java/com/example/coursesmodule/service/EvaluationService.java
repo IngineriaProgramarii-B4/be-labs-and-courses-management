@@ -1,6 +1,7 @@
 package com.example.coursesmodule.service;
 
 import com.example.coursesmodule.dao.CourseDao;
+import com.example.coursesmodule.model.Component;
 import com.example.coursesmodule.model.Evaluation;
 import com.example.coursesmodule.model.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,18 @@ public class EvaluationService {
         this.courseDao = courseDao;
     }
 
+    public boolean validateEval(String title, Evaluation evaluation){
+        double sum = 0.;
+        for(Evaluation eval : courseDao.getEvaluationMethods(title))
+            sum+=eval.getValue();
+        if(sum+evaluation.getValue() > 1.0)
+            return false;
+        for(Component comp : courseDao.getComponents(title))
+            if(comp.getType().equals(evaluation.getComponent()))
+                return true;
+        return false;
+    }
+
     public List<Evaluation> getEvaluationMethods(String title){
         return courseDao.getEvaluationMethods(title);
     }
@@ -29,7 +42,9 @@ public class EvaluationService {
     }
 
     public int addEvaluationMethod(String title, Evaluation evaluation){
-        return courseDao.addEvaluationMethod(title, evaluation);
+        if(validateEval(title, evaluation))
+            return courseDao.addEvaluationMethod(title, evaluation);
+        return 0;
     }
 
     public int deleteEvaluationMethodByComponent(String title, String component){
@@ -37,6 +52,8 @@ public class EvaluationService {
     }
 
     public int updateEvaluationMethodByComponent(String title, String component, Evaluation evaluation){
-        return courseDao.updateEvaluationMethodByComponent(title, component, evaluation);
+        if(validateEval(title, evaluation))
+            return courseDao.updateEvaluationMethodByComponent(title, component, evaluation);
+        return 0;
     }
 }

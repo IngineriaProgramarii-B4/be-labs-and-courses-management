@@ -1,6 +1,7 @@
 package com.example.coursesmodule.service;
 
 import com.example.coursesmodule.dao.CourseDao;
+import com.example.coursesmodule.model.Component;
 import com.example.coursesmodule.model.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,12 +19,31 @@ public class ResourceService {
         this.courseDao = courseDao;
     }
 
-    public int verifyResource(Resource resource){
-        return resource.getTitle().isEmpty() || resource.getLocation().isEmpty() ? 0 : 1;
+    public boolean validateExistingResource(String title, String type, Resource resource){
+        if (resource.getTitle().isEmpty() || resource.getLocation().isEmpty())
+            return false;
+        for(Component comp : courseDao.getComponents(title))
+            if(comp.getType().equals(type))
+                for(Resource res : courseDao.getResourcesForComponentType(title, type))
+                    if(res.getTitle().equals(resource.getTitle()))
+                        return true;
+        return false;
+    }
+
+    public boolean validateNewResource(String title, String type, Resource resource){
+        if (resource.getTitle().isEmpty() || resource.getLocation().isEmpty())
+            return false;
+        for(Resource res : courseDao.getResourcesForComponentType(title, type))
+            if(res.getTitle().equals(resource.getTitle()))
+                return false;
+        for(Component comp : courseDao.getComponents(title))
+            if(comp.getType().equals(type))
+                return true;
+        return false;
     }
 
     public int addResource(String title, String type, Resource resource) {
-        if(verifyResource(resource) == 0)
+        if(!validateNewResource(title, type, resource))
             return 0;
         return courseDao.addResourceForComponentType(title, type, resource);
     }
@@ -37,11 +57,15 @@ public class ResourceService {
     }
 
     public int deleteResourceByTitle(String title, String type, String resourceTitle) {
-        return courseDao.deleteResourceByTitleForComponentType(title, type, resourceTitle);
+        if(courseDao.getResourceByTitleForComponentType(title, type, resourceTitle).isEmpty())
+            return 0;
+        if(validateExistingResource(title, type, courseDao.getResourceByTitleForComponentType(title, type, resourceTitle).get()))
+            return courseDao.deleteResourceByTitleForComponentType(title, type, resourceTitle);
+        return 0;
     }
 
     public int updateResourceByTitle(String title, String type, String resourceTitle, Resource resource) {
-        if(verifyResource(resource) == 0)
+        if(!validateExistingResource(title, type, resource))
             return 0;
         return courseDao.updateResourceByTitleForComponentType(title, type, resourceTitle, resource);
     }
