@@ -2,8 +2,8 @@ package com.example.models;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
 import java.util.UUID;
-
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -17,10 +17,10 @@ public abstract class User {
     protected String username;
 
     /*
-    * 0 - admin
-    * 1 - teacher
-    * 2 - student
-    * */
+     * 0 - admin
+     * 1 - teacher
+     * 2 - student
+     * */
     protected int type;
 
     public User() {
@@ -83,7 +83,24 @@ public abstract class User {
         this.type = type;
     }
 
-    //    public void login(String username, String password) {
+    @Override
+    public boolean equals(Object user) {
+        if (this == user)
+            return true;
+        if (user == null || getClass() != user.getClass())
+            return false;
+
+        User user1 = (User) user;
+        return type == user1.type && Objects.equals(id, user1.id) && Objects.equals(firstname, user1.firstname) && Objects.equals(lastname, user1.lastname) && Objects.equals(email, user1.email) && Objects.equals(username, user1.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstname, lastname, email, username, type);
+    }
+
+
+//    public void login(String username, String password) {
 //        //todo
 //    }
 //
@@ -110,5 +127,4 @@ public abstract class User {
 //    void seeResource(File resource) {
 //
 //    }
-
 }

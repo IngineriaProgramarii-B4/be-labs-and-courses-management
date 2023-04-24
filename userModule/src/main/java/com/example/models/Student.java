@@ -14,7 +14,14 @@ public class Student extends User {
     private int semester;
     private String registrationNumber;
 
-    public Student(String firstname, String lastname, String email, String username, int year, int semester, String registrationNumber, Set<String> enrolledCourses) {
+    public Student(String firstname,
+                   String lastname,
+                   String email,
+                   String username,
+                   int year,
+                   int semester,
+                   String registrationNumber,
+                   Set<String> enrolledCourses) {
         super(firstname, lastname, email, username, 2);
         this.enrolledCourses = enrolledCourses;
         this.year = year;
@@ -22,6 +29,7 @@ public class Student extends User {
         this.registrationNumber = registrationNumber;
     }
 
+    /* default ctor */
     public Student() {
 
     }
@@ -58,13 +66,24 @@ public class Student extends User {
         this.registrationNumber = registrationNumber;
     }
 
-    public void addEnrolledCourse(String course) {
+    public void addEnrolledCourse(String course)
+    {
         enrolledCourses.add(course);
     }
 
     @Override
     public String toString() {
-        return "Student{" + "enrolledCourses=" + enrolledCourses + ", year=" + year + ", semester=" + semester + ", registrationNumber='" + registrationNumber + '\'' + ", id=" + id + ", firstname='" + firstname + '\'' + ", lastname='" + lastname + '\'' + ", email='" + email + '\'' + ", username='" + username + '\'' + '}';
+        return "Student{" +
+                "enrolledCourses=" + enrolledCourses +
+                ", year=" + year +
+                ", semester=" + semester +
+                ", registrationNumber='" + registrationNumber + '\'' +
+                ", id=" + id +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                '}';
     }
 
     public void setElectives(Integer year, Integer semester) {

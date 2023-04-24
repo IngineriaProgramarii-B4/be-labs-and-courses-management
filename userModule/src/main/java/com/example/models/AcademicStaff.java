@@ -7,6 +7,7 @@ public abstract class AcademicStaff extends User {
     protected String office;
 
     public AcademicStaff() {
+
     }
 
     public AcademicStaff(String firstname, String lastname, String email, String username, String office, int type) {
