@@ -48,7 +48,7 @@ public class SubjectControllerTest {
 
     //passed
     @Test
-    void getAllSubjects() throws Exception {
+    void getAllSubjects() {
 
         List<Subject> subjects = new ArrayList<>();
         subjects.add(new Subject(1, "Math", 5, 1, 1, "description A", new ArrayList<>(), new ArrayList<>()));
@@ -77,7 +77,6 @@ public class SubjectControllerTest {
     //passed
     @Test
     void addSubject() throws Exception {
-        Subject subject = new Subject(1, "Math", 5, 1, 1, "description", new ArrayList<>(), new ArrayList<>());
         when(subjectService.addSubject(any())).thenReturn(1);
 
         mockMvc.perform(post("/api/v1/subjects")
@@ -109,7 +108,7 @@ public class SubjectControllerTest {
 
     //passed
     @Test
-    void deleteSubjectByTitle() throws Exception {
+    void deleteSubjectByTitle(){
         String title = "Math";
         when(subjectService.deleteSubjectByTitle(title)).thenReturn(1);
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> subjectController.deleteSubjectByTitle(title));
@@ -183,7 +182,7 @@ public class SubjectControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
     }
 
-    //failed
+    //passed
     @Test
     void getSubjectsByYearAndSemesterSuccessful() {
         List<Subject> subjects = new ArrayList<>();

@@ -34,12 +34,24 @@ public class ResourceService {
         if (resource.getTitle().isEmpty() || resource.getLocation().isEmpty())
             return false;
         for(Resource res : courseDao.getResourcesForComponentType(title, type))
-            if(res.getTitle().equals(resource.getTitle()))
+            if(res.getTitle().equals(resource.getTitle())||res.getLocation().equals(resource.getLocation()))
                 return false;
         for(Component comp : courseDao.getComponents(title))
             if(comp.getType().equals(type))
                 return true;
         return false;
+    }
+
+    public boolean validateUpdate(String title, String type, String resourceTitle, Resource resource){
+        if (resource.getTitle().isEmpty() || resource.getLocation().isEmpty())
+            return false;
+        for(Component comp : courseDao.getComponents(title))
+            if(comp.getType().equals(type))
+                for(Resource res : courseDao.getResourcesForComponentType(title, type))
+                    if(res.getTitle().equals(resource.getTitle())&& !res.getTitle().equals(resourceTitle)
+                            ||res.getLocation().equals(resource.getLocation())&& !res.getTitle().equals(resourceTitle))
+                        return false;
+        return true;
     }
 
     public int addResource(String title, String type, Resource resource) {
@@ -65,7 +77,7 @@ public class ResourceService {
     }
 
     public int updateResourceByTitle(String title, String type, String resourceTitle, Resource resource) {
-        if(!validateExistingResource(title, type, resource))
+        if(!validateUpdate(title, type, resourceTitle, resource))
             return 0;
         return courseDao.updateResourceByTitleForComponentType(title, type, resourceTitle, resource);
     }

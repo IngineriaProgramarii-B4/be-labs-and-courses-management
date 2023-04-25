@@ -39,6 +39,15 @@ public class SubjectService {
         return false;
     }
 
+    private boolean validateUpdate(String title, String title1) {
+        if(title.equals(title1))
+            return true;
+        for(Subject subject : courseDao.selectAllSubjects())
+            if(subject.getTitle().equals(title1))
+                return false;
+        return true;
+    }
+
     public boolean validateComponents(Subject subject){
         boolean course = false, seminar = false, lab = false;
         for(Component component : subject.getComponentList()) {
@@ -91,6 +100,8 @@ public class SubjectService {
 
     public int updateSubjectByTitle(String title, Subject subject) {
         if(!validateTitle(title))
+            return 0;
+        if(!validateUpdate(title, subject.getTitle()))
             return 0;
         System.out.println("title: " + title);
         System.out.println("subject: " + subject);
