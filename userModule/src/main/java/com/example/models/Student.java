@@ -2,6 +2,8 @@ package com.example.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -10,7 +12,11 @@ import java.util.Set;
 @Table(name = "students")
 public class Student extends User {
     private Set<String> enrolledCourses = new HashSet<>();
+    @Min(value=1)
+    @Max(value=3)
     private int year;
+    @Min(value=1)
+    @Max(value=6)
     private int semester;
     private String registrationNumber;
 

@@ -1,6 +1,8 @@
 package com.example.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -21,6 +23,8 @@ public abstract class User {
      * 1 - teacher
      * 2 - student
      * */
+    @Min(value=0)
+    @Max(value=2)
     protected int type;
 
     public User() {

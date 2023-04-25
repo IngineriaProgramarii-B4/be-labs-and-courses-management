@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class RemindersService {
@@ -17,10 +18,8 @@ public class RemindersService {
 
     public List<Reminder> getRemindersByParams(Map<String, Object> params) {
         String creatorUsername = (String)params.get("creatorUsername");
-        String title = (String) params.get("title");
-
-        List<Reminder> reminders = remindersRepository.findRemindersByParams(creatorUsername, title);
-        return reminders;
+        UUID id = (UUID) params.get("id");
+        return remindersRepository.findRemindersByParams(creatorUsername, id);
     }
 
     public void saveReminder(Reminder reminder) {
