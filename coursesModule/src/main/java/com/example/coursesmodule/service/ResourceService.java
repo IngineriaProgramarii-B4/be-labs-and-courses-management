@@ -48,8 +48,8 @@ public class ResourceService {
         for(Component comp : courseDao.getComponents(title))
             if(comp.getType().equals(type))
                 for(Resource res : courseDao.getResourcesForComponentType(title, type))
-                    if(res.getTitle().equals(resource.getTitle())&& !res.getTitle().equals(resourceTitle)
-                            ||res.getLocation().equals(resource.getLocation())&& !res.getTitle().equals(resourceTitle))
+                    if((res.getTitle().equals(resource.getTitle())&& !res.getTitle().equals(resourceTitle))
+                            ||(res.getLocation().equals(resource.getLocation())&& !res.getTitle().equals(resourceTitle)))
                         return false;
         return true;
     }
@@ -77,8 +77,8 @@ public class ResourceService {
     }
 
     public int updateResourceByTitle(String title, String type, String resourceTitle, Resource resource) {
-        /*if(!validateUpdate(title, type, resourceTitle, resource))
-            return 0;*/
+        if(!validateUpdate(title, type, resourceTitle, resource))
+            return 0;
         return courseDao.updateResourceByTitleForComponentType(title, type, resourceTitle, resource);
     }
 }
