@@ -90,7 +90,7 @@ public class SubjectService {
     }
 
     public int updateSubjectByTitle(String title, Subject subject) {
-        if(!validateSubject(subject))
+        if(!validateTitle(title))
             return 0;
         System.out.println("title: " + title);
         System.out.println("subject: " + subject);
