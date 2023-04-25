@@ -77,8 +77,8 @@ public class ResourceService {
     }
 
     public int updateResourceByTitle(String title, String type, String resourceTitle, Resource resource) {
-        if(!validateUpdate(title, type, resourceTitle, resource))
-            return 0;
+        /*if(!validateUpdate(title, type, resourceTitle, resource))
+            return 0;*/
         return courseDao.updateResourceByTitleForComponentType(title, type, resourceTitle, resource);
     }
 }

@@ -13,8 +13,7 @@ import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("api/v1/subjects/{subjectTitle}/components")
-@CrossOrigin(origins = "*", allowedHeaders = "",
-        methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS })
+@CrossOrigin(origins = "*")
 public class ComponentController {
 
     private final ComponentService componentService;

@@ -12,8 +12,7 @@ import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping(path = "api/v1/subjects")
-@CrossOrigin(origins = "*", allowedHeaders = "",
-        methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS })
+@CrossOrigin(origins = "*")
 public class SubjectController {
 
     private final SubjectService subjectService;
