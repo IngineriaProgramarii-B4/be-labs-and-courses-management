@@ -46,7 +46,7 @@ public class ComponentController {
             throw new ResponseStatusException(NOT_FOUND, "Subject not found");
 
         return componentService.getComponentByType(title, type)
-                .orElseThrow(() -> new IllegalStateException("Component not found"));
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Component not found"));
     }
 
     @DeleteMapping(path = "type={type}")
