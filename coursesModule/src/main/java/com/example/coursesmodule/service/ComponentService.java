@@ -24,7 +24,8 @@ public class ComponentService {
 
     public boolean validateComponent(String title, Component component) {
         if(component.getNumberWeeks() <= 0) return false;
-        if(!Objects.equals(component.getType(), "Course") || !Objects.equals(component.getType(), "Seminar") || !Objects.equals(component.getType(), "Laboratory"))
+        if(!Objects.equals(component.getType(), "Course") && !Objects.equals(component.getType(), "Seminar")
+                && !Objects.equals(component.getType(), "Laboratory"))
             return false;
         Optional<Subject> subject = courseDao.selectSubjectByTitle(title);
         if(subject.isEmpty()) return false;
@@ -50,8 +51,9 @@ public class ComponentService {
     }
 
     public int addComponent(String title, Component component) {
-        if(validateComponent(title, component))
-            courseDao.addComponent(title, component);
+        if(validateComponent(title, component)) {
+            return courseDao.addComponent(title, component);
+        }
         return 0;
     }
 
