@@ -230,6 +230,7 @@ class ComponentControllerTest {
 
     @Test
     void updateComponentByTypeInvalidSubject() {
+        Component testComponent = new Component(3, "Seminar", 10, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")));
         Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
                 List.of(new Component(3, "Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")))),
                 new ArrayList<>());
@@ -237,7 +238,7 @@ class ComponentControllerTest {
         String title = "Algebraic Foundations of Science";
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.empty());
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> componentController.updateComponentByType(title, "Seminar", new Component()));
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> componentController.updateComponentByType(title, "Seminar", testComponent));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         verify(componentService, times(0)).updateComponentByType(title, "Seminar", new Component());
     }
