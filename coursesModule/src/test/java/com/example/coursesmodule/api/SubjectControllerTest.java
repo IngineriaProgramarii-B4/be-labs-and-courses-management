@@ -8,7 +8,6 @@ import com.example.coursesmodule.service.SubjectService;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -31,7 +30,7 @@ import org.springframework.web.server.ResponseStatusException;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class SubjectControllerTest {
+class SubjectControllerTest {
 
     @Mock
     private SubjectService subjectService;
@@ -113,18 +112,18 @@ public class SubjectControllerTest {
         when(subjectService.deleteSubjectByTitle(title)).thenReturn(1);
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> subjectController.deleteSubjectByTitle(title));
         assertEquals(HttpStatus.NO_CONTENT, exception.getStatusCode());
-        verify(subjectService, times(1)).deleteSubjectByTitle(eq(title));
+        verify(subjectService, times(1)).deleteSubjectByTitle(title);
     }
 
     //passed
     @Test
     void deleteSubjectByTitleNotFound() {
         String title = "Math";
-        when(subjectService.deleteSubjectByTitle(eq(title))).thenReturn(0);
+        when(subjectService.deleteSubjectByTitle(title)).thenReturn(0);
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> subjectController.deleteSubjectByTitle(title));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        verify(subjectService, times(1)).deleteSubjectByTitle(eq(title));
+        verify(subjectService, times(1)).deleteSubjectByTitle(title);
 
     }
 

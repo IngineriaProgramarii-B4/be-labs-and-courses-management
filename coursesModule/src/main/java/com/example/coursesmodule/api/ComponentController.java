@@ -16,6 +16,9 @@ import static org.springframework.http.HttpStatus.*;
 @CrossOrigin(origins = "*")
 public class ComponentController {
 
+    private static final String SUBJECT_ERROR = "Subject not found";
+    private static final String COMPONENT_ERROR = "Component not found";
+
     private final ComponentService componentService;
     private final SubjectService subjectService;
     @Autowired
@@ -32,7 +35,7 @@ public class ComponentController {
     @PostMapping
     public void addComponent(@PathVariable("subjectTitle") String title, @RequestBody Component component) {
         if(subjectService.getSubjectByTitle(title).isEmpty())
-            throw new ResponseStatusException(NOT_FOUND, "Subject not found");
+            throw new ResponseStatusException(NOT_FOUND, SUBJECT_ERROR);
 
         if(componentService.addComponent(title, component) == 0)
             throw new ResponseStatusException(NOT_ACCEPTABLE, "Component is invalid");
@@ -42,19 +45,19 @@ public class ComponentController {
     @GetMapping(path = "type={type}")
     public Component getComponentByType(@PathVariable("subjectTitle") String title, @PathVariable("type") String type) {
         if(subjectService.getSubjectByTitle(title).isEmpty())
-            throw new ResponseStatusException(NOT_FOUND, "Subject not found");
+            throw new ResponseStatusException(NOT_FOUND, SUBJECT_ERROR);
 
         return componentService.getComponentByType(title, type)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Component not found"));
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, COMPONENT_ERROR));
     }
 
     @DeleteMapping(path = "type={type}")
     public void deleteComponentByType(@PathVariable("subjectTitle") String title, @PathVariable("type") String type) {
         if(subjectService.getSubjectByTitle(title).isEmpty())
-            throw new ResponseStatusException(NOT_FOUND, "Subject not found");
+            throw new ResponseStatusException(NOT_FOUND, SUBJECT_ERROR);
 
         if(componentService.deleteComponentByType(title, type) == 0)
-            throw new ResponseStatusException(NOT_FOUND, "Component not found");
+            throw new ResponseStatusException(NOT_FOUND, COMPONENT_ERROR);
         throw new ResponseStatusException(NO_CONTENT, "Component deleted successfully");
     }
 
@@ -63,9 +66,9 @@ public class ComponentController {
                                       @PathVariable("type") String type,
                                       @RequestBody Component component) {
         if(subjectService.getSubjectByTitle(title).isEmpty())
-            throw new ResponseStatusException(NOT_FOUND, "Subject not found");
+            throw new ResponseStatusException(NOT_FOUND, SUBJECT_ERROR);
         if(componentService.updateComponentByType(title, type, component) == 0) {
-            throw new ResponseStatusException(NOT_FOUND, "Component not found");
+            throw new ResponseStatusException(NOT_FOUND, COMPONENT_ERROR);
         }
     }
 }

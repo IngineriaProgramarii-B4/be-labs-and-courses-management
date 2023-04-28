@@ -16,6 +16,10 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping("api/v1/subjects/{subjectTitle}/components/{componentType}/resources")
 @CrossOrigin(origins = "*")
 public class ResourceController {
+    
+    private static final String SUBJECT_ERROR = "Subject not found";
+    private static final String COMPONENT_ERROR = "Component not found";
+    private static final String RESOURCE_ERROR = "Resource not found";
     private final ResourceService resourceService;
     private final SubjectService subjectService;
     private final ComponentService componentService;
@@ -30,9 +34,9 @@ public class ResourceController {
     public List<Resource> getResources(@PathVariable("subjectTitle") String title,
                                        @PathVariable("componentType") String type) {
         if(subjectService.getSubjectByTitle(title).isEmpty())
-            throw new ResponseStatusException(NOT_FOUND, "Subject not found");
+            throw new ResponseStatusException(NOT_FOUND, SUBJECT_ERROR);
         if(componentService.getComponentByType(title, type).isEmpty())
-            throw new ResponseStatusException(NOT_FOUND, "Component not found");
+            throw new ResponseStatusException(NOT_FOUND, COMPONENT_ERROR);
         return resourceService.getResources(title, type);
     }
 
@@ -41,11 +45,11 @@ public class ResourceController {
                                        @PathVariable("componentType") String type,
                                        @PathVariable("resourceTitle") String resourceTitle) {
         if(subjectService.getSubjectByTitle(title).isEmpty())
-            throw new ResponseStatusException(NOT_FOUND, "Subject not found");
+            throw new ResponseStatusException(NOT_FOUND, SUBJECT_ERROR);
         if(componentService.getComponentByType(title, type).isEmpty())
-            throw new ResponseStatusException(NOT_FOUND, "Component not found");
+            throw new ResponseStatusException(NOT_FOUND, COMPONENT_ERROR);
         return resourceService.getResourceByTitle(title, type, resourceTitle)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Resource not found"));
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, RESOURCE_ERROR));
     }
 
     @PostMapping
@@ -53,11 +57,11 @@ public class ResourceController {
                             @PathVariable("componentType") String type,
                             @RequestBody Resource resource) {
         if(subjectService.getSubjectByTitle(title).isEmpty())
-            throw new ResponseStatusException(NOT_FOUND, "Subject not found");
+            throw new ResponseStatusException(NOT_FOUND, SUBJECT_ERROR);
         if(componentService.getComponentByType(title, type).isEmpty())
-            throw new ResponseStatusException(NOT_FOUND, "Component not found");
+            throw new ResponseStatusException(NOT_FOUND, COMPONENT_ERROR);
         if(resourceService.addResource(title, type, resource) == 0)
-            throw new ResponseStatusException(NOT_FOUND, "Component not found");
+            throw new ResponseStatusException(NOT_FOUND, COMPONENT_ERROR);
         throw new ResponseStatusException(CREATED, "Resource created successfully");
     }
 
@@ -66,11 +70,11 @@ public class ResourceController {
                                       @PathVariable("componentType") String type,
                                       @PathVariable("resourceTitle") String resourceTitle) {
         if(subjectService.getSubjectByTitle(title).isEmpty())
-            throw new ResponseStatusException(NOT_FOUND, "Subject not found");
+            throw new ResponseStatusException(NOT_FOUND, SUBJECT_ERROR);
         if(componentService.getComponentByType(title, type).isEmpty())
-            throw new ResponseStatusException(NOT_FOUND, "Component not found");
+            throw new ResponseStatusException(NOT_FOUND, COMPONENT_ERROR);
         if(resourceService.deleteResourceByTitle(title, type, resourceTitle) == 0)
-            throw new ResponseStatusException(NOT_FOUND, "Resource not found");
+            throw new ResponseStatusException(NOT_FOUND, RESOURCE_ERROR);
         throw new ResponseStatusException(NO_CONTENT, "Resource deleted successfully");
     }
 
@@ -80,11 +84,11 @@ public class ResourceController {
                                       @PathVariable("resourceTitle") String resourceTitle,
                                       @RequestBody Resource resource) {
         if(subjectService.getSubjectByTitle(title).isEmpty())
-            throw new ResponseStatusException(NOT_FOUND, "Subject not found");
+            throw new ResponseStatusException(NOT_FOUND, SUBJECT_ERROR);
         if(componentService.getComponentByType(title, type).isEmpty())
-            throw new ResponseStatusException(NOT_FOUND, "Component not found");
+            throw new ResponseStatusException(NOT_FOUND, COMPONENT_ERROR);
         if(resourceService.updateResourceByTitle(title, type, resourceTitle, resource) == 0) {
-            throw new ResponseStatusException(NOT_FOUND, "Resource not found");
+            throw new ResponseStatusException(NOT_FOUND, RESOURCE_ERROR);
         }
     }
 }

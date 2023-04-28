@@ -8,9 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -28,12 +29,11 @@ public class SubjectService {
         for(Subject subject1 : subjects)
             if(subject1.getTitle().equals(subject.getTitle()))
                 return false;
-        if(!validateComponents(subject)) return false;
-        return true;
+        return validateComponents(subject);
     }
-
     public boolean validateTitle(String title){
-        for(Subject subject : courseDao.selectAllSubjects())
+        List<Subject> subjects = getAllSubjects();
+        for(Subject subject : subjects)
             if(subject.getTitle().equals(title))
                 return true;
         return false;
@@ -48,63 +48,39 @@ public class SubjectService {
         return true;
     }
 
-    public boolean validateComponents(Subject subject){
-        boolean course = false, seminar = false, lab = false;
-        for(Component component : subject.getComponentList()) {
-            if (component.getType().equals("Course"))
-                if (!course)
-                    course = true;
-                else return false;
-            if (component.getType().equals("Seminar"))
-                if(!seminar)
-                    seminar = true;
-                else return false;
-            if(component.getType().equals("Laboratory"))
-                if(!lab)
-                    lab = true;
-                else return false;
+    public boolean validateComponents(Subject subject) {
+        Set<String> componentTypes = new HashSet<>();
+        for (Component component : subject.getComponentList()) {
+            if (!componentTypes.add(component.getType())) {
+                return false; // found a duplicate component type
+            }
         }
-        return true;
+        return true; // all component types are unique
     }
-
-    public boolean validateYearAndSemester(int year, int semester){
-        return year >= 1 && year <= 4 && semester >= 1 && semester <= 2;
-    }
-
-
     public int addSubject(Subject subject) {
         if(!validateSubject(subject))
             return 0;
         return courseDao.insertSubject(subject);
     }
-
     public List<Subject> getAllSubjects() {
         return courseDao.selectAllSubjects();
     }
-
     public Optional<Subject> getSubjectByTitle(String title) {
         if(validateTitle(title))
             return courseDao.selectSubjectByTitle(title);
         else return Optional.empty();
     }
-
     public List<Subject> getSubjectsByYearAndSemester(int year, int semester) {
         return courseDao.getSubjectsByYearAndSemester(year, semester);
     }
-
     public int deleteSubjectByTitle(String title) {
         if(validateTitle(title))
             return courseDao.deleteSubjectByTitle(title);
         else return 0;
     }
-
     public int updateSubjectByTitle(String title, Subject subject) {
-        if(!validateTitle(title))
-            return 0;
         if(!validateUpdate(title, subject.getTitle()))
             return 0;
-        System.out.println("title: " + title);
-        System.out.println("subject: " + subject);
         return courseDao.updateSubjectByTitle(title, subject);
     }
 }
