@@ -6,13 +6,16 @@ import com.example.coursesmodule.model.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ResourceService {
     private final CourseDao courseDao;
+    private final String resourcePath = "savedResources/";
 
     @Autowired
     public ResourceService(@Qualifier("postgres") CourseDao courseDao) {
@@ -58,6 +61,35 @@ public class ResourceService {
         if(!validateNewResource(title, type, resource))
             return 0;
         return courseDao.addResourceForComponentType(title, type, resource);
+    }
+
+    public int addResource(MultipartFile file, String title, String type){
+        Resource resource = new Resource(
+                file.getOriginalFilename(),
+                resourcePath + file.getOriginalFilename(),
+                file.getContentType());
+        if(!validateNewResource(title, type, resource))
+            return 0;
+        if(courseDao.addResourceForComponentType(title, type, resource) == 0)
+            return 0;
+        try {
+            // write file to disk
+            // get the absolute path of the savedResources folder
+            String absolutePath = new File("").getAbsolutePath();
+            // get the absolute path of the savedResources folder
+            String folderPath = absolutePath + "/" + resourcePath;
+            // create the savedResources folder if it doesn't exist
+            File folder = new File(folderPath);
+            if (!folder.exists()) {
+                folder.mkdir();
+            }
+            // transfer the file to the savedResources folder
+            file.transferTo(new File(folderPath + file.getOriginalFilename()));
+            return 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     public List<Resource> getResources(String title, String type) {

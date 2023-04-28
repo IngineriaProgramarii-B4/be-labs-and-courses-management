@@ -6,15 +6,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(
-        name = "resource",
-uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "resource_component_id_title_unique",
-                        columnNames = {"component_id", "title"}
-                )
-        }
-)
+@Table(name = "resource")
 public class Resource {
     @Id
     @SequenceGenerator(
@@ -44,19 +36,33 @@ public class Resource {
             columnDefinition = "TIMESTAMP WITHOUT TIME ZONE"
     )
     private LocalDateTime timeStamp;
-
+    @Column(
+            name = "type",
+            nullable = false
+    )
+    private String type;
     //constructor
 
 
     public Resource() {
+        timeStamp = LocalDateTime.now();
     }
 
-    public Resource(@JsonProperty("id") int id,
-                    @JsonProperty("title") String title,
-                    @JsonProperty("location") String location) {
+    public Resource(int id,
+                    String title,
+                    String location,
+                    String type) {
         this.id = id;
         this.title = title;
         this.location = location;
+        this.type = type;
+        this.timeStamp = LocalDateTime.now();
+    }
+
+    public Resource(String title, String location, String type) {
+        this.title = title;
+        this.location = location;
+        this.type = type;
         this.timeStamp = LocalDateTime.now();
     }
 
@@ -74,6 +80,10 @@ public class Resource {
         this.timeStamp = timeStamp;
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
     //getters
     public int getId() {
         return id;
@@ -86,5 +96,19 @@ public class Resource {
     }
     public LocalDateTime getTimeStamp() {
         return timeStamp;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    @Override
+    public String toString() {
+        return "Resource{" +
+                "title='" + title + '\'' +
+                ", location='" + location + '\'' +
+                ", timeStamp=" + timeStamp +
+                ", type='" + type + '\'' +
+                '}';
     }
 }

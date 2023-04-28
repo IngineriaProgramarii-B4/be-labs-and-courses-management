@@ -5,10 +5,17 @@ import com.example.coursesmodule.service.ComponentService;
 import com.example.coursesmodule.service.ResourceService;
 import com.example.coursesmodule.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -52,7 +59,7 @@ public class ResourceController {
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, RESOURCE_ERROR));
     }
 
-    @PostMapping
+/*    @PostMapping
     public void addResource(@PathVariable("subjectTitle") String title,
                             @PathVariable("componentType") String type,
                             @RequestBody Resource resource) {
@@ -63,6 +70,41 @@ public class ResourceController {
         if(resourceService.addResource(title, type, resource) == 0)
             throw new ResponseStatusException(NOT_FOUND, COMPONENT_ERROR);
         throw new ResponseStatusException(CREATED, "Resource created successfully");
+    }*/
+
+    @PostMapping
+    public void addResourceFile(@PathVariable("subjectTitle") String title,
+                                @PathVariable("componentType") String type,
+                                @RequestParam("file") MultipartFile file) {
+        if(subjectService.getSubjectByTitle(title).isEmpty())
+            throw new ResponseStatusException(NOT_FOUND, SUBJECT_ERROR);
+        if(componentService.getComponentByType(title, type).isEmpty())
+            throw new ResponseStatusException(NOT_FOUND, COMPONENT_ERROR);
+        if(resourceService.addResource(file, title, type) == 0)
+            throw new ResponseStatusException(NOT_FOUND, COMPONENT_ERROR);
+    }
+
+    @GetMapping("/file={resourceTitle}")
+    public ResponseEntity<?> getResourceFile(@PathVariable("subjectTitle") String title,
+                                          @PathVariable("componentType") String type,
+                                          @PathVariable("resourceTitle") String resourceTitle) {
+        if(subjectService.getSubjectByTitle(title).isEmpty())
+            throw new ResponseStatusException(NOT_FOUND, SUBJECT_ERROR);
+        if(componentService.getComponentByType(title, type).isEmpty())
+            throw new ResponseStatusException(NOT_FOUND, COMPONENT_ERROR);
+        Optional<Resource> resource = resourceService.getResourceByTitle(title, type, resourceTitle);
+        if(resource.isEmpty())
+            throw new ResponseStatusException(NOT_FOUND, RESOURCE_ERROR);
+        Resource resource1 = resource.get();
+        try{
+            byte[] file = Files.readAllBytes(new File(resource1.getLocation()).toPath());
+            return ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.valueOf(resource1.getType()))
+                    .body(file);
+        } catch (Exception e) {
+            throw new ResponseStatusException(NOT_FOUND, RESOURCE_ERROR);
+        }
+
     }
 
     @DeleteMapping(path = "title={resourceTitle}")

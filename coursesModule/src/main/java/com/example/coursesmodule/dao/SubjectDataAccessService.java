@@ -69,6 +69,16 @@ public class SubjectDataAccessService implements CourseDao{
         return 1;
     }
 
+    @Override
+    public int saveImageToSubject(String title, Resource image) {
+        Subject subjectToUpdate = subjectRepo.findSubjectByTitle(title).orElse(null);
+        if(subjectToUpdate == null)
+            return 0;
+        subjectToUpdate.setImage(image);
+        subjectRepo.save(subjectToUpdate);
+        return 1;
+    }
+
     // COMPONENTS
 
     @Override

@@ -21,14 +21,14 @@ public class SubjectConfig {
         String seminar = "Seminar";
         String laboratory = "Laboratory";
         return args -> {
-            Subject subject1 = new Subject(1, "Maths", 4, 1, 1, """
+            /*Subject subject1 = new Subject(1, "Maths", 4, 1, 1, """
                     This course is designed to provide students with a comprehensive understanding of mathematical concepts and principles. The course covers a wide range of topics, including algebra, calculus, statistics, geometry, and trigonometry.
                     Students will learn how to solve complex mathematical problems, develop analytical and critical thinking skills, and enhance their ability to reason logically. They will also develop a deep appreciation for the beauty and elegance of mathematics and its practical applications in various fields, such as engineering, physics, finance, and computer science.
                     The course includes lectures, interactive discussions, and hands-on activities to help students grasp abstract mathematical concepts and apply them to real-world problems. Students will also have opportunities to collaborate with their peers, engage in group projects, and receive individualized feedback from the instructor.
                     Upon completion of the course, students will have a solid foundation in mathematics, which will prepare them for advanced courses in math or related disciplines, as well as careers in fields that require strong quantitative skills.""",
                     List.of(new Component(1, course, 10, List.of(new Resource(1, "Book", "https://www.google.com/")))),
-                    new ArrayList<>());
-            Subject subject2 = new Subject(2, "Physics", 5, 1, 2, "description Physics",
+                    new ArrayList<>());*/
+            /*Subject subject2 = new Subject(2, "Physics", 5, 1, 2, "description Physics",
                     List.of(new Component(2, course, 9, List.of(new Resource(2, "Course's book", "https://ro.scribd.com/document/369111952/Virgil-Miron-Patru-Culegere-Fizica-Clasa-X-2005")))),
                     List.of(new Evaluation(1L, "Course", 0.5f)));
             Subject subject3 = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
@@ -44,7 +44,11 @@ public class SubjectConfig {
             repository.save(subject2);
             repository.save(subject3);
             repository.save(subject4);
-            repository.save(subject5);
+            repository.save(subject5);*/
+            Subject testSubject = new Subject(1, "Test", 4, 1, 1, "description Test",
+                    List.of(new Component(1, course, 10, new ArrayList<>())),
+                    new ArrayList<>());
+            repository.save(testSubject);
         };
     }
 }

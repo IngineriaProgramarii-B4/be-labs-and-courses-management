@@ -41,6 +41,9 @@ public class Subject {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "subject_id", referencedColumnName = "id")
     List<Evaluation> evaluationList = new ArrayList<>();
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "subject_id", referencedColumnName = "id")
+    Resource image;
 
     //constructors
     public Subject() {
@@ -63,6 +66,7 @@ public class Subject {
         this.description = description;
         this.componentList = componentList;
         this.evaluationList = evaluationList;
+        this.image = null;
     }
 
     //setters
@@ -96,6 +100,14 @@ public class Subject {
         this.componentList = componentList;
     }
 
+
+    public Resource getImage() {
+        return image;
+    }
+
+    public void setImage(Resource image) {
+        this.image = image;
+    }
 
     //getters
     public String getTitle() {
@@ -144,7 +156,6 @@ public class Subject {
         evaluationList.remove(evaluation);
     }
 
-
     @Override
     public String toString() {
         return "Subject{" +
@@ -156,6 +167,7 @@ public class Subject {
                 ", description='" + description + '\'' +
                 ", componentList=" + componentList +
                 ", evaluationList=" + evaluationList +
+                ", image=" + image +
                 '}';
     }
 }
