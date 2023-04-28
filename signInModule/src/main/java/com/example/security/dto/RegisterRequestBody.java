@@ -7,4 +7,6 @@ public class RegisterRequestBody {
     private Long userId;
     private String email;
     private String password;
+    private String confirmPassword;
+
 }

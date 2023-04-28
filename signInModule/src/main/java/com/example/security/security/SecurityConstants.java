@@ -6,6 +6,9 @@ import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
 
 public class SecurityConstants {
+    private SecurityConstants() {
+        throw new IllegalStateException("Utility class");
+    }
     public static final long JWT_EXPIRATION = 70000;
     public static final SecretKey JWT_SECRET = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 }
