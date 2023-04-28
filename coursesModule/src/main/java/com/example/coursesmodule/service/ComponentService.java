@@ -24,8 +24,7 @@ public class ComponentService {
 
     public boolean validateComponent(String title, Component component) {
         if(component.getNumberWeeks() <= 0) return false;
-        if(!Objects.equals(component.getType(), "Course") && !Objects.equals(component.getType(), "Seminar")
-                && !Objects.equals(component.getType(), "Laboratory"))
+        if(!validateType(component.getType()))
             return false;
         Optional<Subject> subject = courseDao.selectSubjectByTitle(title);
         if(subject.isEmpty()) return false;
@@ -35,16 +34,16 @@ public class ComponentService {
         return true;
     }
 
-    public boolean validateUpdate(String title, String type, Component component) {
+    public boolean validateComponentToUpdate(String title, String type, Component component) {
         if(component.getNumberWeeks() <= 0) return false;
         if(!Objects.equals(component.getType(), type))
             return false;
         Optional<Subject> subject = courseDao.selectSubjectByTitle(title);
         if(subject.isEmpty()) return false;
         for(Component comp : subject.get().getComponentList())
-            if(comp.getType().equals(type))
-                return true;
-        return false;
+            if(comp.getType().equals(component.getType())&& !comp.getType().equals(type))
+                return false;
+        return true;
     }
     public boolean validateType(String type){
         return Objects.equals(type, "Course") || Objects.equals(type, "Seminar") || Objects.equals(type, "Laboratory");
@@ -74,6 +73,6 @@ public class ComponentService {
     }
 
     public int updateComponentByType(String title, String type, Component component) {
-        return !validateUpdate(title, type, component) ? 0 : courseDao.updateComponentByType(title, type, component);
+        return validateComponentToUpdate(title, type, component) ? courseDao.updateComponentByType(title, type, component) : 0;
     }
 }

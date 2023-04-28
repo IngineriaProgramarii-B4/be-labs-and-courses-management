@@ -18,6 +18,7 @@ public class ComponentController {
 
     private static final String SUBJECT_ERROR = "Subject not found";
     private static final String COMPONENT_ERROR = "Component not found";
+    private static final String COMPONENT_BAD = "Component is invalid";
 
     private final ComponentService componentService;
     private final SubjectService subjectService;
@@ -38,7 +39,7 @@ public class ComponentController {
             throw new ResponseStatusException(NOT_FOUND, SUBJECT_ERROR);
 
         if(componentService.addComponent(title, component) == 0)
-            throw new ResponseStatusException(NOT_ACCEPTABLE, "Component is invalid");
+            throw new ResponseStatusException(NOT_ACCEPTABLE, COMPONENT_BAD);
         throw new ResponseStatusException(CREATED, "Component added successfully");
     }
 
@@ -67,8 +68,9 @@ public class ComponentController {
                                       @RequestBody Component component) {
         if(subjectService.getSubjectByTitle(title).isEmpty())
             throw new ResponseStatusException(NOT_FOUND, SUBJECT_ERROR);
-        if(componentService.updateComponentByType(title, type, component) == 0) {
+        if(componentService.getComponentByType(title, type).isEmpty())
             throw new ResponseStatusException(NOT_FOUND, COMPONENT_ERROR);
-        }
+        if(componentService.updateComponentByType(title, type, component) == 0)
+            throw new ResponseStatusException(BAD_REQUEST, COMPONENT_BAD);
     }
 }

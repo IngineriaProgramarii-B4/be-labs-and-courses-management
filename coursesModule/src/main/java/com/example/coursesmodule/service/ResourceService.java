@@ -70,7 +70,7 @@ public class ResourceService {
     public int deleteResourceByTitle(String title, String type, String resourceTitle) {
         Optional<Resource> optionalResource = courseDao.getResourceByTitleForComponentType(title, type, resourceTitle);
         if (optionalResource.isEmpty()) {
-            return 0; 
+            return 0;
         }
         Resource resource = optionalResource.get();
         if (validateExistingResource(title, type, resource)) {

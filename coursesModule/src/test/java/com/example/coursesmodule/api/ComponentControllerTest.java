@@ -5,8 +5,7 @@ import com.example.coursesmodule.model.Resource;
 import com.example.coursesmodule.model.Subject;
 import com.example.coursesmodule.service.ComponentService;
 import com.example.coursesmodule.service.SubjectService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,10 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.http.RequestEntity.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class ComponentControllerTest {
@@ -46,6 +42,11 @@ class ComponentControllerTest {
 
     @BeforeEach
     public void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(componentController).build();
+    }
+
+    @AfterEach
+    public void tearDown() {
         mockMvc = MockMvcBuilders.standaloneSetup(componentController).build();
     }
 
@@ -78,9 +79,7 @@ class ComponentControllerTest {
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
         when(componentService.addComponent(title, component)).thenReturn(1);
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            componentController.addComponent(title, component);
-        });
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> componentController.addComponent(title, component));
         assertEquals(HttpStatus.CREATED, exception.getStatusCode());
         verify(componentService, times(1)).addComponent(title, component);
     }
@@ -97,9 +96,7 @@ class ComponentControllerTest {
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
         when(componentService.addComponent(title, component)).thenReturn(0);
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            componentController.addComponent(title, component);
-        });
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> componentController.addComponent(title, component));
         assertEquals(HttpStatus.NOT_ACCEPTABLE, exception.getStatusCode());
         verify(componentService, times(1)).addComponent(title, component);
     }
@@ -115,9 +112,7 @@ class ComponentControllerTest {
 
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.empty());
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            componentController.addComponent(title, component);
-        });
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> componentController.addComponent(title, component));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         verify(componentService, times(0)).addComponent(title, component);
     }
@@ -149,9 +144,7 @@ class ComponentControllerTest {
         String title = "Algebraic Foundations of Science";
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.empty());
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            componentController.getComponentByType(title, "Seminar");
-        });
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> componentController.getComponentByType(title, "Seminar"));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         verify(componentService, times(0)).getComponentByType(title, "Seminar");
     }
@@ -166,15 +159,13 @@ class ComponentControllerTest {
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
         when(componentService.getComponentByType(title, "Seminar")).thenReturn(Optional.empty());
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            componentController.getComponentByType(title, "Seminar");
-        });
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> componentController.getComponentByType(title, "Seminar"));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         verify(componentService, times(1)).getComponentByType(title, "Seminar");
     }
 
     @Test
-    void deleteComponentByTypeSuccesful() {
+    void deleteComponentByTypeSuccessful() {
         Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
                 List.of(new Component(3, "Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")))),
                 new ArrayList<>());
@@ -183,9 +174,7 @@ class ComponentControllerTest {
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
         when(componentService.deleteComponentByType(title, "Seminar")).thenReturn(1);
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            componentController.deleteComponentByType(title, "Seminar");
-        });
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> componentController.deleteComponentByType(title, "Seminar"));
         assertEquals(HttpStatus.NO_CONTENT, exception.getStatusCode());
         verify(componentService, times(1)).deleteComponentByType(title, "Seminar");
     }
@@ -199,9 +188,7 @@ class ComponentControllerTest {
         String title = "Algebraic Foundations of Science";
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.empty());
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            componentController.deleteComponentByType(title, "Seminar");
-        });
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> componentController.deleteComponentByType(title, "Seminar"));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         verify(componentService, times(0)).deleteComponentByType(title, "Seminar");
     }
@@ -216,9 +203,7 @@ class ComponentControllerTest {
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
         when(componentService.deleteComponentByType(title, "Seminar")).thenReturn(0);
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            componentController.deleteComponentByType(title, "Seminar");
-        });
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> componentController.deleteComponentByType(title, "Seminar"));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         verify(componentService, times(1)).deleteComponentByType(title, "Seminar");
     }
@@ -231,9 +216,12 @@ class ComponentControllerTest {
                 new ArrayList<>());
         subjectService.addSubject(subject);
         String title = "Algebraic Foundations of Science";
+        String type = "Seminar";
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
-        Component component = new Component(3,"Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")));
-        when(componentService.updateComponentByType(title, "Seminar", component)).thenReturn(1);
+        Component component = new Component(3,"Seminar", 10, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")));
+        when(componentService.getComponentByType(title, type)).thenReturn(Optional.of(component));
+
+        when(componentService.updateComponentByType(title, type, component)).thenReturn(1);
 
         componentController.updateComponentByType(title, "Seminar", component);
         verify(subjectService, times(1)).getSubjectByTitle(title);
@@ -249,20 +237,54 @@ class ComponentControllerTest {
         String title = "Algebraic Foundations of Science";
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.empty());
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            componentController.updateComponentByType(title, "Seminar", new Component());
-        });
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> componentController.updateComponentByType(title, "Seminar", new Component()));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         verify(componentService, times(0)).updateComponentByType(title, "Seminar", new Component());
     }
 
     @Test
-    void testUpdateComponentByTypeComponentInvalid() throws Exception {
+    void updateComponentByTypeInitialComponentInvalid(){
+        Component testComponent = new Component(3,"Seminar", 10, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")));
+        Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
+                List.of(new Component(3, "Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")))),
+                new ArrayList<>());
         String title = "Algebraic Foundations of Science";
         String type = "Seminar";
-        mockMvc.perform(MockMvcRequestBuilders.put("/subjects/{subjectTitle}/components/type={type}", title, type)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"type\":\"Seminar\",\"numberWeeks\":14,\"resources\":[{\"name\":\"Seminar\",\"url\":\"https://www.flt-info.eu/course/afcs/\"}]}"))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+        when(subjectService.getSubjectByTitle(title)).thenReturn(Optional.of(subject));
+        when(componentService.getComponentByType(title, type)).thenReturn(Optional.empty());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            componentController.updateComponentByType(title, type, testComponent);
+        }, "Expected a NOT_FOUND ResponseStatusException for component");
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Component not found", exception.getReason());
+    }
+
+    @Test
+    void updateComponentByTypeBadRequest() {
+        Component testComponent = new Component(3, "Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")));
+        String title = "Maths";
+        String type = "Seminar";
+        Subject subject = new Subject(1, "Maths", 4, 1, 1, """
+                    This course is designed to provide students with a comprehensive understanding of mathematical concepts and principles. The course covers a wide range of topics, including algebra, calculus, statistics, geometry, and trigonometry.
+                    Students will learn how to solve complex mathematical problems, develop analytical and critical thinking skills, and enhance their ability to reason logically. They will also develop a deep appreciation for the beauty and elegance of mathematics and its practical applications in various fields, such as engineering, physics, finance, and computer science.
+                    The course includes lectures, interactive discussions, and hands-on activities to help students grasp abstract mathematical concepts and apply them to real-world problems. Students will also have opportunities to collaborate with their peers, engage in group projects, and receive individualized feedback from the instructor.
+                    Upon completion of the course, students will have a solid foundation in mathematics, which will prepare them for advanced courses in math or related disciplines, as well as careers in fields that require strong quantitative skills.""",
+                List.of(new Component(1, "Course", 10, List.of(new Resource(1, "Book", "https://www.google.com/")))),
+                new ArrayList<>());
+        Component component = new Component(1, "Course", 10, List.of(new Resource(1, "Book", "https://www.google.com/")));
+
+        when(subjectService.getSubjectByTitle(title)).thenReturn(Optional.of(subject));
+        when(componentService.getComponentByType(title, type)).thenReturn(Optional.of(component));
+        when(componentService.updateComponentByType(title, type, testComponent)).thenReturn(0);
+
+        assertThrows(ResponseStatusException.class, () -> {
+            componentController.updateComponentByType(title, type, testComponent);
+        }, "Expected a BAD_REQUEST ResponseStatusException");
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            componentController.updateComponentByType(title, type, testComponent);
+        }, "Expected a BAD_REQUEST ResponseStatusException");
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
     }
 }

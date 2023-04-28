@@ -155,6 +155,19 @@ class SubjectControllerTest {
         verify(subjectService, times(0)).updateSubjectByTitle(title, updatedSubject);
     }
 
+    @Test
+    void updateSubjectWithInvalidSubject(){
+        String title = "Math";
+        Subject updatedSubject = new Subject(1, "Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>());
+        when(subjectService.getSubjectByTitle(title)).thenReturn(Optional.of(new Subject()));
+        when(subjectService.updateSubjectByTitle(title, updatedSubject)).thenReturn(0);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> subjectController.updateSubjectByTitle(title, updatedSubject));
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, exception.getStatusCode());
+        verify(subjectService, times(1)).getSubjectByTitle(title);
+        verify(subjectService, times(1)).updateSubjectByTitle(title, updatedSubject);
+    }
+
     //passed
     @Test
     void getSubjectByTitle() {
