@@ -1,10 +1,13 @@
 package com.example.controllers;
 
-import com.example.models.Admin;
 import com.example.models.User;
-import com.example.models.Student;
-import com.example.models.Teacher;
 import com.example.services.UsersService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -24,38 +27,21 @@ public class UsersController {
         this.usersService = usersService;
     }
 
-    @GetMapping(value = {"/students"})
-    public List<Student> getStudentsByParams(@RequestParam Map<String, Object> params) {
-        List<Student> students = usersService.getStudentsByParams(params);
-
-        if (students.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-        System.out.println(students.get(0));
-        return students;
-    }
-
-    @GetMapping(value = "/admins")
-    public List<Admin> getAdminsByParams(@RequestParam Map<String, Object> params) {
-        List<Admin> admins = usersService.getAdminsByParams(params);
-
-        if (admins.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        return admins;
-    }
-
-    @GetMapping(value = "/teachers")
-    public List<Teacher> getProfessorsByParams(@RequestParam Map<String, Object> params) {
-        List<Teacher> teachers = usersService.getTeacherByParams(params);
-
-        if (teachers.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        return teachers;
-    }
-
+    @Operation(summary = "Get a list of users based on 0 or more filters  passed as queries. The format is property_from_user_schema=value.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found users that match the requirements",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = User.class))
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Haven't found users that match the requirements",
+                    content = @Content
+            ),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content
+            )
+    })
     @GetMapping(value = "/users")
     public List<User> getUsersByParams(@RequestParam Map<String, Object> params) {
         List<User> users = usersService.getUsersByParams(params);
@@ -64,19 +50,5 @@ public class UsersController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return users;
-    }
-
-    @PutMapping(value = "/student")
-    public void updateStudent(@RequestBody Student student) {
-        usersService.saveStudent(student);
-    }
-    @PutMapping(value = "/teacher")
-    public void updateTeacher(@RequestBody Teacher teacher) {
-        System.out.println(teacher);
-        usersService.saveTeacher(teacher);
-    }
-    @PutMapping(value = "/admin")
-    public void updateAdmin(@RequestBody Admin admin) {
-        usersService.saveAdmin(admin);
     }
 }
