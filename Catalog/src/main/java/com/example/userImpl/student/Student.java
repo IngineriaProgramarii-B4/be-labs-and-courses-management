@@ -23,6 +23,7 @@ public class Student implements User {
             generator="student_sequence"
     )
     private int idStud;
+    private int maxGradeId=0;
     private long nrMatricol;
     private String email;
     private String name;
@@ -87,8 +88,16 @@ public class Student implements User {
         this.grades = grades;
     }
     public void addGrade(Grade grade){
-        grades.add(grade);
-        grade.setId(grades.size() - 1);
+        if(grades.size()>=1) {
+            maxGradeId++;
+            grades.add(grade);
+            grade.setId(maxGradeId);
+        }
+        else {
+            grades.add(grade);
+            maxGradeId=0;
+            grade.setId(maxGradeId);
+        }
 
     }
 

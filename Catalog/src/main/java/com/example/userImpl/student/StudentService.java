@@ -24,7 +24,7 @@ public class StudentService {
     @Autowired
     public StudentService(StudentRepository studentRepository,GradeRepository gradeRepository){
         this.studentRepository = studentRepository;
-        this.gradeRepository=gradeRepository;
+        this.gradeRepository = gradeRepository;
     }
 
 
@@ -32,8 +32,7 @@ public class StudentService {
         return studentRepository.getAllStudents();
     }
     public Student getStudentById(int id){
-        Student student=(Student)this.studentRepository.getStudentById(id).orElse((Student)null);
-        return student;
+        return (Student) this.studentRepository.findById(id).orElse((Student)null);
     }
 
 
@@ -53,34 +52,35 @@ public class StudentService {
     }
 
     @Transactional
-    public void addGrade(int id, Grade grade) {
+    public Grade addGrade(int id, Grade grade) {
         Student student=studentRepository.findById(id).orElseThrow(()->new IllegalStateException("Student with id "+id+" doesn't exist"));
         student.addGrade(grade);
+        return grade;
     }
 
     @Transactional
     public Grade deleteGrade(int id, int gradeId) {
         List<Grade> grades;
-        Student student=studentRepository.getStudentById(id).orElseThrow(()-> new IllegalStateException("Student with id "+id+" doesn't exist"));
-            grades=student.getGrades();
-            try {
-                Grade toRemove = new Grade();
+        Student student=studentRepository.findById(id).orElseThrow(()-> new IllegalStateException("Student with id "+id+" doesn't exist"));
+        grades=student.getGrades();
+        try {
+            Grade toRemove = new Grade();
 //                for (Grade grade : grades) {
 //                    if (grade.getId() == gradeId) {
 //                        toRemove = grade;
 //                        break;
 //                    }
 //                }
-                toRemove=getGradeById(id,gradeId);
-                grades.remove(toRemove);
-                return toRemove;
-            } catch (Exception e) {
-                return null;
-            }
+            toRemove=getGradeById(id,gradeId);
+            grades.remove(toRemove);
+            return toRemove;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public Grade getGradeById(int id, int gradeId) {
-        Student student=studentRepository.getStudentById(id).orElseThrow(() -> new IllegalStateException("Student with id "+id+"does not exist"));
+        Student student=studentRepository.findById(id).orElseThrow(() -> new IllegalStateException("Student with id "+id+"does not exist"));
         //return student.getGrades().get(gradeId);
         Grade grade=student.getGradeById(gradeId);
         if(grade != null){
@@ -92,7 +92,7 @@ public class StudentService {
     }
 
     @Transactional
-    public Grade updateGrade(int id,Integer value,String evaluationDate,int gradeId){
+    public Grade updateGrade(int id,Integer value,String evaluationDate,int gradeId) {
         Student student=studentRepository.findById(id).orElseThrow(()->new IllegalStateException("Student with id "+id+" does not exist"));
         Integer originalId=gradeId;
         Grade grade=getGradeById(id,gradeId);
