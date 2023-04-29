@@ -15,12 +15,12 @@ public class StudentConfig {
     @Bean
     CommandLineRunner commandLineRunner(StudentRepository repository){
         return args -> {
-//            Student student = new Student(301232,"student1@gmail.com", "Mihai");
-//            Student student1 = new Student(301233,"student2@gmail.com", "Andrei");
-//
-//
-//            Subject subject = new Subject("IP");
-//            Subject subject1 = new Subject("PA");
+            Student student = new Student(301232,"student1@gmail.com", "Mihai");
+            Student student1 = new Student(301233,"student2@gmail.com", "Andrei");
+
+
+            Subject subject = new Subject("IP");
+            Subject subject1 = new Subject("PA");
 //
 //            Grade grade1=new Grade(5,subject1, "12.12.2004");
 //
