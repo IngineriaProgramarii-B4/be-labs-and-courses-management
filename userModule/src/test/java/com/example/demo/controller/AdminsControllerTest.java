@@ -35,6 +35,7 @@ public class AdminsControllerTest {
     @BeforeEach
     public void setup() {
         admin1 = new Admin(
+                UUID.fromString("jknsdn"),
                 "Cuzic",
                 "Diana",
                 "diana.cuzic@gmail.com",
@@ -104,9 +105,9 @@ public class AdminsControllerTest {
 
         ArgumentCaptor<Admin> adminToCapture = ArgumentCaptor.forClass(Admin.class);
 
-        doNothing().when(adminsControllerMock).updateAdmin(adminToCapture.capture());
+        doNothing().when(adminsControllerMock).updateAdmin(adminToCapture.capture().getId(), adminToCapture.capture());
 
-        adminsControllerMock.updateAdmin(admin1);
+        adminsControllerMock.updateAdmin(admin1.getId(), admin1);
 
         assertEquals(admin1, adminToCapture.getValue());
     }

@@ -31,6 +31,15 @@ public abstract class User {
 
     }
 
+    public User(UUID id, String firstname, String lastname, String email, String username, int type) {
+        this.id = id;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.username = username;
+        this.type = type;
+    }
+
     public User(String firstname, String lastname, String email, String username, int type) {
         this.firstname = firstname;
         this.lastname = lastname;

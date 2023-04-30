@@ -35,6 +35,7 @@ public class StudentsControllerTest {
     @BeforeEach
     public void setup() {
         stud1 = new Student(
+                UUID.fromString("sfdghnjm"),
                 "Florin",
                 "Rotaru",
                 "florin.eugen@uaic.ro",
@@ -44,6 +45,7 @@ public class StudentsControllerTest {
                 "123FAKE92929",
                 new HashSet<>(Arrays.asList("IP", "PA", "SGBD", "TW", "SE")));
         stud2 = new Student(
+                UUID.fromString("sfdghs24354njm"),
                 "Antip",
                 "Andrei",
                 "andrei.antip@uaic.ro",
@@ -53,6 +55,7 @@ public class StudentsControllerTest {
                 "123BOSS135",
                 new HashSet<>(Arrays.asList("OOP", "SO", "PS", "FAI")));
         stud3 = new Student(
+                UUID.fromString("sfdghner4253-123ojm"),
                 "Olariu",
                 "Andreea",
                 "andreea.olariu@uaic.ro",
@@ -124,9 +127,9 @@ public class StudentsControllerTest {
 
         ArgumentCaptor<Student> studentToCapture = ArgumentCaptor.forClass(Student.class);
 
-        doNothing().when(studentsControllerMock).updateStudent(studentToCapture.capture());
+        doNothing().when(studentsControllerMock).updateStudent(studentToCapture.capture().getId(), studentToCapture.capture());
 
-        studentsControllerMock.updateStudent(stud1);
+        studentsControllerMock.updateStudent(stud1.getId(), stud1);
 
         assertEquals(stud1, studentToCapture.getValue());
     }

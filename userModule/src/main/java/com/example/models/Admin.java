@@ -3,6 +3,8 @@ package com.example.models;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "admins")
 public class Admin extends AcademicStaff {
@@ -12,6 +14,10 @@ public class Admin extends AcademicStaff {
 
     }
 
+    public Admin(UUID id, String firstname, String lastname, String email, String username, String office, String department) {
+        super(id, firstname, lastname, email, username, office, 0);
+        this.department = department;
+    }
     public Admin(String firstname, String lastname, String email, String username, String office, String department) {
 
         super(firstname, lastname, email, username, office, 0);

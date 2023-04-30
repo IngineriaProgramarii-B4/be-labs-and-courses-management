@@ -1,7 +1,9 @@
 package com.example.services;
 
 import com.example.models.Student;
+import com.example.models.Teacher;
 import com.example.repository.StudentsRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +30,7 @@ public class StudentsService {
 
         if (params.containsKey("id")) {
             if (!params.get("id").equals("")) {
-                id = UUID.fromString((String) params.get("id"));
+                id = (UUID) params.get("id");
             }
         }
 
@@ -51,5 +53,10 @@ public class StudentsService {
 
     public void saveStudent(Student student) {
         studentsRepository.save(student);
+    }
+    @Transactional
+    public void updateStudent(UUID id, Student student) {
+        // TODO : update the courses, it implies another table that makes connection between teacher and subjects
+        studentsRepository.updateStudent(id, student.getFirstname(), student.getLastname(), student.getEmail(), student.getUsername(), student.getYear(), student.getSemester(), student.getRegistrationNumber());
     }
 }

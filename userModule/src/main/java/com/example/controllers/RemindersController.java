@@ -88,7 +88,7 @@ public class RemindersController {
             @ApiResponse(responseCode = "201", description = "Resource added successfully.",
                     content = @Content)
     })
-    @PutMapping(value = "/reminder")
+    @PostMapping(value = "/reminders")
     public void updateReminder(@RequestBody Reminder reminder) {
         remindersService.saveReminder(reminder);
     }

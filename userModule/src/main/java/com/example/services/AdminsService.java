@@ -1,7 +1,9 @@
 package com.example.services;
 
 import com.example.models.Admin;
+import com.example.models.Teacher;
 import com.example.repository.AdminsRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +29,7 @@ public class AdminsService {
 
         if (params.containsKey("id")) {
             if (!params.get("id").equals("")) {
-                id = UUID.fromString((String) params.get("id"));
+                id = (UUID) params.get("id");
             }
         }
 
@@ -38,5 +40,9 @@ public class AdminsService {
 
     public void saveAdmin(Admin admin) {
         adminsRepository.save(admin);
+    }
+    @Transactional
+    public void updateAdmin(UUID id, Admin admin) {
+        adminsRepository.updateAdmin(id, admin.getFirstname(), admin.getLastname(), admin.getEmail(), admin.getUsername(), admin.getOffice(), admin.getDepartment());
     }
 }

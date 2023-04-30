@@ -35,6 +35,7 @@ public class TeachersControllerTest {
     @BeforeEach
     public void setup() {
         teacher1 = new Teacher(
+                UUID.fromString("sfdg23tyweqfthnjm"),
                 "Ciobaca",
                 "Stefan",
                 "stefan.ciobaca@uaic.com",
@@ -105,9 +106,9 @@ public class TeachersControllerTest {
 
         ArgumentCaptor<Teacher> teacherToCapture = ArgumentCaptor.forClass(Teacher.class);
 
-        doNothing().when(teachersControllerMock).updateTeacher(teacherToCapture.capture());
+        doNothing().when(teachersControllerMock).updateTeacher(teacherToCapture.capture().getId(), teacherToCapture.capture());
 
-        teachersControllerMock.updateTeacher(teacher1);
+        teachersControllerMock.updateTeacher(teacher1.getId(), teacher1);
 
         assertEquals(teacher1, teacherToCapture.getValue());
     }

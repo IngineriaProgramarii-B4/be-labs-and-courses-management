@@ -1,7 +1,6 @@
 package com.example.controllers;
 
 import com.example.models.Student;
-import com.example.models.Teacher;
 import com.example.services.StudentsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -11,11 +10,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @CrossOrigin
 @RestController
@@ -38,27 +39,43 @@ public class StudentsController {
             ),
             @ApiResponse(responseCode = "404", description = "Haven't found students that match the requirements",
                     content = @Content
-            ),
-            @ApiResponse(responseCode = "500", description = "Internal server error",
-                    content = @Content
             )
     })
     @GetMapping(value = {"/students"})
-    public List<Student> getStudentsByParams(@RequestParam Map<String, Object> params) {
+    public ResponseEntity<List<Student>> getStudentsByParams(@RequestParam Map<String, Object> params) {
         List<Student> students = studentsService.getStudentsByParams(params);
 
         if (students.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return students;
+        return new ResponseEntity<>(students, HttpStatus.OK);
     }
+
     @Operation(summary = "Receive necessary data in order to update information about a student in the database")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Resource updated successfully",
+            @ApiResponse(responseCode = "200", description = "Resource updated successfully",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Haven't found students that match the requirements",
+                    content = @Content
+            )
+    })
+    @PatchMapping(value = "/student/{id}")
+    public ResponseEntity<Void> updateStudent(@PathVariable UUID id, @RequestBody Student student) {
+        if (!studentsService.getStudentsByParams(Map.of("id", id)).isEmpty()) {
+            studentsService.updateStudent(id, student);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @Operation(summary = "Receive necessary data in order to add a new student in the database")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Resource added successfully",
                     content = @Content)
     })
-    @PutMapping(value = "/student")
-    public void updateStudent(@RequestBody Student student) {
+    @PostMapping(value = "/students")
+    public ResponseEntity<String> saveStudent(@RequestBody Student student) {
         studentsService.saveStudent(student);
+        return new ResponseEntity<>("Resource added successfully", HttpStatus.CREATED);
     }
 }
