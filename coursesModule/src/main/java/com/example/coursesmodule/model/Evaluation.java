@@ -29,16 +29,20 @@ public class Evaluation {
     private String component;
     @Column(name = "value", nullable = false)
     private float value;
+    @Column(name = "description")
+    private String description;
 
     public Evaluation() {
     }
 
     public Evaluation(@JsonProperty("id") Long id,
                       @JsonProperty("component") String component,
-                      @JsonProperty("value") float value) {
+                      @JsonProperty("value") float value,
+                      @JsonProperty("description") String description) {
         this.id = id;
         this.component = component;
         this.value = value;
+        this.description = description;
     }
 
     public Long getId() {
