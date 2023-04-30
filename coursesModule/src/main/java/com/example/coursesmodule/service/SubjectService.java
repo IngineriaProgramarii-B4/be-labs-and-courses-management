@@ -101,7 +101,7 @@ public class SubjectService {
         Optional<Subject> subjectMaybe = getSubjectByTitle(title);
         if(subjectMaybe.isEmpty())
             return 0;
-        String fileName = image.getOriginalFilename();
+        String fileName = title + "_" + image.getOriginalFilename();
         String filePath = resourcePath + fileName;
         String fileType = image.getContentType();
         Resource resource = new Resource(fileName, filePath, fileType);
@@ -117,7 +117,7 @@ public class SubjectService {
                 folder.mkdir();
             }
             // transfer the file to the savedResources folder
-            image.transferTo(new File(folderPath + image.getOriginalFilename()));
+            image.transferTo(new File(folderPath + fileName));
             return 1;
         } catch (Exception e) {
             e.printStackTrace();

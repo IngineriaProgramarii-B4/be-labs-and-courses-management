@@ -96,15 +96,15 @@ public class ResourceController {
         if(resource.isEmpty())
             throw new ResponseStatusException(NOT_FOUND, RESOURCE_ERROR);
         Resource resource1 = resource.get();
+        System.out.println(resource1);
         try{
             byte[] file = Files.readAllBytes(new File(resource1.getLocation()).toPath());
             return ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.valueOf(resource1.getType()))
                     .body(file);
         } catch (Exception e) {
-            throw new ResponseStatusException(NOT_FOUND, RESOURCE_ERROR);
+            throw new ResponseStatusException(INTERNAL_SERVER_ERROR, RESOURCE_ERROR);
         }
-
     }
 
     @DeleteMapping(path = "title={resourceTitle}")

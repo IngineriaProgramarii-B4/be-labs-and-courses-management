@@ -64,9 +64,10 @@ public class ResourceService {
     }
 
     public int addResource(MultipartFile file, String title, String type){
+        String fileName = title + "_" + type + "_" + file.getOriginalFilename();
         Resource resource = new Resource(
                 file.getOriginalFilename(),
-                resourcePath + file.getOriginalFilename(),
+                resourcePath + fileName,
                 file.getContentType());
         if(!validateNewResource(title, type, resource))
             return 0;
@@ -84,7 +85,8 @@ public class ResourceService {
                 folder.mkdir();
             }
             // transfer the file to the savedResources folder
-            file.transferTo(new File(folderPath + file.getOriginalFilename()));
+
+            file.transferTo(new File(folderPath + fileName));
             return 1;
         } catch (Exception e) {
             e.printStackTrace();

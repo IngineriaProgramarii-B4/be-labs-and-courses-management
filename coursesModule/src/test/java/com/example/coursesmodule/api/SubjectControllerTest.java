@@ -198,7 +198,7 @@ class SubjectControllerTest {
     @Test
     void getSubjectsByYearAndSemesterSuccessful() {
         List<Subject> subjects = new ArrayList<>();
-        subjects.add(new Subject(2, "Physics", 5, 1, 2, "description", List.of(new Component(2, "Course", 10, List.of(new Resource(2, "Book", "https://www.google.com/")))),
+        subjects.add(new Subject(2, "Physics", 5, 1, 2, "description", List.of(new Component(2, "Course", 10, List.of(new Resource("Book.pdf", "savedResources/Book.pdf", "application/pdf")))),
                 List.of(new Evaluation(1L, "Course", 0.5f))));
         when(subjectService.getSubjectsByYearAndSemester(1, 2)).thenReturn(subjects);
 
