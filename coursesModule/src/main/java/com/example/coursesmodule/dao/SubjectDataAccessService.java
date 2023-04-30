@@ -218,6 +218,7 @@ public class SubjectDataAccessService implements CourseDao{
             return 0;
         evaluationToUpdate.setComponent(evaluationMethod.getComponent());
         evaluationToUpdate.setValue(evaluationMethod.getValue());
+        evaluationToUpdate.setDescription(evaluationMethod.getDescription());
         evaluationRepo.save(evaluationToUpdate);
         return 1;
     }

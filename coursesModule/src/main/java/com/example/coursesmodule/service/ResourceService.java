@@ -15,7 +15,7 @@ import java.util.Optional;
 @Service
 public class ResourceService {
     private final CourseDao courseDao;
-    private final String resourcePath = "savedResources/";
+    private static final String RESOURCE_PATH = "savedResources/";
 
     @Autowired
     public ResourceService(@Qualifier("postgres") CourseDao courseDao) {
@@ -57,34 +57,24 @@ public class ResourceService {
         return true;
     }
 
-    public int addResource(String title, String type, Resource resource) {
-        if(!validateNewResource(title, type, resource))
-            return 0;
-        return courseDao.addResourceForComponentType(title, type, resource);
-    }
 
     public int addResource(MultipartFile file, String title, String type){
         String fileName = title + "_" + type + "_" + file.getOriginalFilename();
         Resource resource = new Resource(
                 file.getOriginalFilename(),
-                resourcePath + fileName,
+                RESOURCE_PATH + fileName,
                 file.getContentType());
         if(!validateNewResource(title, type, resource))
             return 0;
         if(courseDao.addResourceForComponentType(title, type, resource) == 0)
             return 0;
         try {
-            // write file to disk
-            // get the absolute path of the savedResources folder
             String absolutePath = new File("").getAbsolutePath();
-            // get the absolute path of the savedResources folder
-            String folderPath = absolutePath + "/" + resourcePath;
-            // create the savedResources folder if it doesn't exist
+            String folderPath = absolutePath + "/" + RESOURCE_PATH;
             File folder = new File(folderPath);
             if (!folder.exists()) {
                 folder.mkdir();
             }
-            // transfer the file to the savedResources folder
 
             file.transferTo(new File(folderPath + fileName));
             return 1;

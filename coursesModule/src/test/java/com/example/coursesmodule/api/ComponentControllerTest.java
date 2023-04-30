@@ -1,7 +1,6 @@
 package com.example.coursesmodule.api;
 
 import com.example.coursesmodule.model.Component;
-import com.example.coursesmodule.model.Resource;
 import com.example.coursesmodule.model.Subject;
 import com.example.coursesmodule.service.ComponentService;
 import com.example.coursesmodule.service.SubjectService;
@@ -13,10 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -53,10 +49,10 @@ class ComponentControllerTest {
     @Test
     void getComponents() {
         Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")))),
+                List.of(new Component(3, "Seminar", 14, new ArrayList<>())),
                 new ArrayList<>());
         List<Component> components = new ArrayList<>();
-        components.add(new Component(3, "Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/"))));
+        components.add(new Component(3, "Seminar", 14, new ArrayList<>()));
         when(componentService.getComponents(subject.getTitle())).thenReturn(components);
 
         List<Component> result = componentController.getComponents(subject.getTitle());
@@ -64,17 +60,17 @@ class ComponentControllerTest {
         assertEquals(1, result.size());
         assertEquals("Seminar", result.get(0).getType());
         assertEquals(14, result.get(0).getNumberWeeks());
-        assertEquals(1, result.get(0).getResources().size());
+        assertEquals(0, result.get(0).getResources().size());
     }
 
     @Test
     void testAddComponentSuccessful() {
         Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")))),
+                List.of(new Component(3, "Seminar", 14, new ArrayList<>())),
                 new ArrayList<>());
         subjectService.addSubject(subject);
         String title = "Algebraic Foundations of Science";
-        Component component = new Component(3,"Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")));
+        Component component = new Component(3,"Seminar", 14, new ArrayList<>());
 
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
         when(componentService.addComponent(title, component)).thenReturn(1);
@@ -87,11 +83,11 @@ class ComponentControllerTest {
     @Test
     void testAddInvalidComponent() {
         Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")))),
+                List.of(new Component(3, "Seminar", 14, new ArrayList<>())),
                 new ArrayList<>());
         subjectService.addSubject(subject);
         String title = "Algebraic Foundations of Science";
-        Component component = new Component(3,"Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")));
+        Component component = new Component(3,"Seminar", 14, new ArrayList<>());
 
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
         when(componentService.addComponent(title, component)).thenReturn(0);
@@ -104,11 +100,11 @@ class ComponentControllerTest {
     @Test
     void testAddComponentInvalidSubject() {
         Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")))),
+                List.of(new Component(3, "Seminar", 14, new ArrayList<>())),
                 new ArrayList<>());
         subjectService.addSubject(subject);
         String title = "Algebraic Foundations of Science";
-        Component component = new Component(3,"Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")));
+        Component component = new Component(3,"Seminar", 14, new ArrayList<>());
 
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.empty());
 
@@ -120,25 +116,25 @@ class ComponentControllerTest {
     @Test
     void getComponentByTypeSuccessful() {
         Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")))),
+                List.of(new Component(3, "Seminar", 14, new ArrayList<>())),
                 new ArrayList<>());
         subjectService.addSubject(subject);
         String title = "Algebraic Foundations of Science";
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
-        Component component = new Component(3,"Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")));
+        Component component = new Component(3,"Seminar", 14, new ArrayList<>());
         when(componentService.getComponentByType(title, "Seminar")).thenReturn(Optional.of(component));
 
         Component result = componentController.getComponentByType(title, "Seminar");
 
         assertEquals("Seminar", result.getType());
         assertEquals(14, result.getNumberWeeks());
-        assertEquals(1, result.getResources().size());
+        assertEquals(0, result.getResources().size());
     }
 
     @Test
     void getComponentByTypeInvalidSubject() {
         Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")))),
+                List.of(new Component(3, "Seminar", 14, new ArrayList<>())),
                 new ArrayList<>());
         subjectService.addSubject(subject);
         String title = "Algebraic Foundations of Science";
@@ -152,7 +148,7 @@ class ComponentControllerTest {
     @Test
     void getComponentByTypeInvalidComponent() {
         Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")))),
+                List.of(new Component(3, "Seminar", 14, new ArrayList<>())),
                 new ArrayList<>());
         subjectService.addSubject(subject);
         String title = "Algebraic Foundations of Science";
@@ -167,7 +163,7 @@ class ComponentControllerTest {
     @Test
     void deleteComponentByTypeSuccessful() {
         Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")))),
+                List.of(new Component(3, "Seminar", 14, new ArrayList<>())),
                 new ArrayList<>());
         subjectService.addSubject(subject);
         String title = "Algebraic Foundations of Science";
@@ -182,7 +178,7 @@ class ComponentControllerTest {
     @Test
     void deleteComponentByTypeInvalidSubject() {
         Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")))),
+                List.of(new Component(3, "Seminar", 14, new ArrayList<>())),
                 new ArrayList<>());
         subjectService.addSubject(subject);
         String title = "Algebraic Foundations of Science";
@@ -196,7 +192,7 @@ class ComponentControllerTest {
     @Test
     void deleteComponentByTypeInvalidComponent() {
         Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")))),
+                List.of(new Component(3, "Seminar", 14, new ArrayList<>())),
                 new ArrayList<>());
         subjectService.addSubject(subject);
         String title = "Algebraic Foundations of Science";
@@ -210,15 +206,14 @@ class ComponentControllerTest {
 
     @Test
     void updateComponentByType() {
-
         Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")))),
+                List.of(new Component(3, "Seminar", 14, new ArrayList<>())),
                 new ArrayList<>());
         subjectService.addSubject(subject);
         String title = "Algebraic Foundations of Science";
         String type = "Seminar";
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
-        Component component = new Component(3,"Seminar", 10, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")));
+        Component component = new Component(3,"Seminar", 10, new ArrayList<>());
         when(componentService.getComponentByType(title, type)).thenReturn(Optional.of(component));
 
         when(componentService.updateComponentByType(title, type, component)).thenReturn(1);
@@ -230,9 +225,9 @@ class ComponentControllerTest {
 
     @Test
     void updateComponentByTypeInvalidSubject() {
-        Component testComponent = new Component(3, "Seminar", 10, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")));
+        Component testComponent = new Component(3, "Seminar", 10, new ArrayList<>());
         Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")))),
+                List.of(new Component(3, "Seminar", 14, new ArrayList<>())),
                 new ArrayList<>());
         subjectService.addSubject(subject);
         String title = "Algebraic Foundations of Science";
@@ -245,9 +240,9 @@ class ComponentControllerTest {
 
     @Test
     void updateComponentByTypeInitialComponentInvalid(){
-        Component testComponent = new Component(3,"Seminar", 10, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")));
+        Component testComponent = new Component(3,"Seminar", 10, new ArrayList<>());
         Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")))),
+                List.of(new Component(3, "Seminar", 14, new ArrayList<>())),
                 new ArrayList<>());
         String title = "Algebraic Foundations of Science";
         String type = "Seminar";
@@ -263,7 +258,7 @@ class ComponentControllerTest {
 
     @Test
     void updateComponentByTypeBadRequest() {
-        Component testComponent = new Component(3, "Seminar", 14, List.of(new Resource(3, "Seminar", "https://www.flt-info.eu/course/afcs/")));
+        Component testComponent = new Component(3, "Seminar", 14, new ArrayList<>());
         String title = "Maths";
         String type = "Seminar";
         Subject subject = new Subject(1, "Maths", 4, 1, 1, """
@@ -271,9 +266,9 @@ class ComponentControllerTest {
                     Students will learn how to solve complex mathematical problems, develop analytical and critical thinking skills, and enhance their ability to reason logically. They will also develop a deep appreciation for the beauty and elegance of mathematics and its practical applications in various fields, such as engineering, physics, finance, and computer science.
                     The course includes lectures, interactive discussions, and hands-on activities to help students grasp abstract mathematical concepts and apply them to real-world problems. Students will also have opportunities to collaborate with their peers, engage in group projects, and receive individualized feedback from the instructor.
                     Upon completion of the course, students will have a solid foundation in mathematics, which will prepare them for advanced courses in math or related disciplines, as well as careers in fields that require strong quantitative skills.""",
-                List.of(new Component(1, "Course", 10, List.of(new Resource(1, "Book", "https://www.google.com/")))),
+                List.of(new Component(1, "Course", 10, new ArrayList<>())),
                 new ArrayList<>());
-        Component component = new Component(1, "Course", 10, List.of(new Resource(1, "Book", "https://www.google.com/")));
+        Component component = new Component(1, "Course", 10, new ArrayList<>());
 
         when(subjectService.getSubjectByTitle(title)).thenReturn(Optional.of(subject));
         when(componentService.getComponentByType(title, type)).thenReturn(Optional.of(component));

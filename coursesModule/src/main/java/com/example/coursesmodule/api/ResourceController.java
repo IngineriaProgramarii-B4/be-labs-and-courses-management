@@ -59,19 +59,6 @@ public class ResourceController {
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, RESOURCE_ERROR));
     }
 
-/*    @PostMapping
-    public void addResource(@PathVariable("subjectTitle") String title,
-                            @PathVariable("componentType") String type,
-                            @RequestBody Resource resource) {
-        if(subjectService.getSubjectByTitle(title).isEmpty())
-            throw new ResponseStatusException(NOT_FOUND, SUBJECT_ERROR);
-        if(componentService.getComponentByType(title, type).isEmpty())
-            throw new ResponseStatusException(NOT_FOUND, COMPONENT_ERROR);
-        if(resourceService.addResource(title, type, resource) == 0)
-            throw new ResponseStatusException(NOT_FOUND, COMPONENT_ERROR);
-        throw new ResponseStatusException(CREATED, "Resource created successfully");
-    }*/
-
     @PostMapping
     public void addResourceFile(@PathVariable("subjectTitle") String title,
                                 @PathVariable("componentType") String type,
@@ -85,7 +72,7 @@ public class ResourceController {
     }
 
     @GetMapping("/file={resourceTitle}")
-    public ResponseEntity<?> getResourceFile(@PathVariable("subjectTitle") String title,
+    public ResponseEntity<byte[]> getResourceFile(@PathVariable("subjectTitle") String title,
                                           @PathVariable("componentType") String type,
                                           @PathVariable("resourceTitle") String resourceTitle) {
         if(subjectService.getSubjectByTitle(title).isEmpty())
@@ -96,7 +83,6 @@ public class ResourceController {
         if(resource.isEmpty())
             throw new ResponseStatusException(NOT_FOUND, RESOURCE_ERROR);
         Resource resource1 = resource.get();
-        System.out.println(resource1);
         try{
             byte[] file = Files.readAllBytes(new File(resource1.getLocation()).toPath());
             return ResponseEntity.status(HttpStatus.OK)

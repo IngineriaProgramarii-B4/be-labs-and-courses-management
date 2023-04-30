@@ -20,7 +20,7 @@ import java.util.Set;
 @Transactional
 public class SubjectService {
     private final CourseDao courseDao;
-    private final String resourcePath = "savedResources/";
+    private static final String RESOURCE_PATH = "savedResources/";
 
     @Autowired
     public SubjectService(@Qualifier("postgres") CourseDao courseDao) {
@@ -102,21 +102,18 @@ public class SubjectService {
         if(subjectMaybe.isEmpty())
             return 0;
         String fileName = title + "_" + image.getOriginalFilename();
-        String filePath = resourcePath + fileName;
+        String filePath = RESOURCE_PATH + fileName;
         String fileType = image.getContentType();
         Resource resource = new Resource(fileName, filePath, fileType);
         if(courseDao.saveImageToSubject(title, resource) == 0)
             return 0;
         try {
             String absolutePath = new File("").getAbsolutePath();
-            // get the absolute path of the savedResources folder
-            String folderPath = absolutePath + "/" + resourcePath;
-            // create the savedResources folder if it doesn't exist
+            String folderPath = absolutePath + "/" + RESOURCE_PATH;
             File folder = new File(folderPath);
             if (!folder.exists()) {
                 folder.mkdir();
             }
-            // transfer the file to the savedResources folder
             image.transferTo(new File(folderPath + fileName));
             return 1;
         } catch (Exception e) {

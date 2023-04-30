@@ -77,14 +77,13 @@ public class SubjectController {
             throw new ResponseStatusException(NOT_ACCEPTABLE, "Image is invalid");
         throw new ResponseStatusException(NO_CONTENT, "Image uploaded successfully");
     }
-
     @GetMapping(path = "subjectTitle={title}/image")
-    public ResponseEntity<?> getSubjectImage(@PathVariable("title") String title) {
+    public ResponseEntity<byte[]> getSubjectImage(@PathVariable("title") String title) {
         Optional<Subject> subjectMaybe = subjectService.getSubjectByTitle(title);
         if(subjectMaybe.isEmpty())
-            return ResponseEntity.status(NOT_FOUND).body(SUBJECT_ERROR);
+            return ResponseEntity.status(NOT_FOUND).body(SUBJECT_ERROR.getBytes());
         if(subjectMaybe.get().getImage() == null)
-            return ResponseEntity.status(NOT_FOUND).body("Image not found");
+            return ResponseEntity.status(NOT_FOUND).body("Image not found".getBytes());
         try {
             byte[] img = Files.readAllBytes(new File(subjectMaybe.get().getImage().getLocation()).toPath());
             return ResponseEntity
@@ -92,7 +91,7 @@ public class SubjectController {
                     .contentType(MediaType.valueOf(subjectMaybe.get().getImage().getType()))
                     .body(img);
         } catch (Exception e) {
-            return ResponseEntity.status(NOT_FOUND).body("Image not found");
+            return ResponseEntity.status(NOT_FOUND).body("Image not found".getBytes());
         }
     }
 }
