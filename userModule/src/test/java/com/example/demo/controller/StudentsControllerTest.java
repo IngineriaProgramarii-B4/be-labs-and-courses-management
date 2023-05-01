@@ -11,6 +11,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -35,7 +36,7 @@ public class StudentsControllerTest {
     @BeforeEach
     public void setup() {
         stud1 = new Student(
-                UUID.fromString("sfdghnjm"),
+                UUID.fromString("fa303972-8c68-4621-957d-a448c7b1ea69"),
                 "Florin",
                 "Rotaru",
                 "florin.eugen@uaic.ro",
@@ -45,7 +46,7 @@ public class StudentsControllerTest {
                 "123FAKE92929",
                 new HashSet<>(Arrays.asList("IP", "PA", "SGBD", "TW", "SE")));
         stud2 = new Student(
-                UUID.fromString("sfdghs24354njm"),
+                UUID.fromString("ddc60c05-2402-4349-9cbf-f4c414cbbd5e"),
                 "Antip",
                 "Andrei",
                 "andrei.antip@uaic.ro",
@@ -55,7 +56,7 @@ public class StudentsControllerTest {
                 "123BOSS135",
                 new HashSet<>(Arrays.asList("OOP", "SO", "PS", "FAI")));
         stud3 = new Student(
-                UUID.fromString("sfdghner4253-123ojm"),
+                UUID.fromString("ddc60c05-2402-4349-9cbf-f4c414cbbd5e"),
                 "Olariu",
                 "Andreea",
                 "andreea.olariu@uaic.ro",
@@ -69,26 +70,18 @@ public class StudentsControllerTest {
     @Test
     public void getStudentsByParamsTest() throws Exception {
         List<Student> listStudents = List.of(stud1, stud2, stud3);
-
         Map<String, Object> args = Collections.emptyMap();
-
         when(studentsService.getStudentsByParams(args)).thenReturn(listStudents);
-
         String url = "/api/v1/students";
-
         MvcResult mvcResult = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
-
         String result = mvcResult.getResponse().getContentAsString();
-
         String expected = null;
-
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             expected = objectMapper.writeValueAsString(listStudents);
         } catch(JsonProcessingException e) {
             e.printStackTrace();
         }
-
         assertEquals(result, expected);
     }
 
@@ -122,15 +115,11 @@ public class StudentsControllerTest {
 
     @Test
     void updateStudentTest() {
-
         StudentsController studentsControllerMock = mock(StudentsController.class);
-
         ArgumentCaptor<Student> studentToCapture = ArgumentCaptor.forClass(Student.class);
-
-        doNothing().when(studentsControllerMock).updateStudent(studentToCapture.capture().getId(), studentToCapture.capture());
-
-        studentsControllerMock.updateStudent(stud1.getId(), stud1);
-
+        UUID fakeUUID = UUID.fromString("fa303972-8c68-4621-957d-a448c7b1ea69");
+        doNothing().when(studentsControllerMock).updateStudent(fakeUUID, studentToCapture.capture());
+        studentsControllerMock.updateStudent(fakeUUID, stud1);
         assertEquals(stud1, studentToCapture.getValue());
     }
 }

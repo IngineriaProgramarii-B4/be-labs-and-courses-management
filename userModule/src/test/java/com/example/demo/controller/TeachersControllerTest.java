@@ -35,7 +35,7 @@ public class TeachersControllerTest {
     @BeforeEach
     public void setup() {
         teacher1 = new Teacher(
-                UUID.fromString("sfdg23tyweqfthnjm"),
+                UUID.fromString("fa303972-8c68-4621-957d-a448c7b1ea69"),
                 "Ciobaca",
                 "Stefan",
                 "stefan.ciobaca@uaic.com",

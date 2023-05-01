@@ -1,21 +1,27 @@
 package com.example.models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Entity
 @Table(name = "reminders")
+@SQLDelete(sql = "UPDATE reminders SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 public class Reminder {
     private UUID creatorId;
     private String creatorUsername;
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID reminderId;
+    private UUID id;
     private LocalDateTime dueDateTime;
     private String title;
     private String description;
+    private boolean deleted = Boolean.FALSE;
 
     public Reminder() {
 
@@ -27,6 +33,14 @@ public class Reminder {
         this.dueDateTime = LocalDateTime.parse(dueDateTime, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"  ));
         this.title = title;
         this.description = description;
+    }
+
+    public boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public String getCreatorUsername() {
@@ -45,12 +59,12 @@ public class Reminder {
         this.creatorId = creatorId;
     }
 
-    public UUID getReminderId() {
-        return reminderId;
+    public UUID getId() {
+        return id;
     }
 
-    public void setReminderId(UUID reminderId) {
-        this.reminderId = reminderId;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public LocalDateTime getDueDateTime() {

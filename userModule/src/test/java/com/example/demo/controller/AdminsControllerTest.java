@@ -35,7 +35,7 @@ public class AdminsControllerTest {
     @BeforeEach
     public void setup() {
         admin1 = new Admin(
-                UUID.fromString("jknsdn"),
+                UUID.fromString("fa303972-8c68-4621-957d-a448c7b1ea69"),
                 "Cuzic",
                 "Diana",
                 "diana.cuzic@gmail.com",
