@@ -63,7 +63,8 @@ public class ResourceService {
         Resource resource = new Resource(
                 file.getOriginalFilename(),
                 RESOURCE_PATH + fileName,
-                file.getContentType());
+                file.getContentType(),
+                false);
         if(!validateNewResource(title, type, resource))
             return 0;
         if(courseDao.addResourceForComponentType(title, type, resource) == 0)
@@ -97,7 +98,14 @@ public class ResourceService {
             return 0;
         }
         Resource resource = optionalResource.get();
+        String potentialLocation = resource.getLocation().substring(
+                0,
+                resource.getLocation().lastIndexOf("/") + 1
+        ) + "DELETED_" + resource.getTitle();
+        File file = new File(resource.getLocation());
+
         if (validateExistingResource(title, type, resource)) {
+            boolean renameSuccessful = file.renameTo(new File(potentialLocation)); //not sure what to do with this
             return courseDao.deleteResourceByTitleForComponentType(title, type, resourceTitle);
         }
         return 0;

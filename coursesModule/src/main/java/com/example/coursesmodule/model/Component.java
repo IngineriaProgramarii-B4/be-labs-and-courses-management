@@ -35,19 +35,22 @@ public class Component {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "component_id", referencedColumnName = "id")
     private List<Resource> resources = new ArrayList<>();
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted;
 
     public Component() {
     }
 
-
     public Component(@JsonProperty("id") int id,
                      @JsonProperty("type") String type,
                      @JsonProperty("numberWeeks") int numberWeeks,
-                     @JsonProperty("resources") List<Resource> resources) {
+                     @JsonProperty("resources") List<Resource> resources,
+                     @JsonProperty("isDeleted") boolean isDeleted) {
         this.id = id;
         this.type = type;
         this.numberWeeks = numberWeeks;
         this.resources = resources;
+        this.isDeleted = isDeleted;
     }
 
     //setters
@@ -63,9 +66,12 @@ public class Component {
         this.numberWeeks = numberWeeks;
     }
 
-
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     //getters
@@ -86,12 +92,20 @@ public class Component {
         return id;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
     public void addResource(Resource resource) {
         this.resources.add(resource);
     }
 
     public void removeResource(Resource resource) {
-        this.resources.remove(resource);
+        int index = resources.indexOf(resource);
+        if (index != -1) {
+            resource.setDeleted(true);
+            resources.set(index, resource);
+        }
     }
 
     @Override
@@ -101,6 +115,7 @@ public class Component {
                 ", type='" + type + '\'' +
                 ", numberWeeks=" + numberWeeks +
                 ", resources=" + resources +
+                ", isDeleted=" + isDeleted +
                 '}';
     }
 }

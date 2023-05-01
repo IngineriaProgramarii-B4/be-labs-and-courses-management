@@ -24,7 +24,7 @@ public class EvaluationService {
         double sum = 0.;
         for(Evaluation eval : courseDao.getEvaluationMethods(title))
             sum+=eval.getValue();
-        if(sum+evaluation.getValue() > 1.0)
+        if(sum+evaluation.getValue() > 1.0 || evaluation.isDeleted())
             return false;
         for(Component comp : courseDao.getComponents(title))
             if(comp.getType().equals(evaluation.getComponent()))

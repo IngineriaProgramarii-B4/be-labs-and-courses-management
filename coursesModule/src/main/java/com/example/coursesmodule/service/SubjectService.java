@@ -28,11 +28,11 @@ public class SubjectService {
     }
 
     public boolean validateSubject(Subject subject){
-        if(subject.getTitle().isEmpty())
+        if(subject.getTitle().isEmpty() || subject.isDeleted())
             return false;
         List<Subject> subjects = getAllSubjects();
         for(Subject subject1 : subjects)
-            if(subject1.getTitle().equals(subject.getTitle()))
+            if(subject1.getTitle().equals(subject.getTitle())) //only non-deleted subjects
                 return false;
         return validateComponents(subject);
     }
@@ -40,7 +40,7 @@ public class SubjectService {
     public boolean validateTitle(String title){
         List<Subject> subjects = getAllSubjects();
         for(Subject subject : subjects)
-            if(subject.getTitle().equals(title))
+            if(subject.getTitle().equals(title)) //only non-deleted subjects
                 return true;
         return false;
     }
@@ -48,7 +48,7 @@ public class SubjectService {
     private boolean validateUpdate(String title, String title1) {
         if(title.equals(title1))
             return true;
-        for(Subject subject : courseDao.selectAllSubjects())
+        for(Subject subject : courseDao.selectAllSubjects()) //only non-deleted subjects
             if(subject.getTitle().equals(title1))
                 return false;
         return true;
@@ -68,7 +68,6 @@ public class SubjectService {
         if(!validateSubject(subject))
             return 0;
         return courseDao.insertSubject(subject);
-
     }
 
     public List<Subject> getAllSubjects() {
@@ -86,9 +85,17 @@ public class SubjectService {
     }
 
     public int deleteSubjectByTitle(String title) {
-        if(validateTitle(title))
-            return courseDao.deleteSubjectByTitle(title);
-        else return 0;
+        ComponentService componentService = new ComponentService(courseDao);
+
+        if (!validateTitle(title))
+            return 0;
+
+        for (Component component : courseDao.getComponents(title)) {
+            String type = component.getType();
+            componentService.deleteComponentByType(title, type);
+        }
+
+        return courseDao.deleteSubjectByTitle(title);
     }
 
     public int updateSubjectByTitle(String title, Subject subject) {
@@ -97,14 +104,23 @@ public class SubjectService {
         return courseDao.updateSubjectByTitle(title, subject);
     }
 
-    public int uploadSubjectImage(String title, MultipartFile image){
+    public int uploadSubjectImage(String title, MultipartFile image) {
         Optional<Subject> subjectMaybe = getSubjectByTitle(title);
         if(subjectMaybe.isEmpty())
             return 0;
+
+        Resource oldImage = subjectMaybe.get().getImage();
+        String oldImageLocation = oldImage.getLocation();
+        String potentialLocation = oldImageLocation.substring(
+                0,
+                oldImageLocation.lastIndexOf("/") + 1
+        ) + "OUTDATED_" + oldImage.getTitle();
+        File oldImageFile = new File(oldImageLocation);
+
         String fileName = title + "_" + image.getOriginalFilename();
         String filePath = RESOURCE_PATH + fileName;
         String fileType = image.getContentType();
-        Resource resource = new Resource(fileName, filePath, fileType);
+        Resource resource = new Resource(fileName, filePath, fileType, false);
         if(courseDao.saveImageToSubject(title, resource) == 0)
             return 0;
         try {
@@ -114,12 +130,13 @@ public class SubjectService {
             if (!folder.exists()) {
                 folder.mkdir();
             }
+
+            boolean renameSuccessful = oldImageFile.renameTo(new File(potentialLocation));
             image.transferTo(new File(folderPath + fileName));
             return 1;
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
-
     }
 }

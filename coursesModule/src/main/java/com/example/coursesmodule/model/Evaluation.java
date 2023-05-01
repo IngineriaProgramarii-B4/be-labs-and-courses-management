@@ -31,6 +31,8 @@ public class Evaluation {
     private float value;
     @Column(name = "description")
     private String description;
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted;
 
     public Evaluation() {
     }
@@ -38,11 +40,13 @@ public class Evaluation {
     public Evaluation(@JsonProperty("id") Long id,
                       @JsonProperty("component") String component,
                       @JsonProperty("value") float value,
-                      @JsonProperty("description") String description) {
+                      @JsonProperty("description") String description,
+                      @JsonProperty("isDeleted") boolean isDeleted) {
         this.id = id;
         this.component = component;
         this.value = value;
         this.description = description;
+        this.isDeleted = isDeleted;
     }
 
     public Long getId() {
@@ -77,12 +81,21 @@ public class Evaluation {
         this.description = description;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
     @Override
     public String toString() {
         return "Evaluation{" +
                 "id=" + id +
                 ", component='" + component + '\'' +
                 ", value=" + value +
+                ", isDeleted=" + isDeleted +
                 '}';
     }
 }

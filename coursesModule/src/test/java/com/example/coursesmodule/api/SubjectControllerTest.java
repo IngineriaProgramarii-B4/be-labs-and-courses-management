@@ -50,8 +50,8 @@ class SubjectControllerTest {
     void getAllSubjects() {
 
         List<Subject> subjects = new ArrayList<>();
-        subjects.add(new Subject(1, "Math", 5, 1, 1, "description A", new ArrayList<>(), new ArrayList<>()));
-        subjects.add(new Subject(2, "English", 4, 1, 1, "description B", new ArrayList<>(), new ArrayList<>()));
+        subjects.add(new Subject(1, "Math", 5, 1, 1, "description A", new ArrayList<>(), new ArrayList<>(), false));
+        subjects.add(new Subject(2, "English", 4, 1, 1, "description B", new ArrayList<>(), new ArrayList<>(), false));
         when(subjectService.getAllSubjects()).thenReturn(subjects);
 
         List<Subject> result = subjectController.getAllSubjects();
@@ -89,7 +89,8 @@ class SubjectControllerTest {
                             "semester": 1,
                             "description": "description",
                             "components": [],
-                            "evaluations": []
+                            "evaluations": [],
+                            "isDeleted": false
                         }"""))
                 .andExpect(status().isCreated());
     }
@@ -97,7 +98,7 @@ class SubjectControllerTest {
     //passed
     @Test
     void addSubjectThatAlreadyExists() {
-        Subject subject = new Subject(1, "Math", 5, 1, 1, "description", new ArrayList<>(), new ArrayList<>());
+        Subject subject = new Subject(1, "Math", 5, 1, 1, "description", new ArrayList<>(), new ArrayList<>(), false);
         when(subjectService.addSubject(any())).thenReturn(0);
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> subjectController.addSubject(subject));
@@ -124,7 +125,6 @@ class SubjectControllerTest {
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> subjectController.deleteSubjectByTitle(title));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         verify(subjectService, times(1)).deleteSubjectByTitle(title);
-
     }
 
 
@@ -132,7 +132,7 @@ class SubjectControllerTest {
     @Test
     void updateSubjectById() {
         String title = "Math";
-        Subject updatedSubject = new Subject(1, "Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>());
+        Subject updatedSubject = new Subject(1, "Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         when(subjectService.getSubjectByTitle(title)).thenReturn(Optional.of(new Subject()));
         when(subjectService.updateSubjectByTitle(title, updatedSubject)).thenReturn(1);
 
@@ -146,7 +146,7 @@ class SubjectControllerTest {
     @Test
     void updateSubjectByIdNotFound() {
         String title = "Physics";
-        Subject updatedSubject = new Subject(2, "Physics", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>());
+        Subject updatedSubject = new Subject(2, "Physics", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         when(subjectService.getSubjectByTitle(title)).thenReturn(Optional.empty());
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> subjectController.updateSubjectByTitle(title, updatedSubject));
@@ -158,7 +158,7 @@ class SubjectControllerTest {
     @Test
     void updateSubjectWithInvalidSubject(){
         String title = "Math";
-        Subject updatedSubject = new Subject(1, "Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>());
+        Subject updatedSubject = new Subject(1, "Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         when(subjectService.getSubjectByTitle(title)).thenReturn(Optional.of(new Subject()));
         when(subjectService.updateSubjectByTitle(title, updatedSubject)).thenReturn(0);
 
@@ -171,7 +171,7 @@ class SubjectControllerTest {
     //passed
     @Test
     void getSubjectByTitle() {
-        Subject subject = new Subject(4, "Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>());
+        Subject subject = new Subject(4, "Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
         subjectService.addSubject(subject);
 
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
@@ -198,8 +198,8 @@ class SubjectControllerTest {
     @Test
     void getSubjectsByYearAndSemesterSuccessful() {
         List<Subject> subjects = new ArrayList<>();
-        subjects.add(new Subject(2, "Physics", 5, 1, 2, "description", List.of(new Component(2, "Course", 10, List.of(new Resource("Book.pdf", "savedResources/Book.pdf", "application/pdf")))),
-                List.of(new Evaluation(1L, "Course", 0.5f, "ceva descriere"))));
+        subjects.add(new Subject(2, "Physics", 5, 1, 2, "description", List.of(new Component(2, "Course", 10, List.of(new Resource("Book.pdf", "savedResources/Book.pdf", "application/pdf", false)), false)),
+                List.of(new Evaluation(1L, "Course", 0.5f, "ceva descriere", false)), false));
         when(subjectService.getSubjectsByYearAndSemester(1, 2)).thenReturn(subjects);
 
         List<Subject> result = subjectController.getSubjectsByYearAndSemester(1, 2);
