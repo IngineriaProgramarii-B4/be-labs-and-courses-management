@@ -41,11 +41,6 @@ class ComponentControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(componentController).build();
     }
 
-    @AfterEach
-    public void tearDown() {
-        mockMvc = MockMvcBuilders.standaloneSetup(componentController).build();
-    }
-
     @Test
     void getComponents() {
         Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",

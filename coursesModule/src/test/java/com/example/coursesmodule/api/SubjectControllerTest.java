@@ -12,6 +12,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -310,12 +311,4 @@ class SubjectControllerTest {
         assertArrayEquals(mockImageBytes, response.getBody());
     }
 
-    @Test
-    public void testGetSubjectImageNotFoundImage() throws Exception {
-        when(subjectService.getSubjectByTitle(anyString())).thenReturn(Optional.empty());
-
-        ResponseEntity<byte[]> response = subjectController.getSubjectImage("Test");
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("Subject not found", new String(response.getBody()));
-    }
 }

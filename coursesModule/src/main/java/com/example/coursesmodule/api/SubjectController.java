@@ -83,8 +83,6 @@ public class SubjectController {
         Optional<Subject> subjectMaybe = subjectService.getSubjectByTitle(title);
         if(subjectMaybe.isEmpty())
             return ResponseEntity.status(NOT_FOUND).body(SUBJECT_ERROR.getBytes());
-        if(subjectMaybe.get().getImage() == null)
-            return ResponseEntity.status(NOT_FOUND).body("Image not found".getBytes());
         try {
             byte[] img = Files.readAllBytes(new File(subjectMaybe.get().getImage().getLocation()).toPath());
             return ResponseEntity
