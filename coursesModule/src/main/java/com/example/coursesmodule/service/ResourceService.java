@@ -57,7 +57,6 @@ public class ResourceService {
         return true;
     }
 
-
     public int addResource(MultipartFile file, String title, String type){
         String fileName = title + "_" + type + "_" + file.getOriginalFilename();
         Resource resource = new Resource(
@@ -109,11 +108,5 @@ public class ResourceService {
             return courseDao.deleteResourceByTitleForComponentType(title, type, resourceTitle);
         }
         return 0;
-    }
-
-    public int updateResourceByTitle(String title, String type, String resourceTitle, Resource resource) {
-        if(!validateUpdate(title, type, resourceTitle, resource))
-            return 0;
-        return courseDao.updateResourceByTitleForComponentType(title, type, resourceTitle, resource);
     }
 }

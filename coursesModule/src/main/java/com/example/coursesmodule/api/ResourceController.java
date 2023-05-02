@@ -105,18 +105,4 @@ public class ResourceController {
             throw new ResponseStatusException(NOT_FOUND, RESOURCE_ERROR);
         throw new ResponseStatusException(NO_CONTENT, "Resource deleted successfully");
     }
-
-    @PutMapping(path = "title={resourceTitle}")
-    public void updateResourceByTitle(@PathVariable("subjectTitle") String title,
-                                      @PathVariable("componentType") String type,
-                                      @PathVariable("resourceTitle") String resourceTitle,
-                                      @RequestBody Resource resource) {
-        if(subjectService.getSubjectByTitle(title).isEmpty())
-            throw new ResponseStatusException(NOT_FOUND, SUBJECT_ERROR);
-        if(componentService.getComponentByType(title, type).isEmpty())
-            throw new ResponseStatusException(NOT_FOUND, COMPONENT_ERROR);
-        if(resourceService.updateResourceByTitle(title, type, resourceTitle, resource) == 0) {
-            throw new ResponseStatusException(NOT_FOUND, RESOURCE_ERROR);
-        }
-    }
 }

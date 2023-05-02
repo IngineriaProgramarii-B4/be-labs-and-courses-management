@@ -135,13 +135,13 @@ public class SubjectDataAccessService implements CourseDao{
 
         Resource oldImage = subjectToUpdate.getImage();
         if (oldImage != null) {
-            String locationOfOldImage = oldImage.getLocation(); //RESOURCE_PATH/Subject_image.jpg
-            String locationOfOldImageUpdated = locationOfOldImage.substring(
+            String oldImageLocation = oldImage.getLocation(); //RESOURCE_PATH/Subject_image.jpg
+            String oldImageLocationUpdated = oldImageLocation.substring(
                     0,
-                    locationOfOldImage.lastIndexOf("/") + 1
+                    oldImageLocation.lastIndexOf("/") + 1
             ) + "OUTDATED_" + title + "_" + oldImage.getTitle();
 
-            oldImage.setLocation(locationOfOldImageUpdated);
+            oldImage.setLocation(oldImageLocationUpdated);
             //oldImage location: RESOURCE_PATH/Subject_image.jpg -> RESOURCE_PATH/OUTDATED_Subject_image.jpg;
 
             oldImage.setDeleted(true);

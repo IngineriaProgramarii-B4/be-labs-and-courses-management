@@ -148,6 +148,10 @@ public class SubjectService {
             return 0;
 
         Resource oldImage = subjectMaybe.get().getImage();
+        String oldImageLocation = "";
+        if (oldImage != null) {
+            oldImageLocation = oldImage.getLocation();
+        }
 
         String fileName = title + "_" + image.getOriginalFilename();
         String filePath = RESOURCE_PATH + fileName;
@@ -164,12 +168,15 @@ public class SubjectService {
             }
 
             if (oldImage != null) {
-                File oldImageFile = new File(oldImage.getLocation());
-                String oldImageLocation = oldImage.getLocation(); //RESOURCE_PATH/Subject_image.jpg
+                File oldImageFile = new File(oldImageLocation);
+                System.out.println(oldImageLocation);
                 String oldImageLocationUpdated = oldImageLocation.substring(
                         0,
                         oldImageLocation.lastIndexOf("/") + 1
                 ) + "OUTDATED_" + title + "_" + oldImage.getTitle();
+
+                oldImage.setLocation(oldImageLocationUpdated);
+                // -> RESOURCE_PATH/OUTDATED_Subject_image.jpg
 
                 boolean renameSuccessful = oldImageFile.renameTo(new File(oldImageLocationUpdated));
             }
