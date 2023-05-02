@@ -1,10 +1,8 @@
-package com.example.userImpl.teacher;
+package com.example.user_impl.teacher;
 
-import com.example.userImpl.student.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,8 +19,7 @@ public class TeacherService {
         return teacherRepository.getAllTeachers();
     }
     public Teacher getTeacherById(int id){
-        Teacher teacher=(Teacher)this.teacherRepository.getTeacherById(id).orElseThrow(() -> new IllegalStateException("Teacher with id "+id+" doesn't exist."));
-        return teacher;
+        return (Teacher) this.teacherRepository.getTeacherById(id).orElseThrow(() -> new IllegalStateException("Teacher with id "+id+" doesn't exist."));
     }
 
     public Teacher save(Teacher teacher) {

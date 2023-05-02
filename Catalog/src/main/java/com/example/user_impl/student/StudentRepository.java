@@ -1,6 +1,5 @@
-package com.example.userImpl.student;
+package com.example.user_impl.student;
 
-import com.example.grades.Grade;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

@@ -1,6 +1,6 @@
 package com.example.catalog;
 
-import com.example.userImpl.student.Student;
+import com.example.user_impl.student.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;

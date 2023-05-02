@@ -1,12 +1,10 @@
 package com.example.subject;
 
-import com.example.userImpl.teacher.Teacher;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.example.user_impl.teacher.Teacher;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,17 +30,6 @@ public class Subject {
         this.teachers = teachers;
     }
 
-//    public Subject(String name,
-//                   @JsonProperty("teachers") List<String> teacherList){
-//        List<Teacher> list=new ArrayList<>();
-//        for(int i=0;i<teacherList.size();i++){
-//            for(Teacher teacherIterator : teachers){
-//                if(teacherIterator.getName()==teacherList.get(i)){
-//
-//                }
-//            }
-//        }
-//    }
 
     public String getName() {
         return name;

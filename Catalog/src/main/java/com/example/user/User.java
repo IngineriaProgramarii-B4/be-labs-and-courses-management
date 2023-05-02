@@ -1,6 +1,5 @@
 package com.example.user;
 
-import java.util.Map;
 
 public interface User {
     public String getName();

@@ -2,9 +2,12 @@ package com.example.grades;
 
 import com.example.subject.Subject;
 import jakarta.persistence.*;
-import org.springframework.stereotype.Component;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
+@SQLDelete(sql="UPDATE Grade SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 public class Grade {
     @Id
     @SequenceGenerator(
@@ -26,6 +29,8 @@ public class Grade {
     private Subject subject;
 
     private String evaluationDate;
+
+    private boolean deleted=false;
     public Grade(){}
 
     public Grade(int value, Subject subject, String evaluationDate) {
@@ -72,5 +77,13 @@ public class Grade {
                 ", subject=" + subject +
                 ", evaluation date=" + evaluationDate +
                 '}';
+    }
+
+    public boolean isDeleted(){
+        return deleted;
+    }
+
+    public void setDeleted(){
+        deleted=true;
     }
 }

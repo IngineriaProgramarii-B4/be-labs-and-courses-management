@@ -1,13 +1,11 @@
 package com.example;
 
 
-import com.example.grades.Grade;
 import com.example.grades.GradeRepository;
-import com.example.subject.Subject;
 
-import com.example.userImpl.teacher.Teacher;
-import com.example.userImpl.teacher.TeacherRepository;
-import com.example.userImpl.teacher.TeacherService;
+import com.example.user_impl.teacher.Teacher;
+import com.example.user_impl.teacher.TeacherRepository;
+import com.example.user_impl.teacher.TeacherService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
