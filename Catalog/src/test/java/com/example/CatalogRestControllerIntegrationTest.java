@@ -2,11 +2,12 @@
 //
 //import com.example.grades.Grade;
 //import com.example.subject.Subject;
-//import com.example.userImpl.student.Student;
-//import com.example.userImpl.student.StudentRepository;
-//import com.example.userImpl.teacher.TeacherRepository;
+//import com.example.user_impl.student.Student;
+//import com.example.user_impl.student.StudentRepository;
+//import com.example.user_impl.teacher.TeacherRepository;
 //import com.fasterxml.jackson.databind.ObjectMapper;
 //import org.junit.Before;
+//import org.junit.jupiter.api.Disabled;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.runner.RunWith;
@@ -23,10 +24,11 @@
 //import static org.junit.jupiter.api.Assertions.assertEquals;
 //import static org.junit.jupiter.api.Assertions.assertNotNull;
 //import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 //import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 //import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 //
-//@RunWith(SpringRunner.class)
+//
 //@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 //@AutoConfigureMockMvc
 //@TestPropertySource(
@@ -41,48 +43,44 @@
 //    @Autowired
 //    private TeacherRepository teacherRepository;
 //
+//    @BeforeEach
+//    void setUp() {
+//        studentRepository.save(new Student(301234, "mihaelescu@gmail.com", "Florin"));
+//    }
+//
 //    @Test
 //    public void getStudentsTest() throws Exception {
 //        mvc.perform(get("/api/v1/catalog/students")
 //                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+//                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+//                .andDo(print());
 //    }
 //
 //    @Test
 //    public void givenStudent_whenPostStudent_thenResponse() throws Exception {
-//        postStudentsTest(new Student(301234, "mihaelescu@gmail.com", "Florin"));
+//        postStudentsTest(new Student(301235, "mihaelescu@gmail.com", "Florin"));
 //    }
 //
-////    @Test
-////    public void givenGradeAndStudent_whenPostGrade_thenResponse() throws Exception {
-////        Subject subject = new Subject("PP");
-////        Subject subject1 = new Subject("PZ");
-////        Subject subject2 = new Subject("PX");
-////        Student student = new Student(301234, "mihaelescu@gmail.com", "Florin");
-////        student.setGrades(null);
-////
-////        postGradesTest(new Grade(7, subject, "12.02.1996"), student);
+//    @Test
+//    @Disabled
+//    public void givenGradeAndStudent_whenPostGrade_thenResponse() throws Exception {
+//        Subject subject = new Subject("PP");
+//        Subject subject1 = new Subject("PZ");
+//        Subject subject2 = new Subject("PX");
+//        Student student = new Student(301234, "mihaelescu@gmail.com", "Florin");
+//        student.setGrades(null);
+//
+//        postGradesTest(new Grade(7, subject, "12.02.1996"), student);
 ////        postGradesTest(new Grade(8, subject1, "12.02.1996"), new Student(301235, "gabiceanu@gmail.com", "Gabi"));
 ////        postGradesTest(new Grade(9, subject2, "12.02.1996"), new Student(301236, "popica@gmail.com", "Popa"));
-////    }
-////    @Test
-////    public void givenGradeAndStudent_whenPostGrade_thenResponse() throws Exception {
-////        Subject subject = new Subject("PP");
-////        Subject subject1 = new Subject("PZ");
-////        Subject subject2 = new Subject("PX");
-////        Student student = new Student(301234, "mihaelescu@gmail.com", "Florin");
-////        student.setGrades(null);
-////
-////        postGradesTest(new Grade(7, subject, "12.02.1996"), student);
-//////        postGradesTest(new Grade(8, subject1, "12.02.1996"), new Student(301235, "gabiceanu@gmail.com", "Gabi"));
-//////        postGradesTest(new Grade(9, subject2, "12.02.1996"), new Student(301236, "popica@gmail.com", "Popa"));
-////    }
-////
-////    @Test
-////    public void givenId_whenDeleteStudent_thenResponse() throws Exception {
-////        Student student = new Student(301234, "mihaelescu@gmail.com", "Florin");
-////        deleteStudentTest(student);
-////    }
+//    }
+//
+//    @Test
+//    @Disabled
+//    public void givenId_whenDeleteStudent_thenResponse() throws Exception {
+//        Student student = new Student(301234, "mihaelescu@gmail.com", "Florin");
+//        deleteStudentTest(student);
+//    }
 //
 //    public static String asJsonString(final Object obj) {
 //        try {
@@ -91,6 +89,7 @@
 //            throw new RuntimeException(e);
 //        }
 //    }
+//
 //    public void postStudentsTest(Student student) throws Exception {
 //        student.setGrades(null);
 //
@@ -99,6 +98,7 @@
 //                        .contentType(MediaType.APPLICATION_JSON)
 //                        .accept(MediaType.APPLICATION_JSON))
 //                .andExpect(status().isCreated())
+//                .andDo(print())
 //                .andReturn();
 //    }
 //
