@@ -19,7 +19,7 @@ public class TeacherService {
         return teacherRepository.getAllTeachers();
     }
     public Teacher getTeacherById(int id){
-        return (Teacher) this.teacherRepository.getTeacherById(id).orElseThrow(() -> new IllegalStateException("Teacher with id "+id+" doesn't exist."));
+        return this.teacherRepository.getTeacherById(id).orElseThrow(() -> new IllegalStateException("Teacher with id "+id+" doesn't exist."));
     }
 
     public Teacher save(Teacher teacher) {

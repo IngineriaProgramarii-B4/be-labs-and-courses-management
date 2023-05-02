@@ -17,9 +17,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class TeacherServiceTest {
@@ -28,15 +32,15 @@ public class TeacherServiceTest {
     @Mock
     private TeacherRepository teacherRepository;
     @Mock
-    private GradeRepository gradeRepository;
     private Teacher teacher;
     @BeforeEach
     public void setup() {
         teacherService = new TeacherService(teacherRepository);
+        teacher = new Teacher(1, "mihaelescu@gmail.com", "Florin");
     }
 
     @Test
-    public void canGetAllStudents() {
+    public void canGetAllTeachers() {
         // when
         teacherService.getTeacherDataBase();
 
@@ -44,28 +48,35 @@ public class TeacherServiceTest {
         verify(teacherRepository).getAllTeachers();
     }
 
-//    @Test
-//    public void canGetTeacherById() {
-//        /* Testul asta ar trebui sa mearga daca id-urile din BD si ale profesorilor sunt matching. */
-//        // given
-//
-//        Teacher teacher = new Teacher(1, "mihaelescu@gmail.com", "Florin");
-//        teacherService.save(teacher);
-//
-//        Teacher get_result = teacherService.getTeacherById(teacher.getId());
-//
-//        ArgumentCaptor<Teacher> teacherArgumentCaptor = ArgumentCaptor.forClass(Teacher.class);
-//        verify(teacherRepository).save(teacherArgumentCaptor.capture());
-//
-//        Teacher captured = teacherArgumentCaptor.getValue();
-//
-//        assertNotNull(get_result);
-//        assertEquals(get_result, captured);
-//    }
+    @Test
+    public void canGetTeacherById() {
+        when(teacherRepository.getTeacherById(teacher.getId())).thenReturn(Optional.of(teacher));
+        assertEquals(Optional.of(teacher), teacherRepository.getTeacherById(teacher.getId()));
+        teacherService.save(teacher);
+
+        Teacher get_result = teacherService.getTeacherById(teacher.getId());
+
+        ArgumentCaptor<Teacher> teacherArgumentCaptor = ArgumentCaptor.forClass(Teacher.class);
+        verify(teacherRepository).save(teacherArgumentCaptor.capture());
+
+        Teacher captured = teacherArgumentCaptor.getValue();
+
+        assertNotNull(get_result);
+        assertEquals(get_result, captured);
+
+        // given invalid teacher id
+        try {
+            teacherService.getTeacherById(9999);
+        }
+        catch (IllegalStateException e) {
+            System.out.println(e);
+        }
+    }
     @Test
     public void canAddTeacher() {
 
-        Teacher teacher = new Teacher(1, "popescu@gmail.com", "Florin");
+        when(teacherRepository.getTeacherById(teacher.getId())).thenReturn(Optional.of(teacher));
+        assertEquals(Optional.of(teacher), teacherRepository.getTeacherById(teacher.getId()));
         teacherService.save(teacher);
 
         ArgumentCaptor<Teacher> teacherArgumentCaptor = ArgumentCaptor.forClass(Teacher.class);
@@ -79,7 +90,9 @@ public class TeacherServiceTest {
     @Test
     public void canDeleteTeacher() {
 
-        Teacher teacher = new Teacher(1, "popescu@gmail.com", "Florin");
+        when(teacherRepository.getTeacherById(teacher.getId())).thenReturn(Optional.of(teacher));
+        assertEquals(Optional.of(teacher), teacherRepository.getTeacherById(teacher.getId()));
+
         teacherService.save(teacher);
         teacherService.delete(teacher);
         ArgumentCaptor<Teacher> teacherArgumentCaptor = ArgumentCaptor.forClass(Teacher.class);

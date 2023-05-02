@@ -17,7 +17,7 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
-    private final String errorMessage="There is no student with the id : ";
+    private static final String errorMessage="There is no student with the id : ";
 
     @Autowired
     public StudentService(StudentRepository studentRepository){
@@ -29,7 +29,7 @@ public class StudentService {
         return studentRepository.getAllStudents();
     }
     public Student getStudentById(int id){
-        return (Student) this.studentRepository.findById(id).orElse((Student)null);
+        return this.studentRepository.findById(id).orElse((Student)null);
     }
 
 
@@ -80,26 +80,28 @@ public class StudentService {
 
     @Transactional
     public Grade updateGrade(int id,Integer value,String evaluationDate,int gradeId){
-        studentRepository.findById(id).orElseThrow(()->new IllegalStateException(errorMessage+id));
-        Grade grade=getGradeById(id,gradeId);
-        if(value != null) {
-            if((value<1 || value>10)) {
-                throw new IllegalStateException("The value is not between 1 and 10");
-            } else if(value!=getGradeById(id,gradeId).getValue()) {
-                grade.setValue(value);
+        Student student=studentRepository.findById(id).orElseThrow(()->new IllegalStateException(errorMessage+id));
+        if(student != null) {
+            Grade grade = getGradeById(id, gradeId);
+            if (value != null) {
+                if ((value < 1 || value > 10)) {
+                    throw new IllegalStateException("The value is not between 1 and 10");
+                } else if (value != getGradeById(id, gradeId).getValue()) {
+                    grade.setValue(value);
+                }
             }
-        }
 
-        boolean validDate=true;
-        if(evaluationDate != null && !evaluationDate.equals(grade.getEvaluationDate())){
-            DateTimeFormatter formatter=DateTimeFormatter.ofPattern("dd.MM.yyyy");
-            try {
-                LocalDate.parse(evaluationDate,formatter);
-            } catch (DateTimeParseException exception){
-                validDate=false;
-            }
-            if(validDate) {
-                grade.setEvaluationDate(evaluationDate);
+            boolean validDate = true;
+            if (evaluationDate != null && !evaluationDate.equals(grade.getEvaluationDate())) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+                try {
+                    LocalDate.parse(evaluationDate, formatter);
+                } catch (DateTimeParseException exception) {
+                    validDate = false;
+                }
+                if (validDate) {
+                    grade.setEvaluationDate(evaluationDate);
+                }
             }
         }
         return getGradeById(id,gradeId);

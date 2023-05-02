@@ -97,7 +97,7 @@ public class StudentController {
         Optional<Student> student = Optional.ofNullable(studentService.getStudentById(id));
         if (student.isPresent()) {
             studentService.addGrade(id, grade);
-            return new ResponseEntity<>(grade, HttpStatus.OK);
+            return new ResponseEntity<>(grade, HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
         }
