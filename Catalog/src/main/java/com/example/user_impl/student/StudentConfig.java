@@ -1,14 +1,14 @@
-package com.example.grades;
+package com.example.user_impl.student;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class GradeConfig {
+public class StudentConfig {
 
     @Bean
-    CommandLineRunner commanderLineRunner(GradeRepository repository){
+    CommandLineRunner commandLineRunner(StudentRepository repository){
         return args -> {
         };
     }

@@ -1,16 +1,14 @@
-package com.example.userImpl.student;
+package com.example.user_impl.student;
 
 import com.example.grades.Grade;
-import com.example.subject.Subject;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import java.rmi.ServerException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,13 +21,11 @@ public class StudentController {
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
-
     @GetMapping
     @CrossOrigin(origins = "*")
     public List<Student> getStudents(){
         return studentService.getStudentDataBase();
     }
-
     @GetMapping("/{id}")
     @CrossOrigin(origins = "*")
     public ResponseEntity<Student> getStudentById(@PathVariable("id") int id) {
@@ -48,11 +44,11 @@ public class StudentController {
         if (student.isPresent()) {
             List<Grade> gradesList = student.get().getGradesBySubject(subject);
             if (gradesList.isEmpty()) {
-                return null;
+                return List.of();
             }
             return new ResponseEntity<>(gradesList, HttpStatus.OK).getBody();
         }
-        else return null;
+        else return List.of();
     }
     @GetMapping("/{id}/grades")
     @CrossOrigin(origins = "*")
@@ -64,9 +60,11 @@ public class StudentController {
             throw new NullPointerException();
         }
     }
+
     @GetMapping("/{id}/grades/{gradeId}")
     @CrossOrigin(origins = "*")
-    private ResponseEntity<Grade> getGradeById(@PathVariable("id") int id, @PathVariable("gradeId") int gradeId) {
+    @Nullable
+    public ResponseEntity<Grade> getGradeById(@PathVariable("id") int id, @PathVariable("gradeId") int gradeId) {
         Optional<Student> student = Optional.ofNullable(studentService.getStudentById(id));
         if (student.isPresent()) {
             Optional<Grade> grade = Optional.ofNullable(studentService.getGradeById(id, gradeId));
@@ -94,16 +92,19 @@ public class StudentController {
     @PostMapping(path = "/{id}/grades",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @Nullable
     public ResponseEntity<Grade> addGrade(@PathVariable int id, @RequestBody Grade grade) {
         Optional<Student> student = Optional.ofNullable(studentService.getStudentById(id));
         if (student.isPresent()) {
             studentService.addGrade(id, grade);
             return new ResponseEntity<>(grade, HttpStatus.OK);
         } else {
-            return null;
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
         }
     }
+
     @CrossOrigin(origins = "*")
+    @Nullable
     @DeleteMapping(value = "/{id}/grades/{gradeId}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -116,6 +117,7 @@ public class StudentController {
     }
     // sterge in mod fizic un student din baza de date
     @CrossOrigin(origins = "*")
+    @Nullable
     @DeleteMapping(value = "/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -129,35 +131,17 @@ public class StudentController {
 
     //Modifica valoarea unei note si/sau data de notare
     @CrossOrigin(origins = "*")
+    @Nullable
     @PutMapping("/{id}/grades/{gradeId}")
     public ResponseEntity<Grade> updateGradeValue(@PathVariable("id") int id, @PathVariable("gradeId") int gradeId,@RequestParam(required = false) String evaluationDate,@RequestParam(required = false) Integer value){
         Optional<Student> student = Optional.ofNullable(studentService.getStudentById(id));
         if (student.isPresent()) {
             Optional<Grade> grade = Optional.ofNullable(studentService.getGradeById(id, gradeId));
             if (grade.isPresent()){
-               Grade updatedGrade= studentService.updateGrade(id,value,evaluationDate,gradeId);
+                studentService.updateGrade(id,value,evaluationDate,gradeId);
                 return new ResponseEntity<>(grade.get(), HttpStatus.OK);
             }
         }
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 }
-
-
-    /* TODO:
-    *   poate exista o modalitate mai simpla de a detecta care informatii au fost actually updated, pentru a nu face operatii inutile
-    *   poate ar trebui un putmapping si pentru note, cumva trebuie sa poti updata doar o nota -> gradeController?
-    */
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Student> update(@PathVariable("id") int id, @RequestBody Student studentDetails){
-//        Student updateStudent = studentService.getStudentById(id);
-//        if (updateStudent == null) {
-//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-//        }
-//        else {
-//            updateStudent.setEmail(studentDetails.getEmail());
-//            updateStudent.setName(studentDetails.getName());
-//            updateStudent.setGrades(studentDetails.getGrades());
-//        }
-//    }
-

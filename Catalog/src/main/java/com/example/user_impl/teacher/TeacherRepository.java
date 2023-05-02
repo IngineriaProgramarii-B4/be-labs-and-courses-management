@@ -1,4 +1,4 @@
-package com.example.userImpl.teacher;
+package com.example.user_impl.teacher;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

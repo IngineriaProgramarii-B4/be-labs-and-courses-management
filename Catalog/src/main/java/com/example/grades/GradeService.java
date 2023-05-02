@@ -15,8 +15,7 @@ public class GradeService {
     }
 
     public Grade getGradeById(int id){
-        Grade grade=repository.getGradeById(id).orElse((Grade)null);
-        return grade;
+        return repository.getGradeById(id).orElse((Grade)null);
     }
 
     public List<Grade> getGrades(){

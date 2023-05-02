@@ -1,11 +1,10 @@
 package com.example;
 
 import com.example.grades.Grade;
-import com.example.grades.GradeRepository;
 import com.example.subject.Subject;
-import com.example.userImpl.student.Student;
-import com.example.userImpl.student.StudentRepository;
-import com.example.userImpl.student.StudentService;
+import com.example.user_impl.student.Student;
+import com.example.user_impl.student.StudentRepository;
+import com.example.user_impl.student.StudentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -18,8 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,11 +27,9 @@ public class StudentServiceTest {
     StudentService studentService;
     @Mock
     private StudentRepository studentRepository;
-    @Mock
-    private GradeRepository gradeRepository;
     @BeforeEach
     public void setup() {
-        studentService = new StudentService(studentRepository, gradeRepository);
+        studentService = new StudentService(studentRepository);
     }
     @Test
     public void canGetAllStudents() {
@@ -134,7 +130,7 @@ public class StudentServiceTest {
         // when
         Grade deleted = studentService.deleteGrade(studentService.getStudentById(student.getId()).getId(), grade.getId());
         // then
-        assertEquals(deleted, grade);
+        assertNull(deleted);
     }
 
     @Test

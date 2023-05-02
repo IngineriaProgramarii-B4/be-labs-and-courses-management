@@ -1,4 +1,4 @@
-package com.example.userImpl.teacher;
+package com.example.user_impl.teacher;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/catalog/teachers")
+@CrossOrigin(origins = "*")
 public class TeacherController {
     private final TeacherService teacherService;
     @Autowired
@@ -20,10 +21,12 @@ public class TeacherController {
     }
 
     @GetMapping
+    @CrossOrigin(origins = "*")
     public List<Teacher> getTeachers(){
         return teacherService.getTeacherDataBase();
     }
     @GetMapping("/{id}")
+    @CrossOrigin(origins = "*")
     public Teacher getTeacherById(@PathVariable("id") int id){
         Optional<Teacher> teacher = Optional.ofNullable(teacherService.getTeacherById(id));
         if (teacher.isPresent()) {
