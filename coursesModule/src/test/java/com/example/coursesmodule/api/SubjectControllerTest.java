@@ -5,12 +5,16 @@ import com.example.coursesmodule.model.Evaluation;
 import com.example.coursesmodule.model.Resource;
 import com.example.coursesmodule.model.Subject;
 import com.example.coursesmodule.service.SubjectService;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,10 +27,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -136,8 +143,10 @@ class SubjectControllerTest {
         when(subjectService.getSubjectByTitle(title)).thenReturn(Optional.of(new Subject()));
         when(subjectService.updateSubjectByTitle(title, updatedSubject)).thenReturn(1);
 
-        subjectController.updateSubjectByTitle(title, updatedSubject);
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> subjectController.updateSubjectByTitle(title, updatedSubject));
 
+        assertEquals(HttpStatus.NO_CONTENT, exception.getStatusCode());
+        assertEquals("Subject updated successfully", exception.getReason());
         verify(subjectService, times(1)).getSubjectByTitle(title);
         verify(subjectService, times(1)).updateSubjectByTitle(title, updatedSubject);
     }
@@ -199,7 +208,7 @@ class SubjectControllerTest {
     void getSubjectsByYearAndSemesterSuccessful() {
         List<Subject> subjects = new ArrayList<>();
         subjects.add(new Subject(2, "Physics", 5, 1, 2, "description", List.of(new Component(2, "Course", 10, List.of(new Resource("Book.pdf", "savedResources/Book.pdf", "application/pdf", false)), false)),
-                List.of(new Evaluation(1L, "Course", 0.5f, "ceva descriere", false)), false));
+                List.of(new Evaluation(1L, "Course", 0.5f, "description B", false)), false));
         when(subjectService.getSubjectsByYearAndSemester(1, 2)).thenReturn(subjects);
 
         List<Subject> result = subjectController.getSubjectsByYearAndSemester(1, 2);
@@ -216,5 +225,97 @@ class SubjectControllerTest {
 
 
         verify(subjectService, times(1)).getSubjectsByYearAndSemester(1, 2);
+    }
+
+    MultipartFile file = mock(MultipartFile.class);
+    @Test
+    void uploadSubjectImageSuccessful(){
+        String title = "Math";
+        when(subjectService.getSubjectByTitle(title)).thenReturn(Optional.of(new Subject()));
+        when(subjectService.uploadSubjectImage(title, file)).thenReturn(1);
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> subjectController.uploadSubjectImage(title, file));
+        assertEquals(HttpStatus.NO_CONTENT, exception.getStatusCode());
+        assertEquals("Image uploaded successfully", exception.getReason());
+    }
+
+    @Test
+    void testUploadSubjectImageNotFound(){
+        String title = "Test Title";
+
+        when(subjectService.getSubjectByTitle(title)).thenReturn(Optional.empty());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> subjectController.uploadSubjectImage(title, file));
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Subject not found", exception.getReason());
+    }
+
+    @Test
+    void testUploadSubjectImageInvalid(){
+        String title = "Test Title";
+
+        when(subjectService.getSubjectByTitle(title)).thenReturn(Optional.of(new Subject()));
+        when(subjectService.uploadSubjectImage(title, file)).thenReturn(0);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> subjectController.uploadSubjectImage(title, file));
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, exception.getStatusCode());
+        assertEquals("Image is invalid", exception.getReason());
+    }
+
+    @Test
+    void testGetSubjectImageNotFound() throws Exception {
+        when(subjectService.getSubjectByTitle(anyString())).thenReturn(Optional.empty());
+
+        ResponseEntity<byte[]> response = subjectController.getSubjectImage("Test");
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("Subject not found", new String(response.getBody()));
+    }
+
+    @Test
+    public void testGetSubjectImageNoImage() throws Exception {
+        String title = "Test Subject";
+
+        // Create a mock Subject object with no associated Image
+        Subject subject = new Subject();
+        subject.setTitle(title);
+        subject.setImage(null);
+        Optional<Subject> subjectMaybe = Optional.of(subject);
+
+        // Mock the behavior of the subjectService
+        when(subjectService.getSubjectByTitle(title)).thenReturn(subjectMaybe);
+
+        ResponseEntity<byte[]> response = subjectController.getSubjectImage(title);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("Image not found", new String(response.getBody()));
+    }
+
+
+    @Test
+    public void testGetSubjectImageSuccess() throws Exception {
+        Subject mockSubject = new Subject();
+        Resource resource = new Resource(1, "Physics_romania.png", "savedResources\\Physics_romania.png", "image/png", false);
+        mockSubject.setImage(resource);
+
+        // Mock the subjectService.getSubjectByTitle() method to return the mock Subject object
+        when(subjectService.getSubjectByTitle("test")).thenReturn(Optional.of(mockSubject));
+
+        String absolutePath = new File("").getAbsolutePath();
+        String path = mockSubject.getImage().getLocation();
+        String filePath = absolutePath + "\\" + path;
+        System.out.println(filePath);
+
+        byte[] mockImageBytes = Files.readAllBytes(new File(filePath).toPath());
+
+        ResponseEntity<byte[]> response = subjectController.getSubjectImage("test");
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertArrayEquals(mockImageBytes, response.getBody());
+    }
+
+    @Test
+    public void testGetSubjectImageNotFoundImage() throws Exception {
+        when(subjectService.getSubjectByTitle(anyString())).thenReturn(Optional.empty());
+
+        ResponseEntity<byte[]> response = subjectController.getSubjectImage("Test");
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("Subject not found", new String(response.getBody()));
     }
 }

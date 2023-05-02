@@ -56,6 +56,7 @@ public class SubjectController {
             throw new ResponseStatusException(NOT_FOUND, SUBJECT_ERROR);
         if(subjectService.updateSubjectByTitle(title, subject) == 0)
             throw new ResponseStatusException(NOT_ACCEPTABLE, "Subject is invalid");
+        throw new ResponseStatusException(NO_CONTENT, "Subject updated successfully");
     }
 
     @GetMapping(path = "subjectTitle={title}")
