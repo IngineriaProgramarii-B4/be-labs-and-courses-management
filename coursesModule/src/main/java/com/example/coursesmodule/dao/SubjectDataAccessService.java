@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,7 +66,27 @@ public class SubjectDataAccessService implements CourseDao{
         Subject subjectToUpdate = subjectRepo.findSubjectByTitle(title).orElse(null);
         if(subjectToUpdate == null)
             return 0;
-        subjectToUpdate.setTitle(subject.getTitle());
+
+        if (!subjectToUpdate.getTitle().equals(subject.getTitle())) {
+            subjectToUpdate.setTitle(subject.getTitle());
+
+            //updating resources:
+            for (Component component : subjectToUpdate.getComponentList()) {
+                for (Resource resource : component.getResources()) {
+                    component.removeResource(resource);
+                    String resTitle = resource.getTitle();
+                    String resLocation = resource.getLocation();
+
+                    resource.setTitle(subject.getTitle() + resTitle.substring(resTitle.indexOf("_")));
+                    String newResLocation = resLocation.substring(0, resLocation.lastIndexOf("/") + 1) + resource.getTitle();
+                    resource.setLocation(newResLocation);
+
+                    component.addResource(resource);
+                    resourceRepo.save(resource);
+                }
+                componentRepo.save(component);
+            }
+        }
         subjectToUpdate.setCredits(subject.getCredits());
         subjectToUpdate.setYear(subject.getYear());
         subjectToUpdate.setSemester(subject.getSemester());
@@ -127,7 +146,7 @@ public class SubjectDataAccessService implements CourseDao{
         if(componentToDelete == null)
             return 0;
         componentToDelete.setDeleted(true);
-        subjectToModify.removeComponent(componentToDelete);
+        subjectToModify.softDeleteComponent(componentToDelete);
         componentRepo.save(componentToDelete);
         subjectRepo.save(subjectToModify);
         return 1;
@@ -147,17 +166,8 @@ public class SubjectDataAccessService implements CourseDao{
     // RESOURCES
 
     @Override
-    public List<Resource> getResourcesBySubjectTitle(String title) {
-        List<Resource> resources = new ArrayList<>();
-        Optional<Subject> subjectMaybe = subjectRepo.findSubjectByTitle(title);
-        if (subjectMaybe.isEmpty())
-            return resources;
-
-        Subject subject = subjectMaybe.get();
-        for (Component component : subject.getComponentList()) {
-            resources.addAll(resourceRepo.findAllBySubjectTitleAndComponentType(title, component.getType()));
-        }
-        return resources;
+    public List<Resource> getResourcesByTitle(String title) {
+        return resourceRepo.findAllBySubjectTitle(title);
     }
 
     @Override
@@ -201,7 +211,7 @@ public class SubjectDataAccessService implements CourseDao{
         if(resourceToDelete == null)
             return 0;
         resourceToDelete.setDeleted(true);
-        componentToModify.removeResource(resourceToDelete);
+        componentToModify.softDeleteResource(resourceToDelete);
         resourceRepo.save(resourceToDelete);
         componentRepo.save(componentToModify);
         return 1;
@@ -239,7 +249,7 @@ public class SubjectDataAccessService implements CourseDao{
         if(evaluationToDelete == null)
             return 0;
         evaluationToDelete.setDeleted(true);
-        subjectToModify.removeEvaluation(evaluationToDelete);
+        subjectToModify.softDeleteEvaluation(evaluationToDelete);
         evaluationRepo.save(evaluationToDelete);
         subjectRepo.save(subjectToModify);
         return 1;

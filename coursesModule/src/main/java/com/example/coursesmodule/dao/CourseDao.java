@@ -42,7 +42,7 @@ public interface CourseDao {
       RESOURCE FOR Subject
      */
 
-    List<Resource> getResourcesBySubjectTitle(String title);
+    List<Resource> getResourcesByTitle(String title);
 
     /*
       RESOURCE FOR Component

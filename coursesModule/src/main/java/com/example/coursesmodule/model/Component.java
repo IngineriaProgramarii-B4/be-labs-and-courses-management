@@ -101,6 +101,10 @@ public class Component {
     }
 
     public void removeResource(Resource resource) {
+        this.resources.remove(resource);
+    }
+
+    public void softDeleteResource(Resource resource) {
         int index = resources.indexOf(resource);
         if (index != -1) {
             resource.setDeleted(true);

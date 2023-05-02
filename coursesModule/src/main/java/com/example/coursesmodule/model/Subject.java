@@ -151,11 +151,17 @@ public class Subject {
         return isDeleted;
     }
 
+    //additional methods
+
     public void addComponent(Component component) {
         componentList.add(component);
     }
 
     public void removeComponent(Component component) {
+        componentList.remove(component);
+    }
+
+    public void softDeleteComponent(Component component) {
         int index = componentList.indexOf(component);
         if (index != -1) {
             component.setDeleted(true);
@@ -168,6 +174,10 @@ public class Subject {
     }
 
     public void removeEvaluation(Evaluation evaluation) {
+        evaluationList.add(evaluation);
+    }
+
+    public void softDeleteEvaluation(Evaluation evaluation) {
         int index = evaluationList.indexOf(evaluation);
         if (index != -1) {
             evaluation.setDeleted(true);

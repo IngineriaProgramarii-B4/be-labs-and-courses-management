@@ -95,12 +95,27 @@ public class SubjectService {
             componentService.deleteComponentByType(title, type);
         }
 
+
         return courseDao.deleteSubjectByTitle(title);
     }
 
     public int updateSubjectByTitle(String title, Subject subject) {
         if(!validateUpdate(title, subject.getTitle()))
             return 0;
+
+        List<Resource> resources = courseDao.getResourcesByTitle(title);
+        for (Resource resource : resources) {
+            String resLocation = resource.getLocation();
+            File resFile = new File(resLocation);
+
+            String newResTitle = subject.getTitle() + resource.getTitle().substring(resource.getTitle().indexOf("_"));
+            String newResLocation = resLocation.substring(
+                    0,
+                    resLocation.lastIndexOf("/") + 1
+            ) + newResTitle;
+            boolean renameSuccessful = resFile.renameTo(new File(newResLocation));
+        }
+
         return courseDao.updateSubjectByTitle(title, subject);
     }
 
