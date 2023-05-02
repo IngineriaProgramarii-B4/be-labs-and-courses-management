@@ -39,12 +39,6 @@ public interface CourseDao {
     int updateComponentByType(String title, String type, Component component);
 
     /*
-      RESOURCE FOR Subject
-     */
-
-    List<Resource> getResourcesByTitle(String title);
-
-    /*
       RESOURCE FOR Component
      */
 

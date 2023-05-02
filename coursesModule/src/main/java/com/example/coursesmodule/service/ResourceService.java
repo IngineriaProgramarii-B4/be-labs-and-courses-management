@@ -98,14 +98,14 @@ public class ResourceService {
             return 0;
         }
         Resource resource = optionalResource.get();
-        String potentialLocation = resource.getLocation().substring(
+        String newResLocation = resource.getLocation().substring(
                 0,
                 resource.getLocation().lastIndexOf("/") + 1
-        ) + "DELETED_" + resource.getTitle();
+        ) + "DELETED_" + title + "_" + type + "_" + resource.getTitle();
         File file = new File(resource.getLocation());
 
         if (validateExistingResource(title, type, resource)) {
-            boolean renameSuccessful = file.renameTo(new File(potentialLocation)); //not sure what to do with this
+            boolean renameSuccessful = file.renameTo(new File(newResLocation));
             return courseDao.deleteResourceByTitleForComponentType(title, type, resourceTitle);
         }
         return 0;

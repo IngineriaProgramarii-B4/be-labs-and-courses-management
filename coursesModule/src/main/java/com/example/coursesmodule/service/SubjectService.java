@@ -95,6 +95,18 @@ public class SubjectService {
             componentService.deleteComponentByType(title, type);
         }
 
+        Resource oldImage = courseDao.selectSubjectByTitle(title).get().getImage();
+        if (oldImage != null) {
+            File oldImageFile = new File(oldImage.getLocation());
+            String oldImageLocation = oldImage.getLocation(); //RESOURCE_PATH/Subject_image.jpg
+            String oldImageLocationUpdated = oldImageLocation.substring(
+                    0,
+                    oldImageLocation.lastIndexOf("/") + 1
+            ) + "DELETED_" + title + "_" + oldImage.getTitle();
+            //-> RESOURCE_PATH/DELETED_Subject_image.jpg
+
+            boolean renameSuccessful = oldImageFile.renameTo(new File(oldImageLocationUpdated));
+        }
 
         return courseDao.deleteSubjectByTitle(title);
     }
@@ -103,17 +115,28 @@ public class SubjectService {
         if(!validateUpdate(title, subject.getTitle()))
             return 0;
 
-        List<Resource> resources = courseDao.getResourcesByTitle(title);
-        for (Resource resource : resources) {
-            String resLocation = resource.getLocation();
-            File resFile = new File(resLocation);
+        for (Component component : courseDao.getComponents(title))
+            for (Resource resource : courseDao.getResourcesForComponentType(title, component.getType())) {
+                String resLocation = resource.getLocation();
+                File resFile = new File(resLocation);
 
-            String newResTitle = subject.getTitle() + resource.getTitle().substring(resource.getTitle().indexOf("_"));
-            String newResLocation = resLocation.substring(
+                String newResLocation = resLocation.substring(
+                        0,
+                        resLocation.lastIndexOf("/") + 1
+                ) + subject.getTitle() + "_" + component.getType() + "_" + resource.getTitle();
+                boolean renameSuccessful = resFile.renameTo(new File(newResLocation));
+            }
+
+        Resource oldImage = courseDao.selectSubjectByTitle(title).get().getImage();
+        if (oldImage != null) {
+            String oldImageLocation = oldImage.getLocation();
+            File oldImageFile = new File(oldImageLocation);
+
+            String oldImageLocationUpdated = oldImageLocation.substring(
                     0,
-                    resLocation.lastIndexOf("/") + 1
-            ) + newResTitle;
-            boolean renameSuccessful = resFile.renameTo(new File(newResLocation));
+                    oldImageLocation.lastIndexOf("/") + 1
+            ) + subject.getTitle() + "_" + oldImage.getTitle();
+            boolean renameSuccessful = oldImageFile.renameTo(new File(oldImageLocationUpdated));
         }
 
         return courseDao.updateSubjectByTitle(title, subject);
@@ -125,17 +148,11 @@ public class SubjectService {
             return 0;
 
         Resource oldImage = subjectMaybe.get().getImage();
-        String oldImageLocation = oldImage.getLocation();
-        String potentialLocation = oldImageLocation.substring(
-                0,
-                oldImageLocation.lastIndexOf("/") + 1
-        ) + "OUTDATED_" + oldImage.getTitle();
-        File oldImageFile = new File(oldImageLocation);
 
         String fileName = title + "_" + image.getOriginalFilename();
         String filePath = RESOURCE_PATH + fileName;
         String fileType = image.getContentType();
-        Resource resource = new Resource(fileName, filePath, fileType, false);
+        Resource resource = new Resource(image.getOriginalFilename(), filePath, fileType, false);
         if(courseDao.saveImageToSubject(title, resource) == 0)
             return 0;
         try {
@@ -146,7 +163,16 @@ public class SubjectService {
                 folder.mkdir();
             }
 
-            boolean renameSuccessful = oldImageFile.renameTo(new File(potentialLocation));
+            if (oldImage != null) {
+                File oldImageFile = new File(oldImage.getLocation());
+                String oldImageLocation = oldImage.getLocation(); //RESOURCE_PATH/Subject_image.jpg
+                String oldImageLocationUpdated = oldImageLocation.substring(
+                        0,
+                        oldImageLocation.lastIndexOf("/") + 1
+                ) + "OUTDATED_" + title + "_" + oldImage.getTitle();
+
+                boolean renameSuccessful = oldImageFile.renameTo(new File(oldImageLocationUpdated));
+            }
             image.transferTo(new File(folderPath + fileName));
             return 1;
         } catch (Exception e) {
