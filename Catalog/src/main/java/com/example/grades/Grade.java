@@ -83,7 +83,8 @@ public class Grade {
         return deleted;
     }
 
-    public void setDeleted(){
+    public Grade setDeleted(){
         deleted=true;
+        return this;
     }
 }

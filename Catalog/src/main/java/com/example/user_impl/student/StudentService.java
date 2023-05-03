@@ -17,7 +17,7 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
-    private static final String errorMessage="There is no student with the id : ";
+    private static final String ERROR_MESSAGE="There is no student with the id : ";
 
     @Autowired
     public StudentService(StudentRepository studentRepository){
@@ -50,7 +50,7 @@ public class StudentService {
 
     @Transactional
     public Grade addGrade(int id, Grade grade) {
-        Student student=studentRepository.findById(id).orElseThrow(()->new IllegalStateException(errorMessage+id));
+        Student student=studentRepository.findById(id).orElseThrow(()->new IllegalStateException(ERROR_MESSAGE+id));
         student.addGrade(grade);
         return grade;
     }
@@ -58,18 +58,17 @@ public class StudentService {
     @Transactional
     public Grade deleteGrade(int id, int gradeId) {
         List<Grade> grades;
-        Student student=studentRepository.findById(id).orElseThrow(()-> new IllegalStateException(errorMessage+id));
+        Student student=studentRepository.findById(id).orElseThrow(()-> new IllegalStateException(ERROR_MESSAGE+id));
         grades=student.getGrades();
         try {
-            getGradeById(id,gradeId).setDeleted();
-            return getGradeById(id,gradeId);
+            return getGradeById(id,gradeId).setDeleted();
         } catch (Exception e) {
             return null;
         }
     }
 
     public Grade getGradeById(int id, int gradeId) {
-        Student student=studentRepository.findById(id).orElseThrow(() -> new IllegalStateException(errorMessage+id));
+        Student student=studentRepository.findById(id).orElseThrow(() -> new IllegalStateException(ERROR_MESSAGE+id));
         Grade grade=student.getGradeById(gradeId);
         if(grade != null){
             return grade;
@@ -79,31 +78,35 @@ public class StudentService {
     }
 
     @Transactional
-    public Grade updateGrade(int id,Integer value,String evaluationDate,int gradeId){
-        Student student=studentRepository.findById(id).orElseThrow(()->new IllegalStateException(errorMessage+id));
-        if(student != null) {
-            Grade grade = getGradeById(id, gradeId);
-            if (value != null) {
-                if ((value < 1 || value > 10)) {
-                    throw new IllegalStateException("The value is not between 1 and 10");
-                } else if (value != getGradeById(id, gradeId).getValue()) {
-                    grade.setValue(value);
-                }
-            }
+    public Grade updateGrade(int id, Integer value, String evaluationDate, int gradeId) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException(ERROR_MESSAGE + id));
 
-            boolean validDate = true;
-            if (evaluationDate != null && !evaluationDate.equals(grade.getEvaluationDate())) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-                try {
-                    LocalDate.parse(evaluationDate, formatter);
-                } catch (DateTimeParseException exception) {
-                    validDate = false;
-                }
-                if (validDate) {
-                    grade.setEvaluationDate(evaluationDate);
-                }
+        if (student == null) {
+            return null;
+        }
+
+        Grade grade = getGradeById(id, gradeId);
+
+        if (value != null && (value < 1 || value > 10)) {
+            throw new IllegalStateException("The value is not between 1 and 10");
+        }
+
+        if (value != null && value != grade.getValue()) {
+            grade.setValue(value);
+        }
+
+        if (evaluationDate != null && !evaluationDate.equals(grade.getEvaluationDate())) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            try {
+                LocalDate.parse(evaluationDate, formatter);
+                grade.setEvaluationDate(evaluationDate);
+            } catch (DateTimeParseException exception) {
+                // Handle invalid date format
             }
         }
-        return getGradeById(id,gradeId);
+
+        return getGradeById(id, gradeId);
     }
+
 }
