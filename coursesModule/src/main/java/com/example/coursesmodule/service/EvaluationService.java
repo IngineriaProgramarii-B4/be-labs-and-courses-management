@@ -50,7 +50,8 @@ public class EvaluationService {
     }
 
     public int addEvaluationMethod(String title, Evaluation evaluation){
-        if(validateEval(title, evaluation))
+        Optional<Evaluation> eval = courseDao.getEvaluationMethodByComponent(title, evaluation.getComponent());
+        if(validateEval(title, evaluation) && eval.isEmpty())
             return courseDao.addEvaluationMethod(title, evaluation);
         return 0;
     }

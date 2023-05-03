@@ -7,15 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(
-        name = "component",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "component_subject_id_type_unique",
-                        columnNames = {"subject_id", "type"}
-                )
-        }
-)
+@Table(name = "component")
 public class Component {
     @Id
     @SequenceGenerator(

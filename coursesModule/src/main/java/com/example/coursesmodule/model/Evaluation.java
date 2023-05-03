@@ -4,15 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
-@Table(
-        name = "evaluation",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "evaluation_subject_id_component_unique",
-                        columnNames = {"subject_id","component"}
-                )
-        }
-)
+@Table(name = "evaluation")
 public class Evaluation {
     @Id
     @SequenceGenerator(

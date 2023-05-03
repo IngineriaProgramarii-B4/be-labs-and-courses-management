@@ -2,6 +2,7 @@ package com.example.coursesmodule.service;
 
 import com.example.coursesmodule.dao.CourseDao;
 import com.example.coursesmodule.model.Component;
+import com.example.coursesmodule.model.Evaluation;
 import com.example.coursesmodule.model.Resource;
 import com.example.coursesmodule.model.Subject;
 import jakarta.transaction.Transactional;
@@ -29,7 +30,7 @@ public class ComponentService {
             return false;
         Optional<Subject> subject = courseDao.selectSubjectByTitle(title);
         if(subject.isEmpty()) return false;
-        for(Component comp : subject.get().getComponentList())
+        for(Component comp : courseDao.getComponents(title))
             if(comp.getType().equals(component.getType()))
                 return false;
         return true;
@@ -41,7 +42,7 @@ public class ComponentService {
             return false;
         Optional<Subject> subject = courseDao.selectSubjectByTitle(title);
         if(subject.isEmpty()) return false;
-        for(Component comp : subject.get().getComponentList())
+        for(Component comp : courseDao.getComponents(title))
             if(comp.getType().equals(component.getType())&& !comp.getType().equals(type))
                 return false;
         return true;
@@ -79,6 +80,9 @@ public class ComponentService {
             resourceService.deleteResourceByTitle(title, type, resourceTitle);
         }
 
+        Optional<Evaluation> evaluation = courseDao.getEvaluationMethodByComponent(title, type);
+        if (evaluation.isEmpty())
+            return courseDao.deleteComponentByType(title, type);
         return courseDao.deleteEvaluationMethod(title, type) & courseDao.deleteComponentByType(title, type);
     }
 
