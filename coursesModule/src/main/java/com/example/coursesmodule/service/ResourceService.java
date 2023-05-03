@@ -44,19 +44,6 @@ public class ResourceService {
                 return true;
         return false;
     }
-
-    public boolean validateUpdate(String title, String type, String resourceTitle, Resource resource){
-        if (resource.getTitle().isEmpty() || resource.getLocation().isEmpty())
-            return false;
-        for(Component comp : courseDao.getComponents(title))
-            if(comp.getType().equals(type))
-                for(Resource res : courseDao.getResourcesForComponentType(title, type))
-                    if((res.getTitle().equals(resource.getTitle())&& !res.getTitle().equals(resourceTitle))
-                            ||(res.getLocation().equals(resource.getLocation())&& !res.getTitle().equals(resourceTitle)))
-                        return false;
-        return true;
-    }
-
     public int addResource(MultipartFile file, String title, String type){
         String fileName = title + "_" + type + "_" + file.getOriginalFilename();
         Resource resource = new Resource(

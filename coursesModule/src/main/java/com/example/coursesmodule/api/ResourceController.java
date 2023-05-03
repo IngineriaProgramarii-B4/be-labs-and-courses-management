@@ -68,7 +68,8 @@ public class ResourceController {
         if(componentService.getComponentByType(title, type).isEmpty())
             throw new ResponseStatusException(NOT_FOUND, COMPONENT_ERROR);
         if(resourceService.addResource(file, title, type) == 0)
-            throw new ResponseStatusException(NOT_FOUND, COMPONENT_ERROR);
+            throw new ResponseStatusException(NOT_FOUND, RESOURCE_ERROR);
+        throw new ResponseStatusException(CREATED, "Resource added successfully");
     }
 
     @GetMapping("/file={resourceTitle}")
