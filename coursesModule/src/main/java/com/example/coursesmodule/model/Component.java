@@ -58,10 +58,6 @@ public class Component {
         this.numberWeeks = numberWeeks;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
     }

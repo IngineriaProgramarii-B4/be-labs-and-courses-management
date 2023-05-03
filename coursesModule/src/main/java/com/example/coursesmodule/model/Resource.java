@@ -72,9 +72,6 @@ public class Resource {
     }
 
     //setters
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public void setTitle(String title) {
         this.title = title;
@@ -122,7 +119,6 @@ public class Resource {
         return "Resource{" +
                 "title='" + title + '\'' +
                 ", location='" + location + '\'' +
-                ", timeStamp=" + timeStamp +
                 ", type='" + type + '\'' +
                 ", isDeleted=" + isDeleted +
                 '}';

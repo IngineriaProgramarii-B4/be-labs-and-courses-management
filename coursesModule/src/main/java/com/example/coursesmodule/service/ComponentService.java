@@ -74,6 +74,9 @@ public class ComponentService {
         if(!validateType(type))
             return 0;
 
+        Optional<Subject> subject = courseDao.selectSubjectByTitle(title);
+        if(subject.isEmpty()) return 0;
+
         List<Resource> resources = courseDao.getResourcesForComponentType(title, type);
         for (Resource resource : resources) {
             String resourceTitle = resource.getTitle();
