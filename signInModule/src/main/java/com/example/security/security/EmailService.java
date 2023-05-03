@@ -21,14 +21,12 @@ public class EmailService {
 
         message.setTo(user.getEmail());
 
-        // TODO: generate the resetLink using the resetToken
         String resetLink = "www.google.com";
         String emailBody = "Reset your password using the following link:\n" + resetLink + "\n\nThank you";
 
         message.setText(emailBody);
         message.setSubject("Reset Password");
         mailSender.send(message);
-        System.out.println("The email has been sent");
 
 
     }
