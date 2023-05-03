@@ -38,7 +38,7 @@ public class SubjectService {
     }
 
     public boolean validateTitle(String title){
-        List<Subject> subjects = getAllSubjects();
+        List<Subject> subjects = courseDao.selectAllSubjects();
         for(Subject subject : subjects)
             if(subject.getTitle().equals(title)) //only non-deleted subjects
                 return true;
