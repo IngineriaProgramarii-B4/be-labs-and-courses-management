@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/catalog/teachers")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000")
 public class TeacherController {
     private final TeacherService teacherService;
     @Autowired
@@ -21,12 +21,12 @@ public class TeacherController {
     }
 
     @GetMapping
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "http://localhost:3000")
     public List<Teacher> getTeachers(){
         return teacherService.getTeacherDataBase();
     }
     @GetMapping("/{id}")
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "http://localhost:3000")
     public Teacher getTeacherById(@PathVariable("id") int id){
         Optional<Teacher> teacher = Optional.ofNullable(teacherService.getTeacherById(id));
         if (teacher.isPresent()) {

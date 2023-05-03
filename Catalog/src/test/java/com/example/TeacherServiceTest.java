@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-public class TeacherServiceTest {
+class TeacherServiceTest {
     @InjectMocks
     TeacherService teacherService;
     @Mock
@@ -40,7 +40,7 @@ public class TeacherServiceTest {
     }
 
     @Test
-    public void canGetAllTeachers() {
+    void canGetAllTeachers() {
         // when
         teacherService.getTeacherDataBase();
 
@@ -49,7 +49,7 @@ public class TeacherServiceTest {
     }
 
     @Test
-    public void canGetTeacherById() {
+    void canGetTeacherById() {
         when(teacherRepository.getTeacherById(teacher.getId())).thenReturn(Optional.of(teacher));
         assertEquals(Optional.of(teacher), teacherRepository.getTeacherById(teacher.getId()));
         teacherService.save(teacher);
@@ -73,7 +73,7 @@ public class TeacherServiceTest {
         }
     }
     @Test
-    public void canAddTeacher() {
+    void canAddTeacher() {
 
         when(teacherRepository.getTeacherById(teacher.getId())).thenReturn(Optional.of(teacher));
         assertEquals(Optional.of(teacher), teacherRepository.getTeacherById(teacher.getId()));
@@ -88,7 +88,7 @@ public class TeacherServiceTest {
     }
 
     @Test
-    public void canDeleteTeacher() {
+    void canDeleteTeacher() {
 
         when(teacherRepository.getTeacherById(teacher.getId())).thenReturn(Optional.of(teacher));
         assertEquals(Optional.of(teacher), teacherRepository.getTeacherById(teacher.getId()));

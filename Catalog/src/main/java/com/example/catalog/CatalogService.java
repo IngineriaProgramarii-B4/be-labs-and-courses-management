@@ -23,7 +23,7 @@ public class CatalogService {
     public void initCatalogDB(){
         catalog.setEntries(studentService.getStudentDataBase());
     }
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "http://localhost:3000")
     public List<Student> getCatalog(){
         return studentService.getStudentDataBase();
     }

@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(StudentController.class)
-public class StudentControllerTest {
+class StudentControllerTest {
     @Autowired
     private MockMvc mvc;
     @Autowired
@@ -55,7 +55,7 @@ public class StudentControllerTest {
     void tearDown() {
     }
     @Test
-    public void getAllStudentsAPI() throws Exception {
+    void getAllStudentsAPI() throws Exception {
         when(studentService.getStudentDataBase()).thenReturn(students);
         MvcResult studentResult = mvc.perform(get("/api/v1/catalog/students")
                         .accept(MediaType.APPLICATION_JSON))
@@ -68,7 +68,7 @@ public class StudentControllerTest {
         assertEquals(students, studentResponse);
     }
     @Test
-    public void createStudentAPI() throws Exception {
+    void createStudentAPI() throws Exception {
         when(studentService.save(any(Student.class))).thenReturn(student);
         MvcResult studentResult = mvc.perform(post("/api/v1/catalog/students")
                         .content(asJsonString(student))
@@ -85,7 +85,7 @@ public class StudentControllerTest {
 
     }
     @Test
-    public void getStudentByIdAPI() throws Exception {
+    void getStudentByIdAPI() throws Exception {
         when(studentService.getStudentById(student.getId())).thenReturn(student);
         int id = student.getId();
         MvcResult studentResult = mvc.perform(get("/api/v1/catalog/students/{id}", id)
@@ -102,7 +102,7 @@ public class StudentControllerTest {
     }
 
     @Test
-    public void getStudentByIdGradesOnSubjectAPI() throws Exception {
+    void getStudentByIdGradesOnSubjectAPI() throws Exception {
         when(studentService.getStudentById(student.getId())).thenReturn(student);
         MvcResult gradesList = mvc.perform(get("/api/v1/catalog/students/{id}/{subject}",  student.getId(), subject.getName())
                         .accept(MediaType.APPLICATION_JSON))
@@ -123,7 +123,7 @@ public class StudentControllerTest {
         assertEquals(gradesIds, gradesResponseIds);
     }
     @Test
-    public void getStudentByIdGradesAPI() throws Exception {
+    void getStudentByIdGradesAPI() throws Exception {
         when(studentService.getStudentById(student.getId())).thenReturn(student);
         MvcResult gradesList = mvc.perform(get("/api/v1/catalog/students/{id}/grades",  student.getId(), subject.getName())
                         .accept(MediaType.APPLICATION_JSON))
@@ -145,7 +145,7 @@ public class StudentControllerTest {
     }
 
     @Test
-    public void getStudentByIdGetGradeByIdAPI() throws Exception {
+    void getStudentByIdGetGradeByIdAPI() throws Exception {
         when(studentService.getStudentById(student.getId())).thenReturn(student);
         when(studentService.getGradeById(student.getId(), grade.getId())).thenReturn(grade);
 
@@ -162,7 +162,7 @@ public class StudentControllerTest {
     }
 
     @Test
-    public void createGradeAPI() throws Exception {
+    void createGradeAPI() throws Exception {
         //GradeId pus in postGradeResult inainte ca metoda Student.addGrade() sa aloce un ID.
         Grade gradeForPost = new Grade(10, subject, "12.12.1222");
         gradeForPost.setId(1);
@@ -194,11 +194,11 @@ public class StudentControllerTest {
                 // then
                 .andExpect(status().isBadRequest());
 
-        assertEquals(student.getGrades().size(), 2);
+        assertEquals(2, student.getGrades().size());
     }
 
     @Test
-    public void deleteGradeAPI() throws Exception {
+    void deleteGradeAPI() throws Exception {
 
         when(studentService.getStudentById(student.getId())).thenReturn(student);
         when(studentService.deleteGrade(student.getId(), grade.getId())).thenAnswer((Answer<Grade>) invocationOnMock -> {
@@ -223,7 +223,7 @@ public class StudentControllerTest {
     }
 
     @Test
-    public void deleteStudentAPI() throws Exception {
+    void deleteStudentAPI() throws Exception {
         when(studentService.getStudentById(student.getId())).thenReturn(student);
         when(studentService.delete(student)).thenAnswer((Answer<Student>) invocationOnMock -> {
             students.remove(student);
@@ -242,11 +242,11 @@ public class StudentControllerTest {
 
         assertNotNull(studentDeleted);
         assertEquals(student, studentDeleted);
-        assertEquals(students.size(), 0);
+        assertEquals(0, students.size());
 
     }
     @Test
-    public void updateStudentAPI() throws Exception {
+    void updateStudentAPI() throws Exception {
         when(studentService.getStudentById(student.getId())).thenReturn(student);
         when(studentService.getGradeById(student.getId(), grade.getId())).thenReturn(grade);
 
@@ -274,7 +274,7 @@ public class StudentControllerTest {
         assertNotNull(gradeResponse);
         assertEquals(gradeResponse.getId(), grade.getId());
 
-        assertEquals(gradeResponse.getEvaluationDate(), "12.12.2002");
+        assertEquals("12.12.2002", gradeResponse.getEvaluationDate());
     }
     private static String asJsonString(final Object obj) {
         try {

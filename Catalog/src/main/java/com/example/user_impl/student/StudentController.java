@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/v1/catalog/students")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000")
 public class StudentController {
     private final StudentService studentService;
     @Autowired
@@ -22,12 +22,12 @@ public class StudentController {
         this.studentService = studentService;
     }
     @GetMapping
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "http://localhost:3000")
     public List<Student> getStudents(){
         return studentService.getStudentDataBase();
     }
     @GetMapping("/{id}")
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<Student> getStudentById(@PathVariable("id") int id) {
         Optional<Student> student = Optional.ofNullable(studentService.getStudentById(id));
         if (student.isPresent()) {
@@ -38,7 +38,7 @@ public class StudentController {
     }
 
     @GetMapping("/{id}/{subject}")
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "http://localhost:3000")
     public List<Grade> getStudentByIdSubjectGrades(@PathVariable("id") int id, @PathVariable String subject) {
         Optional<Student> student = Optional.ofNullable(studentService.getStudentById(id));
         if (student.isPresent()) {
@@ -51,7 +51,7 @@ public class StudentController {
         else return List.of();
     }
     @GetMapping("/{id}/grades")
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "http://localhost:3000")
     public List<Grade> getStudentByIdGrades(@PathVariable("id") int id) {
         Optional<Student> student = Optional.ofNullable(studentService.getStudentById(id));
         if (student.isPresent()) {
@@ -62,7 +62,7 @@ public class StudentController {
     }
 
     @GetMapping("/{id}/grades/{gradeId}")
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "http://localhost:3000")
     @Nullable
     public ResponseEntity<Grade> getGradeById(@PathVariable("id") int id, @PathVariable("gradeId") int gradeId) {
         Optional<Student> student = Optional.ofNullable(studentService.getStudentById(id));
@@ -79,7 +79,7 @@ public class StudentController {
     @PostMapping(path = "",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<Student> create(@RequestBody Student newStudent) throws ServerException {
 
         Student studentToSave = studentService.save(newStudent);
@@ -103,7 +103,7 @@ public class StudentController {
         }
     }
 
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "http://localhost:3000")
     @Nullable
     @DeleteMapping(value = "/{id}/grades/{gradeId}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -116,7 +116,7 @@ public class StudentController {
         return new ResponseEntity<>(isRemoved, HttpStatus.OK);
     }
     // sterge in mod fizic un student din baza de date
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "http://localhost:3000")
     @Nullable
     @DeleteMapping(value = "/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -130,7 +130,7 @@ public class StudentController {
     }
 
     //Modifica valoarea unei note si/sau data de notare
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "http://localhost:3000")
     @Nullable
     @PutMapping("/{id}/grades/{gradeId}")
     public ResponseEntity<Grade> updateGradeValue(@PathVariable("id") int id, @PathVariable("gradeId") int gradeId,@RequestParam(required = false) String evaluationDate,@RequestParam(required = false) Integer value){
