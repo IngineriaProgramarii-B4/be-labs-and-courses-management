@@ -1,6 +1,7 @@
 package com.example.security.security;
 
 import com.example.security.model.Role;
+import com.example.security.model.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -45,5 +46,18 @@ public class JWTGenerator {
         {
             throw new AuthenticationCredentialsNotFoundException("JWT was expired or incorrect");
         }
+    }
+
+    public String generateResetToken(UserEntity user) {
+        Date currentDate = new Date();
+        Date expireDate = new Date(currentDate.getTime() + SecurityConstants.RESET_TOKEN_EXPIRATION);
+
+        return Jwts.builder()
+                .setSubject(user.getEmail())
+                .claim("userId", user.getUserId())
+                .setIssuedAt(new Date())
+                .setExpiration(expireDate)
+                .signWith(SecurityConstants.JWT_SECRET, SignatureAlgorithm.HS512)
+                .compact();
     }
 }

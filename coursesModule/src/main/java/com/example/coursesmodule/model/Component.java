@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 @Table(
@@ -93,5 +92,15 @@ public class Component {
 
     public void removeResource(Resource resource) {
         this.resources.remove(resource);
+    }
+
+    @Override
+    public String toString() {
+        return "Component{" +
+                "id=" + id +
+                ", type='" + type + '\'' +
+                ", numberWeeks=" + numberWeeks +
+                ", resources=" + resources +
+                '}';
     }
 }

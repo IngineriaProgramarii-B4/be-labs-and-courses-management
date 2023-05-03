@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -22,12 +22,38 @@ public class ComponentService {
         this.courseDao = courseDao;
     }
 
-    public int verifyComponent(Component component) {
-        return component.getNumberWeeks() <= 0 ? 0 : 1;
+    public boolean validateComponent(String title, Component component) {
+        if(component.getNumberWeeks() <= 0) return false;
+        if(!validateType(component.getType()))
+            return false;
+        Optional<Subject> subject = courseDao.selectSubjectByTitle(title);
+        if(subject.isEmpty()) return false;
+        for(Component comp : subject.get().getComponentList())
+            if(comp.getType().equals(component.getType()))
+                return false;
+        return true;
+    }
+
+    public boolean validateComponentToUpdate(String title, String type, Component component) {
+        if(component.getNumberWeeks() <= 0) return false;
+        if(!Objects.equals(component.getType(), type))
+            return false;
+        Optional<Subject> subject = courseDao.selectSubjectByTitle(title);
+        if(subject.isEmpty()) return false;
+        for(Component comp : subject.get().getComponentList())
+            if(comp.getType().equals(component.getType())&& !comp.getType().equals(type))
+                return false;
+        return true;
+    }
+    public boolean validateType(String type){
+        return Objects.equals(type, "Course") || Objects.equals(type, "Seminar") || Objects.equals(type, "Laboratory");
     }
 
     public int addComponent(String title, Component component) {
-        return verifyComponent(component) == 0 ? 0 : courseDao.addComponent(title, component);
+        if(validateComponent(title, component)) {
+            return courseDao.addComponent(title, component);
+        }
+        return 0;
     }
 
     public List<Component> getComponents(String title) {
@@ -35,14 +61,18 @@ public class ComponentService {
     }
 
     public Optional<Component> getComponentByType(String title, String type) {
-        return courseDao.getComponentByType(title, type);
+        if(validateType(type))
+            return courseDao.getComponentByType(title, type);
+        return Optional.empty();
     }
 
     public int deleteComponentByType(String title, String type) {
-        return courseDao.deleteComponentByType(title, type);
+        if(validateType(type))
+            return courseDao.deleteComponentByType(title, type);
+        return 0;
     }
 
     public int updateComponentByType(String title, String type, Component component) {
-        return verifyComponent(component) == 0 ? 0 : courseDao.updateComponentByType(title, type, component);
+        return validateComponentToUpdate(title, type, component) ? courseDao.updateComponentByType(title, type, component) : 0;
     }
 }

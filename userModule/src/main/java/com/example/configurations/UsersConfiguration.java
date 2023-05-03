@@ -14,6 +14,7 @@ import java.util.List;
 
 @Configuration
 public class UsersConfiguration {
+
     @Bean
     CommandLineRunner commandLineRunner(UsersRepository usersRepository) {
         return args -> {

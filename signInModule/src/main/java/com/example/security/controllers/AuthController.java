@@ -20,6 +20,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import com.example.security.security.ForgotPasswordRequestBody;
+import com.example.security.security.EmailService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,12 +36,15 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JWTGenerator jwtGenerator;
 
+    private final EmailService emailService;
+
     @Autowired
-    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JWTGenerator jwtGenerator) {
+    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JWTGenerator jwtGenerator, EmailService emailService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtGenerator = jwtGenerator;
+        this.emailService = emailService;
     }
 
     @PostMapping("/login")
@@ -81,6 +86,23 @@ public class AuthController {
             return new ResponseEntity<>("Error when saving user!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>("User registered success!", HttpStatus.OK);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordRequestBody forgotPasswordRequestBody) {
+        String email = forgotPasswordRequestBody.getEmail();
+        UserEntity user = userRepository.findByEmail(email);
+        if (user == null) {
+            return new ResponseEntity<>("User not found!", HttpStatus.NOT_FOUND);
+        }
+
+        try {
+            String resetToken = jwtGenerator.generateResetToken(user);
+            emailService.sendPasswordResetEmail(user, resetToken);
+            return new ResponseEntity<>("Password reset email sent!", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error when sending password reset email!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

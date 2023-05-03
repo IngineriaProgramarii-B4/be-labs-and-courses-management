@@ -8,12 +8,14 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping(path = "api/v1/subjects")
+@CrossOrigin(origins = "*")
 public class SubjectController {
+    
+    private static final String SUBJECT_ERROR = "Subject not found";
 
     private final SubjectService subjectService;
 
@@ -32,27 +34,28 @@ public class SubjectController {
     {
         if(subjectService.addSubject(subject) == 0)
             throw new ResponseStatusException(NOT_ACCEPTABLE, "Subject already exists or is invalid");
+        throw new ResponseStatusException(CREATED, "Subject added successfully");
     }
 
     @DeleteMapping("subjectTitle={title}")
-    public void deleteSubjectById(@PathVariable("title") String title) {
+    public void deleteSubjectByTitle(@PathVariable("title") String title) {
         if(subjectService.deleteSubjectByTitle(title) == 0)
-            throw new ResponseStatusException(NOT_FOUND, "Subject not found");
+            throw new ResponseStatusException(NOT_FOUND, SUBJECT_ERROR);
+        throw new ResponseStatusException(NO_CONTENT, "Subject deleted successfully");
     }
 
     @PutMapping("subjectTitle={title}")
-    public void updateSubjectById(@PathVariable("title") String title, @RequestBody Subject subject) {
-        //verify that the subject already exists
-        subjectService.getSubjectByTitle(title)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Subject not found"));
+    public void updateSubjectByTitle(@PathVariable("title") String title, @RequestBody Subject subject) {
+        if(subjectService.getSubjectByTitle(title).isEmpty())
+            throw new ResponseStatusException(NOT_FOUND, SUBJECT_ERROR);
         if(subjectService.updateSubjectByTitle(title, subject) == 0)
             throw new ResponseStatusException(NOT_ACCEPTABLE, "Subject is invalid");
     }
 
     @GetMapping(path = "subjectTitle={title}")
-    public Subject getSubjectById(@PathVariable("title") String title) {
+    public Subject getSubjectByTitle(@PathVariable("title") String title) {
         return subjectService.getSubjectByTitle(title)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Subject not found"));
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, SUBJECT_ERROR));
     }
 
     @GetMapping(path = "year={year}&semester={semester}")
