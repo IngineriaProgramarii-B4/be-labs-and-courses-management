@@ -51,7 +51,7 @@ public class AdminsController {
 
     @Operation(summary = "Receive necessary data in order to update information about an admin in the database")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Resource updated successfully",
+            @ApiResponse(responseCode = "204", description = "Resource updated successfully",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Resource not found",
                     content = @Content)
@@ -60,7 +60,7 @@ public class AdminsController {
     public ResponseEntity<Void> updateAdmin(@PathVariable UUID id, @RequestBody Admin admin) {
         if (!adminsService.getAdminsByParams(Map.of("id", id)).isEmpty()) {
             adminsService.updateAdmin(id, admin);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

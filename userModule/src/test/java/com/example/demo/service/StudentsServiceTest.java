@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-public class StudentsServiceTest {
+class StudentsServiceTest {
 
     @InjectMocks
     StudentsService studentsService;

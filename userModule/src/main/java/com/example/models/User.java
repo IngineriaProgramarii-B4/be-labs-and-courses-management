@@ -27,11 +27,11 @@ public abstract class User {
     @Max(value=2)
     protected int type;
 
-    public User() {
+    protected User() {
 
     }
 
-    public User(UUID id, String firstname, String lastname, String email, String username, int type) {
+    protected User(UUID id, String firstname, String lastname, String email, String username, int type) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -40,7 +40,7 @@ public abstract class User {
         this.type = type;
     }
 
-    public User(String firstname, String lastname, String email, String username, int type) {
+    protected User(String firstname, String lastname, String email, String username, int type) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;

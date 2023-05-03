@@ -36,4 +36,14 @@ public class Admin extends AcademicStaff {
     public String toString() {
         return "Admin{" + "department='" + department + '\'' + ", office='" + office + '\'' + ", id=" + id + ", firstname='" + firstname + '\'' + ", lastname='" + lastname + '\'' + ", email='" + email + '\'' + ", username='" + username + '\'' + '}';
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object user) {
+        return super.equals(user);
+    }
 }

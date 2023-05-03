@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -53,7 +51,7 @@ public class StudentsController {
 
     @Operation(summary = "Receive necessary data in order to update information about a student in the database")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Resource updated successfully",
+            @ApiResponse(responseCode = "204", description = "Resource updated successfully",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Haven't found students that match the requirements",
                     content = @Content
@@ -63,7 +61,7 @@ public class StudentsController {
     public ResponseEntity<Void> updateStudent(@PathVariable UUID id, @RequestBody Student student) {
         if (!studentsService.getStudentsByParams(Map.of("id", id)).isEmpty()) {
             studentsService.updateStudent(id, student);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

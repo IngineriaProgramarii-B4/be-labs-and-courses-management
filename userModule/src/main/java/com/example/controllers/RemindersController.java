@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -40,16 +38,12 @@ public class RemindersController {
             ),
             @ApiResponse(responseCode = "404", description = "Haven't found the reminder.",
                     content = @Content
-            ),
-            @ApiResponse(responseCode = "500", description = "Internal server error",
-                    content = @Content
             )
     })
     @GetMapping(value = {"/reminders/{username}/{id}"})
     public ResponseEntity<List<Reminder>> getRemindersByParams(@PathVariable String username, @PathVariable UUID id) {
         List<Reminder> reminders = remindersService.getRemindersByParams(Map.of("creatorUsername", username, "id", id));
-        if(reminders.isEmpty())
-        {
+        if (reminders.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(reminders, HttpStatus.OK);
@@ -65,9 +59,6 @@ public class RemindersController {
             ),
             @ApiResponse(responseCode = "404", description = "Haven't found reminders",
                     content = @Content
-            ),
-            @ApiResponse(responseCode = "500", description = "Internal server error",
-                    content = @Content
             )
     })
     @GetMapping(value = {"/reminders/{username}"})
@@ -75,8 +66,7 @@ public class RemindersController {
         Map<String, Object> params = Map.of("creatorUsername", username);
 
         List<Reminder> reminders = remindersService.getRemindersByParams(params);
-        if(reminders.isEmpty())
-        {
+        if (reminders.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(reminders, HttpStatus.OK);
@@ -97,14 +87,14 @@ public class RemindersController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Haven't found a reminder to delete with those descriptions",
                     content = @Content),
-            @ApiResponse(responseCode = "200", description = "Reminder soft deleted successfully",
+            @ApiResponse(responseCode = "204", description = "Reminder soft deleted successfully",
                     content = @Content)
     })
-    @DeleteMapping(value = "/reminder/delete/{id}")
+    @DeleteMapping(value = "/reminders/{id}")
     public ResponseEntity<Void> deleteReminder(@PathVariable UUID id) {
-        if(!remindersService.getRemindersByParams(Map.of("id", id)).isEmpty()) {
+        if (!remindersService.getRemindersByParams(Map.of("id", id)).isEmpty()) {
             remindersService.removeReminder(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -112,7 +102,7 @@ public class RemindersController {
 
     @Operation(summary = "Receive necessary data in order to update information about a reminder in the database")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Resource updated successfully",
+            @ApiResponse(responseCode = "204", description = "Resource updated successfully",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Haven't found reminder that match the requirements",
                     content = @Content
@@ -122,7 +112,7 @@ public class RemindersController {
     public ResponseEntity<Void> updateReminder(@PathVariable UUID id, @RequestBody Reminder reminder) {
         if (!remindersService.getRemindersByParams(Map.of("id", id)).isEmpty()) {
             remindersService.updateReminder(id, reminder);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

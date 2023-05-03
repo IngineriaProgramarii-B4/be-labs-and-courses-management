@@ -23,7 +23,7 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-public class UsersServiceTest {
+class UsersServiceTest {
 
     @InjectMocks
     UsersService usersService;

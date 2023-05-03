@@ -2,8 +2,6 @@ package com.example.services;
 
 import com.example.models.Teacher;
 import com.example.repository.TeachersRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.Table;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -29,10 +27,9 @@ public class TeachersService {
         String title = (String) params.get("title");
 
 
-        if (params.containsKey("id")) {
-            if (!params.get("id").equals("")) {
+        if (params.containsKey("id") && (!params.get("id").equals(""))) {
                 id = (UUID) params.get("id");
-            }
+
         }
 
         return teachersRepository.findTeachersByParams(id, firstname, lastname, email, username, office, title);

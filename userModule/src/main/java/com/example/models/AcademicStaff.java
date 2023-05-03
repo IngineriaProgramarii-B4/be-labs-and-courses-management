@@ -8,15 +8,15 @@ import java.util.UUID;
 public abstract class AcademicStaff extends User {
     protected String office;
 
-    public AcademicStaff() {
+    protected AcademicStaff() {
 
     }
-    public AcademicStaff(UUID id, String firstname, String lastname, String email, String username, String office, int type) {
+    protected AcademicStaff(UUID id, String firstname, String lastname, String email, String username, String office, int type) {
         super(id, firstname, lastname, email, username, type);
         this.office = office;
     }
 
-    public AcademicStaff(String firstname, String lastname, String email, String username, String office, int type) {
+    protected AcademicStaff(String firstname, String lastname, String email, String username, String office, int type) {
         super(firstname, lastname, email, username, type);
         this.office = office;
     }
@@ -43,5 +43,15 @@ public abstract class AcademicStaff extends User {
 
     public void generateReports() {
 
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object user) {
+        return super.equals(user);
     }
 }

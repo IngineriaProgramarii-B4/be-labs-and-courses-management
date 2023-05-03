@@ -49,7 +49,17 @@ public class Teacher extends AcademicStaff {
         return "Teacher{" + "teachedSubjects=" + taughtSubjects + ", title='" + title + '\'' + ", office='" + office + '\'' + ", id=" + id + ", firstname='" + firstname + '\'' + ", lastname='" + lastname + '\'' + ", email='" + email + '\'' + ", username='" + username + '\'' + '}';
     }
 
-    public void manageEvaluationSystem() {
+//    public void manageEvaluationSystem() {
+//
+//    }
 
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object user) {
+        return super.equals(user);
     }
 }

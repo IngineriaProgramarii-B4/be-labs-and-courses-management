@@ -108,7 +108,18 @@ public class Student extends User {
                 '}';
     }
 
-    public void setElectives(Integer year, Integer semester) {
+//    public void setElectives(Integer year, Integer semester) {
+//
+//    }
 
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object user) {
+        return super.equals(user);
     }
 }
