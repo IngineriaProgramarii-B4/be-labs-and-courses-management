@@ -1,4 +1,4 @@
-package com.example.userImpl.teacher;
+package com.example.user_impl.teacher;
 
 import com.example.subject.Subject;
 import com.example.user.User;
@@ -47,10 +47,6 @@ public class Teacher implements User {
         this.name = name;
     }
 
-    public int getIdProf() {
-        return idProf;
-    }
-
     public void setIdProf(int idProf) {
         this.idProf = idProf;
     }
@@ -95,6 +91,11 @@ public class Teacher implements User {
         if (this == o) return true;
         if (!(o instanceof Teacher teacher)) return false;
         return idProf == teacher.idProf && Objects.equals(email, teacher.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     @Override

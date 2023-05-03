@@ -1,9 +1,8 @@
-package com.example.userImpl.student;
+package com.example.user_impl.student;
 
 import com.example.grades.Grade;
 import com.example.user.User;
 import jakarta.persistence.*;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +26,8 @@ public class Student implements User {
     private String email;
     private String name;
 
+    private int maxGradeId=0;
+
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Grade> grades = new ArrayList<>();
 
@@ -46,10 +47,6 @@ public class Student implements User {
         this.name = name;
     }
 
-    public int getIdStud() {
-        return idStud;
-    }
-
     public void setIdStud(int idStud) {
         this.idStud = idStud;
     }
@@ -62,7 +59,13 @@ public class Student implements User {
         this.nrMatricol = nrMatricol;
     }
     public List<Grade> getGrades() {
-        return grades;
+        List<Grade> gradesList=new ArrayList<>();
+        for(Grade grade : this.grades){
+            if(!grade.isDeleted()){
+                gradesList.add(grade);
+            }
+        }
+        return gradesList;
     }
 
     public List<Grade> getGradesBySubject(String subject) {
@@ -87,9 +90,17 @@ public class Student implements User {
         this.grades = grades;
     }
     public void addGrade(Grade grade){
-        grades.add(grade);
-        grade.setId(grades.size() - 1);
 
+        if(!grades.isEmpty()) {
+            maxGradeId++;
+            grades.add(grade);
+            grade.setId(maxGradeId);
+        }
+        else {
+            grades.add(grade);
+            maxGradeId=0;
+            grade.setId(maxGradeId);
+        }
     }
 
     public void setGrade(int value,int gradeID){

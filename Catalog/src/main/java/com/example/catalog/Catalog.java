@@ -1,15 +1,12 @@
 package com.example.catalog;
 
-import com.example.userImpl.student.Student;
-import jakarta.persistence.Entity;
+import com.example.user_impl.student.Student;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/* TODO: crearea logicii pentru baza de date : studentRepository, teacherRepository, etc.; conectarea cu baza de date;
-* */
 @Table
 public class Catalog {
 
