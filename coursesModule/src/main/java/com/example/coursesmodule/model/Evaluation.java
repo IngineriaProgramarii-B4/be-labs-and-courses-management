@@ -4,15 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
-@Table(
-        name = "evaluation",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "evaluation_subject_id_component_unique",
-                        columnNames = {"subject_id","component"}
-                )
-        }
-)
+@Table(name = "evaluation")
 public class Evaluation {
     @Id
     @SequenceGenerator(
@@ -29,16 +21,24 @@ public class Evaluation {
     private String component;
     @Column(name = "value", nullable = false)
     private float value;
+    @Column(name = "description")
+    private String description;
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted;
 
     public Evaluation() {
     }
 
     public Evaluation(@JsonProperty("id") Long id,
                       @JsonProperty("component") String component,
-                      @JsonProperty("value") float value) {
+                      @JsonProperty("value") float value,
+                      @JsonProperty("description") String description,
+                      @JsonProperty("isDeleted") boolean isDeleted) {
         this.id = id;
         this.component = component;
         this.value = value;
+        this.description = description;
+        this.isDeleted = isDeleted;
     }
 
     public Long getId() {
@@ -65,12 +65,29 @@ public class Evaluation {
         this.value = value;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
     @Override
     public String toString() {
         return "Evaluation{" +
                 "id=" + id +
                 ", component='" + component + '\'' +
                 ", value=" + value +
+                ", isDeleted=" + isDeleted +
                 '}';
     }
 }
