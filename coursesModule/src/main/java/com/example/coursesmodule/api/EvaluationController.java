@@ -85,5 +85,6 @@ public class EvaluationController {
         if(evaluationService.updateEvaluationMethodByComponent(title, component, evaluation) == 0) {
             throw new ResponseStatusException(NOT_FOUND, EVALUATION_ERROR);
         }
+        throw new ResponseStatusException(NO_CONTENT, "Evaluation method updated successfully");
     }
 }

@@ -19,28 +19,33 @@ public class Subject {
             strategy = GenerationType.SEQUENCE,
             generator = "subject_sequence"
     )
-    int id;
-    @Column(name = "title", nullable = false, unique = true)
-    String title;
+    private int id;
+    @Column(name = "title", nullable = false)
+    private String title;
     @Column(name = "credits", nullable = false)
-    int credits;
+    private int credits;
     @Column(name = "year", nullable = false)
-    int year;
+    private int year;
     @Column(name = "semester", nullable = false)
-    int semester;
+    private int semester;
     @Column(
             name = "description",
             nullable = false,
             columnDefinition = "TEXT"
     )
-    String description;
+    private String description;
     // describe a One-to-Many relationship between Subject and Approfundation
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "subject_id", referencedColumnName = "id")
-    List<Component> componentList = new ArrayList<>();
+    private List<Component> componentList = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "subject_id", referencedColumnName = "id")
-    List<Evaluation> evaluationList = new ArrayList<>();
+    private List<Evaluation> evaluationList = new ArrayList<>();
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "subject_id", referencedColumnName = "id")
+    private Resource image;
+    @Column(name="is_deleted", nullable = false)
+    private boolean isDeleted;
 
     //constructors
     public Subject() {
@@ -53,7 +58,8 @@ public class Subject {
                    @JsonProperty("semester") int semester,
                    @JsonProperty("description") String description,
                    @JsonProperty("components") List<Component> componentList,
-                   @JsonProperty("evaluations") List<Evaluation> evaluationList
+                   @JsonProperty("evaluations") List<Evaluation> evaluationList,
+                   @JsonProperty("isDeleted") boolean isDeleted
     ) {
         this.id = id;
         this.title = title;
@@ -63,6 +69,8 @@ public class Subject {
         this.description = description;
         this.componentList = componentList;
         this.evaluationList = evaluationList;
+        this.image = null;
+        this.isDeleted = isDeleted;
     }
 
     //setters
@@ -96,6 +104,17 @@ public class Subject {
         this.componentList = componentList;
     }
 
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public Resource getImage() {
+        return image;
+    }
+
+    public void setImage(Resource image) {
+        this.image = image;
+    }
 
     //getters
     public String getTitle() {
@@ -128,6 +147,12 @@ public class Subject {
         return componentList;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    //additional methods
+
     public void addComponent(Component component) {
         componentList.add(component);
     }
@@ -136,14 +161,29 @@ public class Subject {
         componentList.remove(component);
     }
 
+    public void softDeleteComponent(Component component) {
+        int index = componentList.indexOf(component);
+        if (index != -1) {
+            component.setDeleted(true);
+            componentList.set(index, component);
+        }
+    }
+
     public void addEvaluation(Evaluation evaluation) {
         evaluationList.add(evaluation);
     }
 
     public void removeEvaluation(Evaluation evaluation) {
-        evaluationList.remove(evaluation);
+        evaluationList.add(evaluation);
     }
 
+    public void softDeleteEvaluation(Evaluation evaluation) {
+        int index = evaluationList.indexOf(evaluation);
+        if (index != -1) {
+            evaluation.setDeleted(true);
+            evaluationList.set(index, evaluation);
+        }
+    }
 
     @Override
     public String toString() {
@@ -156,6 +196,8 @@ public class Subject {
                 ", description='" + description + '\'' +
                 ", componentList=" + componentList +
                 ", evaluationList=" + evaluationList +
+                ", image=" + image +
+                ", isDeleted=" + isDeleted +
                 '}';
     }
 }
