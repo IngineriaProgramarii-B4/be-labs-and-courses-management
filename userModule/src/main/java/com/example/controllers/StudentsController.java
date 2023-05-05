@@ -1,7 +1,7 @@
 package com.example.controllers;
 
+import com.example.models.Grade;
 import com.example.models.Student;
-import com.example.models.Teacher;
 import com.example.services.StudentsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -11,11 +11,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @CrossOrigin
 @RestController
@@ -83,7 +85,7 @@ public class StudentsController {
     @GetMapping("/students/{id}")
     public ResponseEntity<List<Student>> getStudentById(@PathVariable("id") String id) {
         Map<String, Object> param = new HashMap<>();
-        param.put("id", id);
+        param.put("id", UUID.fromString(id));
         Optional<List<Student>> students = Optional.ofNullable(studentsService.getStudentsByParams(param));
         if (students.isPresent()) {
             return new ResponseEntity<>(students.get(), HttpStatus.OK);
@@ -94,11 +96,12 @@ public class StudentsController {
 
     // <-------------------------------- FROM CATALOG ----------------------------------> //
 
+    // La acest Get, cred ca e mai ok sa intoarcem doar ResponseEntity ca sa nu apara exception pe front
     @GetMapping("students/{id}/grades")
     public List<Grade> getStudentByIdGrades(@PathVariable("id") UUID id) {
         Optional<Student> students = Optional.ofNullable(studentsService.getStudentById(id));
         if (students.isPresent()) {
-            return new ResponseEntity<>(students.get().getGrades(), HttpStatus.OK).getBody();
+            return (List<Grade>) new ResponseEntity<>(students.get().getGrades(), HttpStatus.OK).getBody();
         } else {
             throw new NullPointerException();
         }
@@ -118,6 +121,7 @@ public class StudentsController {
         }
     }
 
+    // ResponseEntity<> poate avea si un singur argument de HttpStatus, nu e necesar null
     @Nullable
     @DeleteMapping(value = "students/{id}/grades/{gradeId}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
