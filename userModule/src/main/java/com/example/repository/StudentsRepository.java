@@ -16,4 +16,16 @@ public interface StudentsRepository extends JpaRepository<Student, String> {
 
     @Query("select a from Student a where a.id = ?1")
     Student findStudentById(UUID id);
+
+    @Modifying
+    @Query("update Student s set s.firstname = COALESCE(?2, s.firstname), " +
+            "s.lastname = COALESCE(?3, s.lastname), " +
+            "s.email = COALESCE(?4, s.email), " +
+            "s.username = COALESCE(?5, s.username), " +
+            "s.year = COALESCE(nullif(0, ?6), s.year), " +
+            "s.semester = COALESCE(nullif(0, ?7), s.semester), " +
+            "s.registrationNumber = COALESCE(?8, s.registrationNumber) " +
+            "where s.id = ?1 and (COALESCE(nullif(0, ?6), s.year) between 1 and 3) and (COALESCE(nullif(0, ?7), s.semester) between 1 and 6)")
+    void updateStudent(UUID uuid, String firstname, String lastname, String email, String username, Integer year, Integer semester, String registrationNumber);
+
 }

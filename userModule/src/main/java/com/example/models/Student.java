@@ -1,15 +1,11 @@
 package com.example.models;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -29,6 +25,21 @@ public class Student extends User {
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Grade> grades = new ArrayList<>();
     // <--------------------------------------------------------------------------------> //
+
+    public Student(UUID id, String firstname,
+                   String lastname,
+                   String email,
+                   String username,
+                   int year,
+                   int semester,
+                   String registrationNumber,
+                   Set<String> enrolledCourses) {
+        super(id, firstname, lastname, email, username, 2);
+        this.enrolledCourses = enrolledCourses;
+        this.year = year;
+        this.semester = semester;
+        this.registrationNumber = registrationNumber;
+    }
 
     public Student(String firstname,
                    String lastname,
@@ -102,8 +113,19 @@ public class Student extends User {
                 '}';
     }
 
-    public void setElectives(Integer year, Integer semester) {
+//    public void setElectives(Integer year, Integer semester) {
+//
+//    }
 
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object user) {
+        return super.equals(user);
     }
 
     // <-------------------------------- FROM CATALOG ----------------------------------> //

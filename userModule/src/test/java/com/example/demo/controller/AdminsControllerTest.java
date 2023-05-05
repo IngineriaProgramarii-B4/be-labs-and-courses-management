@@ -11,6 +11,8 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -22,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AdminsController.class)
-public class AdminsControllerTest {
+class AdminsControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -35,6 +37,7 @@ public class AdminsControllerTest {
     @BeforeEach
     public void setup() {
         admin1 = new Admin(
+                UUID.randomUUID(),
                 "Cuzic",
                 "Diana",
                 "diana.cuzic@gmail.com",
@@ -44,13 +47,13 @@ public class AdminsControllerTest {
     }
 
     @Test
-    public void getAdminsByParamsTest() throws Exception {
+    void getAdminsByParamsTest() throws Exception {
+
         List<Admin> listAdmins = List.of(admin1);
 
         Map<String, Object> args = Collections.emptyMap();
 
         when(adminsService.getAdminsByParams(args)).thenReturn(listAdmins);
-
         String url = "/api/v1/admins";
 
         MvcResult mvcResult = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
@@ -70,7 +73,7 @@ public class AdminsControllerTest {
     }
 
     @Test
-    public void getAdminsByParamsDepartmentTest() throws Exception {
+    void getAdminsByParamsDepartmentTest() throws Exception {
         List<Admin> listAdmins = List.of(admin1);
 
         Map<String, Object> args = new HashMap<>();
@@ -102,12 +105,12 @@ public class AdminsControllerTest {
 
         AdminsController adminsControllerMock = mock(AdminsController.class);
 
-        ArgumentCaptor<Admin> adminToCapture = ArgumentCaptor.forClass(Admin.class);
+        when(adminsControllerMock.updateAdmin(admin1.getId(), admin1)).thenReturn(new ResponseEntity<>(HttpStatus.NO_CONTENT));
 
-        doNothing().when(adminsControllerMock).updateAdmin(adminToCapture.capture());
+        ResponseEntity response = adminsControllerMock.updateAdmin(admin1.getId(), admin1);
 
-        adminsControllerMock.updateAdmin(admin1);
+        ResponseEntity expected = new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-        assertEquals(admin1, adminToCapture.getValue());
+        assertEquals(response, expected);
     }
 }

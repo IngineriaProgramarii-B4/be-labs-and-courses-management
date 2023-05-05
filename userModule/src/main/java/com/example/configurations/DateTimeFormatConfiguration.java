@@ -11,14 +11,15 @@ import java.time.format.DateTimeFormatter;
 @Configuration
 public class DateTimeFormatConfiguration {
 
+    String format = "dd.MM.yyyy HH:mm";
     // configs for Jackson ser/deser
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer customizer() {
 
         return builder -> {
-            builder.simpleDateFormat("dd.MM.yyyy HH:mm");
-            builder.serializers(new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
-            builder.deserializers(new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
+            builder.simpleDateFormat(format);
+            builder.serializers(new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(format)));
+            builder.deserializers(new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(format)));
         };
     }
 }

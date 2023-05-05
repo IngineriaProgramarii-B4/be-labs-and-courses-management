@@ -2,6 +2,7 @@ package com.example.services;
 
 import com.example.models.Reminder;
 import com.example.repository.RemindersRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +25,15 @@ public class RemindersService {
 
     public void saveReminder(Reminder reminder) {
         remindersRepository.save(reminder);
+    }
+
+    public void removeReminder(UUID uuid) {
+        remindersRepository.deleteById(uuid);
+    }
+
+    @Transactional
+    public void updateReminder(UUID id, Reminder reminder) {
+        remindersRepository.updateReminder(id, reminder.getCreatorId(), reminder.getCreatorUsername(), reminder.getDueDateTime(), reminder.getTitle(), reminder.getDescription());
     }
 }
 

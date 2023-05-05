@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
+import com.example.controllers.AdminsController;
 import com.example.controllers.StudentsController;
+import com.example.models.Admin;
 import com.example.models.Student;
 import com.example.services.StudentsService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -11,6 +13,8 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -22,7 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(StudentsController.class)
-public class StudentsControllerTest {
+class StudentsControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -35,6 +39,7 @@ public class StudentsControllerTest {
     @BeforeEach
     public void setup() {
         stud1 = new Student(
+                UUID.randomUUID(),
                 "Florin",
                 "Rotaru",
                 "florin.eugen@uaic.ro",
@@ -44,6 +49,7 @@ public class StudentsControllerTest {
                 "123FAKE92929",
                 new HashSet<>(Arrays.asList("IP", "PA", "SGBD", "TW", "SE")));
         stud2 = new Student(
+                UUID.randomUUID(),
                 "Antip",
                 "Andrei",
                 "andrei.antip@uaic.ro",
@@ -53,6 +59,7 @@ public class StudentsControllerTest {
                 "123BOSS135",
                 new HashSet<>(Arrays.asList("OOP", "SO", "PS", "FAI")));
         stud3 = new Student(
+                UUID.randomUUID(),
                 "Olariu",
                 "Andreea",
                 "andreea.olariu@uaic.ro",
@@ -64,7 +71,7 @@ public class StudentsControllerTest {
     }
 
     @Test
-    public void getStudentsByParamsTest() throws Exception {
+    void getStudentsByParamsTest() throws Exception {
         List<Student> listStudents = List.of(stud1, stud2, stud3);
 
         Map<String, Object> args = Collections.emptyMap();
@@ -90,7 +97,7 @@ public class StudentsControllerTest {
     }
 
     @Test
-    public void getStudentsByParamsYearTest() throws Exception {
+    void getStudentsByParamsYearTest() throws Exception {
         List<Student> listStudents = List.of(stud1, stud3);
 
         Map<String, Object> args = new HashMap<>();
@@ -119,15 +126,11 @@ public class StudentsControllerTest {
 
     @Test
     void updateStudentTest() {
-
         StudentsController studentsControllerMock = mock(StudentsController.class);
+        when(studentsControllerMock.updateStudent(stud1.getId(), stud1)).thenReturn(new ResponseEntity<>(HttpStatus.NO_CONTENT));
+        ResponseEntity response = studentsControllerMock.updateStudent(stud1.getId(), stud1);
+        ResponseEntity expected = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        assertEquals(response, expected);
 
-        ArgumentCaptor<Student> studentToCapture = ArgumentCaptor.forClass(Student.class);
-
-        doNothing().when(studentsControllerMock).updateStudent(studentToCapture.capture());
-
-        studentsControllerMock.updateStudent(stud1);
-
-        assertEquals(stud1, studentToCapture.getValue());
     }
 }

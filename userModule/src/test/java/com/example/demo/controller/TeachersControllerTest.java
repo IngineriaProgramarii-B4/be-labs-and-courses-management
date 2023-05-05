@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
+import com.example.controllers.StudentsController;
 import com.example.controllers.TeachersController;
+import com.example.models.Student;
 import com.example.models.Teacher;
 import com.example.services.TeachersService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -11,6 +13,8 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -22,7 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(TeachersController.class)
-public class TeachersControllerTest {
+class TeachersControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -35,6 +39,7 @@ public class TeachersControllerTest {
     @BeforeEach
     public void setup() {
         teacher1 = new Teacher(
+                UUID.randomUUID(),
                 "Ciobaca",
                 "Stefan",
                 "stefan.ciobaca@uaic.com",
@@ -45,7 +50,7 @@ public class TeachersControllerTest {
     }
 
     @Test
-    public void getTeachersByParamsTest() throws Exception {
+    void getTeachersByParamsTest() throws Exception {
         List<Teacher> listTeachers = List.of(teacher1);
 
         Map<String, Object> args = Collections.emptyMap();
@@ -71,7 +76,7 @@ public class TeachersControllerTest {
     }
 
     @Test
-    public void getTeachersByParamsTitleTest() throws Exception {
+    void getTeachersByParamsTitleTest() throws Exception {
         List<Teacher> listTeachers = List.of(teacher1);
 
         Map<String, Object> args = new HashMap<>();
@@ -103,12 +108,13 @@ public class TeachersControllerTest {
 
         TeachersController teachersControllerMock = mock(TeachersController.class);
 
-        ArgumentCaptor<Teacher> teacherToCapture = ArgumentCaptor.forClass(Teacher.class);
 
-        doNothing().when(teachersControllerMock).updateTeacher(teacherToCapture.capture());
+        when(teachersControllerMock.updateTeacher(teacher1.getId(), teacher1)).thenReturn(new ResponseEntity<>(HttpStatus.NO_CONTENT));
 
-        teachersControllerMock.updateTeacher(teacher1);
+        ResponseEntity response = teachersControllerMock.updateTeacher(teacher1.getId(), teacher1);
 
-        assertEquals(teacher1, teacherToCapture.getValue());
+        ResponseEntity expected = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        assertEquals(response, expected);
     }
 }

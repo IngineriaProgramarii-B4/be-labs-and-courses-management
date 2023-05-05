@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UsersController.class)
-public class UsersControllerTest {
+class UsersControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -83,7 +83,7 @@ public class UsersControllerTest {
     }
 
     @Test
-    public void getUsersByParamsTest() throws Exception {
+    void getUsersByParamsTest() throws Exception {
         List<User> listUsers = List.of(stud1, stud2, stud3, admin1, teacher1);
 
         Map<String, Object> args = Collections.emptyMap();
@@ -109,7 +109,7 @@ public class UsersControllerTest {
     }
 
     @Test
-    public void getUsersByParamsUsernameTest() throws Exception {
+    void getUsersByParamsUsernameTest() throws Exception {
         List<User> listUsers = List.of(stud3);
 
         Map<String, Object> args = new HashMap<>();
