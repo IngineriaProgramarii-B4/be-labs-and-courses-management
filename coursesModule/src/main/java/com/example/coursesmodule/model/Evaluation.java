@@ -21,7 +21,7 @@ public class Evaluation {
     private String component;
     @Column(name = "value", nullable = false)
     private float value;
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
