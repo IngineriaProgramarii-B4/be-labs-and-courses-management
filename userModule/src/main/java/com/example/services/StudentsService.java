@@ -2,6 +2,7 @@ package com.example.services;
 
 import com.example.models.Student;
 import com.example.repository.StudentsRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,30 +27,30 @@ public class StudentsService {
         Integer semester = 0;
         String registrationNumber = (String) params.get("registrationNumber");
 
-        if (params.containsKey("id")) {
-            if (!params.get("id").equals("")) {
-                id = UUID.fromString((String) params.get("id"));
-            }
+        if (params.containsKey("id") && (!params.get("id").equals(""))) {
+                id = (UUID) params.get("id");
+
         }
 
-        if (params.containsKey("year")) {
-            if (!params.get("year").equals("")) {
+        if (params.containsKey("year") && (!params.get("year").equals(""))) {
                 year = Integer.parseInt((String) params.get("year"));
-            }
+
         }
 
-        if (params.containsKey("semester")) {
-            if (!params.get("semester").equals("")) {
+        if (params.containsKey("semester") && (!params.get("semester").equals(""))) {
                 semester = Integer.parseInt((String) params.get("semester"));
-            }
+
         }
 
-        List<Student> students = studentsRepository.findStudentsByParams(id, firstname, lastname, email, username, year, semester, registrationNumber);
-
-        return students;
+        return studentsRepository.findStudentsByParams(id, firstname, lastname, email, username, year, semester, registrationNumber);
     }
 
     public void saveStudent(Student student) {
         studentsRepository.save(student);
+    }
+    @Transactional
+    public void updateStudent(UUID id, Student student) {
+        // TODO : update the courses, it implies another table that makes connection between teacher and subjects
+        studentsRepository.updateStudent(id, student.getFirstname(), student.getLastname(), student.getEmail(), student.getUsername(), student.getYear(), student.getSemester(), student.getRegistrationNumber());
     }
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.Table;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "teachers")
@@ -16,6 +17,11 @@ public class Teacher extends AcademicStaff {
 
     }
 
+    public Teacher(UUID id, String firstname, String lastname, String email, String username, String office, Set<String> teachedSubjects, String title) {
+        super(id, firstname, lastname, email, username, office, 1);
+        this.taughtSubjects = teachedSubjects;
+        this.title = title;
+    }
     public Teacher(String firstname, String lastname, String email, String username, String office, Set<String> teachedSubjects, String title) {
         super(firstname, lastname, email, username, office, 1);
         this.taughtSubjects = teachedSubjects;
@@ -43,7 +49,17 @@ public class Teacher extends AcademicStaff {
         return "Teacher{" + "teachedSubjects=" + taughtSubjects + ", title='" + title + '\'' + ", office='" + office + '\'' + ", id=" + id + ", firstname='" + firstname + '\'' + ", lastname='" + lastname + '\'' + ", email='" + email + '\'' + ", username='" + username + '\'' + '}';
     }
 
-    public void manageEvaluationSystem() {
+//    public void manageEvaluationSystem() {
+//
+//    }
 
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object user) {
+        return super.equals(user);
     }
 }

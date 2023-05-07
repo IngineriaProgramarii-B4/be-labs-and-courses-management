@@ -10,9 +10,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
 import java.util.Map;
 
@@ -37,18 +36,15 @@ public class UsersController {
             ),
             @ApiResponse(responseCode = "404", description = "Haven't found users that match the requirements",
                     content = @Content
-            ),
-            @ApiResponse(responseCode = "500", description = "Internal server error",
-                    content = @Content
             )
     })
     @GetMapping(value = "/users")
-    public List<User> getUsersByParams(@RequestParam Map<String, Object> params) {
+    public ResponseEntity<List<User>> getUsersByParams(@RequestParam Map<String, Object> params) {
         List<User> users = usersService.getUsersByParams(params);
 
         if (users.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return users;
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }

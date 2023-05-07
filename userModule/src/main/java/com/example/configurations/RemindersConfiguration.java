@@ -63,7 +63,7 @@ public class RemindersConfiguration {
                     "Al doilea examen din sesiune"
             );
 
-            remindersRepository.saveAll(List.of(reminder1, reminder2, reminder2));
+            remindersRepository.saveAll(List.of(reminder1, reminder2, reminder3));
         };
     }
 }
