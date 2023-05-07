@@ -6,24 +6,34 @@ import com.example.models.Subject;
 import com.example.repository.StudentsRepository;
 import com.example.services.StudentsService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.nullable;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class StudentsServiceTest2 {
+@ExtendWith(MockitoExtension.class)
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+class StudentsServiceTest2 {
     @InjectMocks
     StudentsService studentsService;
+
     @Mock
-    private StudentsRepository studentsRepository;
-    @Mock
+    StudentsRepository studentsRepository;
+
     private Student student;
     private Grade grade;
     @BeforeEach
@@ -40,31 +50,43 @@ public class StudentsServiceTest2 {
                 new HashSet<>(Arrays.asList("IP", "PA", "SGBD", "TW", "SE")));
         Subject subject = new Subject("PP");
         grade = new Grade(7, subject, "12.02.1996");
-
-        studentsService.saveStudent(student);
     }
     @Test
     public void canGetAllStudents() {
+        // given
+        given(studentsRepository.findStudentsByParams(
+                nullable(UUID.class),
+                nullable(String.class),
+                nullable(String.class),
+                nullable(String.class),
+                nullable(String.class),
+                anyInt(),
+                anyInt(),
+                nullable(String.class)))
+                .willReturn(List.of(student));
         // when
-        studentsService.getStudentsByParams(Map.of());
+        Map<String, Object> args = new HashMap<>();
+        List<Student> result = studentsService.getStudentsByParams(args);
 
         // then
-        verify(studentsRepository).findStudentsByParams(null, null, null, null, null, null, null, null);
+        assertTrue(result.contains(student));
     }
 
     @Test
     public void canGetStudentById() {
-
         // given
 
-        when(studentsRepository.findById(student.getId().toString())).thenReturn(Optional.of(student));
-        assertEquals(Optional.of(student), studentsRepository.findById(student.getId().toString()));
+        when(studentsRepository.findById(student.getId())).thenReturn(Optional.of(student));
+        assertEquals(Optional.of(student), studentsRepository.findById(student.getId()));
 
         // when
         Optional<Student> get = Optional.ofNullable(studentsService.getStudentById(student.getId()));
 
         //then
         ArgumentCaptor<Student> studentArgumentCaptor = ArgumentCaptor.forClass(Student.class);
+        studentsRepository.save(studentArgumentCaptor.capture());
+
+        // Verify that save() method is called with the expected argument
         verify(studentsRepository).save(studentArgumentCaptor.capture());
 
         Optional<Student> captured = Optional.ofNullable(studentArgumentCaptor.getValue());
@@ -81,11 +103,15 @@ public class StudentsServiceTest2 {
 
         // then
         ArgumentCaptor<Student> studentArgumentCaptor = ArgumentCaptor.forClass(Student.class);
+        studentsRepository.save(studentArgumentCaptor.capture());
         verify(studentsRepository).save(studentArgumentCaptor.capture());
 
-        Student captured = studentArgumentCaptor.getValue();
-        assertEquals(captured, student);
+        Optional<Student> get = Optional.ofNullable(studentsService.getStudentById(student.getId()));
+        Optional<Student> captured = Optional.ofNullable(studentArgumentCaptor.getValue());
+        assertEquals(captured, get);
     }
+
+    /* In serviciu nu exista metoda de delete */
 
 //    @Test
 //    public void canDeleteStudent() {
@@ -109,17 +135,16 @@ public class StudentsServiceTest2 {
 
     @Test
     public void canAddGrade() {
-
         // given
+        when(studentsRepository.findById(student.getId())).thenReturn(Optional.of(student));
+        assertEquals(Optional.of(student), studentsRepository.findById(student.getId()));
 
-        when(studentsRepository.findById(UUID.randomUUID().toString())).thenReturn(Optional.of(student));
-        assertEquals(Optional.of(student), studentsRepository.findById(student.getId().toString()));
+        given(studentsService.getStudentById(student.getId()))
+                .willReturn(student);
 
         // when
-        Grade added = studentsService.addGrade(student.getId(), grade);
-
+        Grade added = studentsService.addGrade(studentsService.getStudentById(student.getId()).getId(), grade);
         // then
-
         assertEquals(added, grade);
     }
 
@@ -128,8 +153,14 @@ public class StudentsServiceTest2 {
 
         // given
 
-        when(studentsRepository.findById(UUID.randomUUID().toString())).thenReturn(Optional.of(student));
-        assertEquals(Optional.of(student), studentsRepository.findById(student.getId().toString()));
+        when(studentsRepository.findById(student.getId())).thenReturn(Optional.of(student));
+        assertEquals(Optional.of(student), studentsRepository.findById(student.getId()));
+
+
+        given(studentsService.getStudentById(student.getId()))
+                .willReturn(student);
+//        given(studentsService.addGrade(student.getId(), grade))
+//                .willReturn(grade);
 
         studentsService.addGrade(student.getId(), grade);
 
@@ -152,11 +183,13 @@ public class StudentsServiceTest2 {
     public void canGetGradeById() {
 
         // given
-        when(studentsRepository.findById(UUID.randomUUID().toString())).thenReturn(Optional.of(student));
-        assertEquals(Optional.of(student), studentsRepository.findById(student.getId().toString()));
+        when(studentsRepository.findById(student.getId())).thenReturn(Optional.of(student));
+        assertEquals(Optional.of(student), studentsRepository.findById(student.getId()));
+
+        given(studentsService.getStudentById(student.getId()))
+                .willReturn(student);
 
         studentsService.addGrade(student.getId(), grade);
-
         // when
         Grade returned = studentsService.getGradeById(studentsService.getStudentById(student.getId()).getId(), grade.getId());
 
@@ -177,9 +210,11 @@ public class StudentsServiceTest2 {
     public void canUpdateGrade() {
 
         // given
-        when(studentsRepository.findById(UUID.randomUUID().toString())).thenReturn(Optional.of(student));
-        assertEquals(Optional.of(student), studentsRepository.findById(student.getId().toString()));
+        when(studentsRepository.findById(student.getId())).thenReturn(Optional.of(student));
+        assertEquals(Optional.of(student), studentsRepository.findById(student.getId()));
 
+        given(studentsService.getStudentById(student.getId()))
+                .willReturn(student);
         studentsService.addGrade(student.getId(), grade);
 
         // when

@@ -34,6 +34,7 @@ public class Grade {
     private boolean deleted=false;
     public Grade(){}
 
+
     public Grade(int value, Subject subject, String evaluationDate) {
         this.value = value;
         this.subject = subject;

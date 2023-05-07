@@ -77,20 +77,18 @@ public class StudentsController {
                     content = @Content)
     })
     @PostMapping(value = "/students")
-    public ResponseEntity<String> saveStudent(@RequestBody Student student) {
+    public ResponseEntity<Student> saveStudent(@RequestBody Student student) {
         studentsService.saveStudent(student);
-        return new ResponseEntity<>("Resource added successfully", HttpStatus.CREATED);
+        return new ResponseEntity<>(student, HttpStatus.CREATED);
     }
 
     @GetMapping("/students/{id}")
-    public ResponseEntity<List<Student>> getStudentById(@PathVariable("id") String id) {
-        Map<String, Object> param = new HashMap<>();
-        param.put("id", UUID.fromString(id));
-        Optional<List<Student>> students = Optional.ofNullable(studentsService.getStudentsByParams(param));
-        if (students.isPresent()) {
-            return new ResponseEntity<>(students.get(), HttpStatus.OK);
+    public ResponseEntity<Student> getStudentById(@PathVariable("id") String id) {
+        Student student = studentsService.getStudentById(UUID.fromString(id));
+        if (student != null) {
+            return new ResponseEntity<>(student, HttpStatus.OK);
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -98,10 +96,10 @@ public class StudentsController {
 
     // La acest Get, cred ca e mai ok sa intoarcem doar ResponseEntity ca sa nu apara exception pe front
     @GetMapping("students/{id}/grades")
-    public List<Grade> getStudentByIdGrades(@PathVariable("id") UUID id) {
-        Optional<Student> students = Optional.ofNullable(studentsService.getStudentById(id));
+    public ResponseEntity<List<Grade>> getStudentByIdGrades(@PathVariable("id") String id) {
+        Optional<Student> students = Optional.ofNullable(studentsService.getStudentById(UUID.fromString(id)));
         if (students.isPresent()) {
-            return (List<Grade>) new ResponseEntity<>(students.get().getGrades(), HttpStatus.OK).getBody();
+            return new ResponseEntity<>(students.get().getGrades(), HttpStatus.OK);
         } else {
             throw new NullPointerException();
         }

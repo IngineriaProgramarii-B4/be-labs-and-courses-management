@@ -52,10 +52,9 @@ class StudentsControllerTest2 {
                 4,
                 "123FAKE92929",
                 new HashSet<>(Arrays.asList("IP", "PA", "SGBD", "TW", "SE")));
-        grade = new Grade(7, subject, "12.02.1996");
+        grade = new Grade( 7, subject, "12.02.1996");
 
         student.addGrade(grade);
-
         students.add(student);
         grades.add(grade);
     }
@@ -94,27 +93,20 @@ class StudentsControllerTest2 {
     }
     @Test
     void getStudentByIdAPI() throws Exception {
-        when(studentsService.getStudentById(student.getId())).thenReturn(student);
         UUID id = student.getId();
-        MvcResult studentResult = mvc.perform(get("/api/v1/students/{id}", id)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andReturn();
-
+        when(studentsService.getStudentById(id)).thenReturn(student);
+        MvcResult studentResult = mvc.perform(get("/api/v1/students/{id}", id.toString())).andExpect(status().isOk()).andReturn();
         Student studentCreated = objectMapper.readValue(studentResult.getResponse().getContentAsString(), Student.class);
-
         assertNotNull(studentCreated);
         assertEquals(student,studentCreated);
-
     }
+
+    /* In StudentsController la ce ati mutat voi nu exista acest get, am vazut ca e doar in Catalog */
 
     @Test
     void getStudentByIdGradesOnSubjectAPI() throws Exception {
         when(studentsService.getStudentById(student.getId())).thenReturn(student);
-        MvcResult gradesList = mvc.perform(get("/api/v1/students/{id}/{subject}",  student.getId(), subject.getName())
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
+        MvcResult gradesList = mvc.perform(get("/api/v1/students/{id}/{subject}",  student.getId().toString(), subject.getName()))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -152,14 +144,13 @@ class StudentsControllerTest2 {
         assertEquals(gradesIds, gradesResponseIds);
     }
 
+    /* Nici acest GET nu exista, exista doar put / delete cu acest endpoint */
     @Test
     void getStudentByIdGetGradeByIdAPI() throws Exception {
         when(studentsService.getStudentById(student.getId())).thenReturn(student);
         when(studentsService.getGradeById(student.getId(), grade.getId())).thenReturn(grade);
 
-        MvcResult gradesList = mvc.perform(get("/api/v1/students/{id}/grades/{id}",  student.getId(), grade.getId())
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
+        MvcResult gradesList = mvc.perform(get("/api/v1/students/{id}/grades/{gradeId}",  student.getId().toString(), String.format("%d", grade.getId())))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -254,6 +245,7 @@ class StudentsControllerTest2 {
 //
 //    }
 
+    /* Aici am vorbit cu tudor ca va trebui schimbata modul de a afisa data si vedem dupa aceea */
     @Test
     void updateStudentAPI() throws Exception {
         when(studentsService.getStudentById(student.getId())).thenReturn(student);

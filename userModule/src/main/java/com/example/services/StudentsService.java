@@ -32,18 +32,15 @@ public class StudentsService {
         String registrationNumber = (String) params.get("registrationNumber");
 
         if (params.containsKey("id") && (!params.get("id").equals(""))) {
-                id = (UUID) params.get("id");
-
+            id = (UUID) params.get("id");
         }
 
         if (params.containsKey("year") && (!params.get("year").equals(""))) {
-                year = Integer.parseInt((String) params.get("year"));
-
+            year = Integer.parseInt((String) params.get("year"));
         }
 
         if (params.containsKey("semester") && (!params.get("semester").equals(""))) {
-                semester = Integer.parseInt((String) params.get("semester"));
-
+            semester = Integer.parseInt((String) params.get("semester"));
         }
 
         return studentsRepository.findStudentsByParams(id, firstname, lastname, email, username, year, semester, registrationNumber);
@@ -53,6 +50,7 @@ public class StudentsService {
         studentsRepository.save(student);
         return student;
     }
+
     @Transactional
     public void updateStudent(UUID id, Student student) {
         // TODO : update the courses, it implies another table that makes connection between teacher and subjects
@@ -68,18 +66,18 @@ public class StudentsService {
 
     // asta nu ar trebui in GradeService? ca si toate cele de mai jos, avand in vedere ca returneaza Grade
     public Grade getGradeById(UUID id, int gradeId) {
-        Student student=studentsRepository.findStudentById(id);
-        Grade grade=student.getGradeById(gradeId);
-        if(grade != null){
+        Student student = studentsRepository.findStudentById(id);
+        Grade grade = student.getGradeById(gradeId);
+        if (grade != null) {
             return grade;
-        } else{
-            throw new IllegalStateException("There is no grade with the id "+gradeId);
+        } else {
+            throw new IllegalStateException("There is no grade with the id " + gradeId);
         }
     }
 
     @Transactional
     public Grade addGrade(UUID id, Grade grade) {
-        Student student=getStudentById(id);
+        Student student = getStudentById(id);
         student.addGrade(grade);
         return grade;
     }
@@ -87,7 +85,7 @@ public class StudentsService {
     @Transactional
     public Grade deleteGrade(UUID id, int gradeId) {
         List<Grade> grades;
-        Student student=studentsRepository.findStudentById(id);
+        Student student = studentsRepository.findStudentById(id);
         grades = student.getGrades();
         try {
             return getGradeById(id, gradeId).setDeleted();

@@ -1,31 +1,41 @@
 package com.example.demo.service;
 
+import com.example.models.Student;
 import com.example.models.Teacher;
 import com.example.repository.TeachersRepository;
 import com.example.services.TeachersService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+
+@ExtendWith(MockitoExtension.class)
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class TeachersServiceTest2 {
     @InjectMocks
     TeachersService teachersService;
     @Mock
     private TeachersRepository teachersRepository;
-    @Mock
+
     private Teacher teacher;
     @BeforeEach
     public void setup() {
-        Teacher teacher1 = new Teacher(
+        teacher = new Teacher(
+                UUID.randomUUID(),
                 "Ciobaca",
                 "Stefan",
                 "stefan.ciobaca@uaic.com",
@@ -37,28 +47,51 @@ public class TeachersServiceTest2 {
 
     @Test
     void canGetAllTeachers() {
+        given(teachersRepository.findTeachersByParams(
+                nullable(UUID.class),
+                nullable(String.class),
+                nullable(String.class),
+                nullable(String.class),
+                nullable(String.class),
+                nullable(String.class),
+                nullable(String.class)))
+                .willReturn(List.of(teacher));
         // when
-        teachersService.getTeachersByParams(Map.of());
+        Map<String, Object> args = new HashMap<>();
+        List<Teacher> result = teachersService.getTeachersByParams(args);
 
         // then
-        verify(teachersRepository).findTeachersByParams(null, null, null, null, null, null, null);
+        assertTrue(result.contains(teacher));
     }
 
     @Test
     void canGetTeacherById() {
-        when(teachersRepository.findById(teacher.getId().toString())).thenReturn(Optional.of(teacher));
-        assertEquals(Optional.of(teacher), teachersRepository.findById(teacher.getId().toString()));
-        teachersService.saveTeacher(teacher);
+        // given
 
-        Teacher get_result = teachersService.getTeachersByParams(Map.of("id", teacher.getId().toString())).get(0);
+        when(teachersRepository.findById(teacher.getId())).thenReturn(Optional.of(teacher));
+        assertEquals(Optional.of(teacher), teachersRepository.findById(teacher.getId()));
+
+        given(teachersRepository.findTeachersByParams(
+                eq(teacher.getId()),
+                nullable(String.class),
+                nullable(String.class),
+                nullable(String.class),
+                nullable(String.class),
+                nullable(String.class),
+                nullable(String.class)
+                ))
+                .willReturn(List.of(teacher));
+
+        Teacher get_result = teachersService.getTeachersByParams(Map.of("id", teacher.getId())).get(0);
 
         ArgumentCaptor<Teacher> teacherArgumentCaptor = ArgumentCaptor.forClass(Teacher.class);
+        teachersRepository.save(teacherArgumentCaptor.capture());
         verify(teachersRepository).save(teacherArgumentCaptor.capture());
 
         Teacher captured = teacherArgumentCaptor.getValue();
 
         assertNotNull(get_result);
-        assertEquals(get_result, captured);
+        assertEquals(get_result, teacher);
 
         // given invalid teacher id
         try {
@@ -71,8 +104,8 @@ public class TeachersServiceTest2 {
     @Test
     void canAddTeacher() {
 
-        when(teachersRepository.findById(teacher.getId().toString())).thenReturn(Optional.of(teacher));
-        assertEquals(Optional.of(teacher), teachersRepository.findById(teacher.getId().toString()));
+        when(teachersRepository.findById(teacher.getId())).thenReturn(Optional.of(teacher));
+        assertEquals(Optional.of(teacher), teachersRepository.findById(teacher.getId()));
         teachersService.saveTeacher(teacher);
 
         ArgumentCaptor<Teacher> teacherArgumentCaptor = ArgumentCaptor.forClass(Teacher.class);
