@@ -144,3 +144,334 @@
 2023-04-28T12:06:02.343+03:00  INFO 16296 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2023-04-28T12:06:02.345+03:00  INFO 16296 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2023-04-28T12:06:02.348+03:00  INFO 16296 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2023-05-08T16:44:35.001+03:00  INFO 18436 --- [main] com.example.security.SignInApplication   : Starting SignInApplication using Java 19.0.2 with PID 18436 (C:\Facultate\AnII sem 2\backend\be-labs-and-courses-management\signInModule\target\classes started by Denis in C:\Facultate\AnII sem 2\backend\be-labs-and-courses-management)
+2023-05-08T16:44:35.006+03:00  INFO 18436 --- [main] com.example.security.SignInApplication   : No active profile set, falling back to 1 default profile: "default"
+2023-05-08T16:44:37.303+03:00  INFO 18436 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-05-08T16:44:37.462+03:00  INFO 18436 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 133 ms. Found 2 JPA repository interfaces.
+2023-05-08T16:44:38.797+03:00  INFO 18436 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8082 (http)
+2023-05-08T16:44:38.811+03:00  INFO 18436 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-05-08T16:44:38.811+03:00  INFO 18436 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.7]
+2023-05-08T16:44:39.025+03:00  INFO 18436 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-05-08T16:44:39.026+03:00  INFO 18436 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3859 ms
+2023-05-08T16:44:39.389+03:00  INFO 18436 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-05-08T16:44:39.484+03:00  INFO 18436 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.1.7.Final
+2023-05-08T16:44:40.144+03:00  INFO 18436 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-05-08T16:44:40.421+03:00  INFO 18436 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1815577b
+2023-05-08T16:44:40.424+03:00  INFO 18436 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-05-08T16:44:40.488+03:00  INFO 18436 --- [main] SQL dialect                              : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+2023-05-08T16:44:42.257+03:00  INFO 18436 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-05-08T16:44:42.271+03:00  INFO 18436 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-05-08T16:44:43.204+03:00  WARN 18436 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2023-05-08T16:44:43.370+03:00  INFO 18436 --- [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2023-05-08T16:44:44.462+03:00  INFO 18436 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@5b8b9b2d, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7a7bb083, org.springframework.security.web.context.SecurityContextHolderFilter@7bc4ac3e, org.springframework.security.web.header.HeaderWriterFilter@46c19350, org.springframework.security.web.authentication.logout.LogoutFilter@24b4f4a, com.example.security.security.JwtAuthenticationFilter@682fe17b, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@6158113e, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@16e5c19f, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7cab8d52, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2178d296, org.springframework.security.web.session.SessionManagementFilter@7f3a92fd, org.springframework.security.web.access.ExceptionTranslationFilter@5cb6b81b, org.springframework.security.web.access.intercept.AuthorizationFilter@57df93c1]
+2023-05-08T16:44:44.851+03:00  INFO 18436 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8082 (http) with context path ''
+2023-05-08T16:44:44.875+03:00  INFO 18436 --- [main] com.example.security.SignInApplication   : Started SignInApplication in 11.081 seconds (process running for 12.213)
+2023-05-08T16:45:16.020+03:00  INFO 18436 --- [http-nio-8082-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-05-08T16:45:16.021+03:00  INFO 18436 --- [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-05-08T16:45:16.023+03:00  INFO 18436 --- [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2023-05-08T16:45:19.269+03:00 DEBUG 18436 --- [http-nio-8082-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2023-05-08T16:45:19.295+03:00 DEBUG 18436 --- [http-nio-8082-exec-3] org.hibernate.SQL                        : 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+2023-05-08T16:45:19.456+03:00 DEBUG 18436 --- [http-nio-8082-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2023-05-08T16:45:43.332+03:00 DEBUG 18436 --- [http-nio-8082-exec-4] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2023-05-08T16:45:43.335+03:00 DEBUG 18436 --- [http-nio-8082-exec-4] org.hibernate.SQL                        : 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+2023-05-08T16:45:52.321+03:00 DEBUG 18436 --- [http-nio-8082-exec-5] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2023-05-08T16:45:52.333+03:00 DEBUG 18436 --- [http-nio-8082-exec-5] org.hibernate.SQL                        : 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+2023-05-08T16:45:52.453+03:00 DEBUG 18436 --- [http-nio-8082-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2023-05-08T16:45:52.455+03:00 DEBUG 18436 --- [http-nio-8082-exec-6] org.hibernate.SQL                        : 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+2023-05-08T16:45:52.585+03:00 DEBUG 18436 --- [http-nio-8082-exec-7] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2023-05-08T16:45:52.586+03:00 DEBUG 18436 --- [http-nio-8082-exec-7] org.hibernate.SQL                        : 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+2023-05-08T16:45:52.706+03:00 DEBUG 18436 --- [http-nio-8082-exec-8] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2023-05-08T16:45:52.708+03:00 DEBUG 18436 --- [http-nio-8082-exec-8] org.hibernate.SQL                        : 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+2023-05-08T16:45:52.828+03:00 DEBUG 18436 --- [http-nio-8082-exec-9] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2023-05-08T16:45:52.830+03:00 DEBUG 18436 --- [http-nio-8082-exec-9] org.hibernate.SQL                        : 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+2023-05-08T16:45:52.947+03:00 DEBUG 18436 --- [http-nio-8082-exec-10] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2023-05-08T16:45:52.949+03:00 DEBUG 18436 --- [http-nio-8082-exec-10] org.hibernate.SQL                        : 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+2023-05-08T16:46:05.723+03:00 DEBUG 18436 --- [http-nio-8082-exec-1] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2023-05-08T16:46:05.725+03:00 DEBUG 18436 --- [http-nio-8082-exec-1] org.hibernate.SQL                        : 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+2023-05-08T16:46:06.342+03:00 DEBUG 18436 --- [http-nio-8082-exec-2] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2023-05-08T16:46:06.344+03:00 DEBUG 18436 --- [http-nio-8082-exec-2] org.hibernate.SQL                        : 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+2023-05-08T16:46:06.963+03:00 DEBUG 18436 --- [http-nio-8082-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2023-05-08T16:46:06.965+03:00 DEBUG 18436 --- [http-nio-8082-exec-3] org.hibernate.SQL                        : 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+2023-05-08T16:46:07.120+03:00 DEBUG 18436 --- [http-nio-8082-exec-4] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2023-05-08T16:46:07.122+03:00 DEBUG 18436 --- [http-nio-8082-exec-4] org.hibernate.SQL                        : 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+2023-05-08T16:46:07.249+03:00 DEBUG 18436 --- [http-nio-8082-exec-5] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2023-05-08T16:46:07.250+03:00 DEBUG 18436 --- [http-nio-8082-exec-5] org.hibernate.SQL                        : 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+2023-05-08T16:46:07.379+03:00 DEBUG 18436 --- [http-nio-8082-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2023-05-08T16:46:07.381+03:00 DEBUG 18436 --- [http-nio-8082-exec-6] org.hibernate.SQL                        : 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+2023-05-08T16:49:15.599+03:00  INFO 18436 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-05-08T16:49:15.603+03:00  INFO 18436 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2023-05-08T16:49:15.607+03:00  INFO 18436 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
