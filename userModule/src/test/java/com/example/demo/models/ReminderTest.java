@@ -1,17 +1,176 @@
 package com.example.demo.models;
 
 import com.example.models.Reminder;
-import io.github.classgraph.Resource;
+import com.example.models.Student;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class ReminderTest {
+class ReminderTest {
+
+    private Reminder reminder1, reminder2;
+    private Student tempStudent;
+
+    @BeforeEach
+    public void setup() {
+        tempStudent = new Student(
+                UUID.randomUUID(),
+                "Organized",
+                "Student",
+                "ilovereminders@yahoo.com",
+                "reminderUser409",
+                3,
+                2,
+                "123REM456",
+                null
+        );
+
+        reminder1 = new Reminder(
+                tempStudent,
+                UUID.randomUUID(),
+                "25.04.2023 14:30",
+                "Examen la pedagogie",
+                "Examen maine la pedagogie la ora 16 in C2"
+        );
+
+        reminder2 = new Reminder(
+                tempStudent,
+                reminder1.getId(),
+                "25.04.2023 14:30",
+                "Examen la pedagogie",
+                "Examen maine la pedagogie la ora 16 in C2"
+        );
+    }
+
+    @Test
+    void testEqualsToNullParams() {
+        //
+        //Given
+        //
+        Reminder reminder = reminder2;
+
+        //
+        //When
+        //
+        reminder.setDueDateTime(LocalDateTime.parse("24.04.2023 14:30", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
+
+        //
+        //Then
+        //
+        assertNotEquals(reminder, reminder1);
+    }
+
+    @Test
+    void testEqualsToNullParams1() {
+        //
+        //Given
+        //
+        Reminder reminder = reminder2;
+
+        //
+        //Then
+        //
+        assertEquals(reminder, reminder1);
+    }
+
+    @Test
+    void testEqualsToNullParams2() {
+        //
+        //Given
+        //
+        Reminder reminder = reminder2;
+
+        //
+        //When
+        //
+        reminder.setTitle("ceva");
+
+        //
+        //Then
+        //
+        assertNotEquals(reminder, reminder1);
+    }
+
+    @Test
+    void testEqualsToNullParams3() {
+        //
+        //Given
+        //
+        Reminder reminder = reminder2;
+
+        //
+        //When
+        //
+        reminder.setId(UUID.randomUUID());
+
+        //
+        //Then
+        //
+        assertNotEquals(reminder, reminder1);
+    }
+
+    @Test
+    void testEqualsToNullParams4() {
+        //
+        //Given
+        //
+        Reminder reminder = reminder2;
+
+        //
+        //When
+        //
+        reminder.setCreatorUsername("ceva");
+
+        //
+        //Then
+        //
+        assertNotEquals(reminder, reminder1);
+    }
+
+    @Test
+    void testEqualsToNullParams5() {
+        //
+        //Given
+        //
+        Reminder reminder = reminder2;
+
+        //
+        //When
+        //
+        reminder.setCreatorId(UUID.randomUUID());
+
+        //
+        //Then
+        //
+        assertNotEquals(reminder, reminder1);
+    }
+
+    @Test
+    void testEqualsToNullParams6() {
+        //
+        //Given
+        //
+        Reminder reminder = reminder2;
+
+        //
+        //When
+        //
+        reminder.setDeleted(true);
+
+        //
+        //Then
+        //
+        assertNotEquals(reminder, reminder1);
+    }
+
     @Test
     void testGetDeleted()
     {
@@ -68,7 +227,7 @@ public class ReminderTest {
         //
         //Then
         //
-        assertEquals(reminder.getCreatorUsername(), "testUsername");
+        assertEquals("testUsername",reminder.getCreatorUsername());
 
     }
 
@@ -151,7 +310,7 @@ public class ReminderTest {
         //
         //Then
         //
-        assertEquals(reminder.getTitle(), "testTitle");
+        assertEquals("testTitle", reminder.getTitle());
 
     }
 
@@ -172,7 +331,7 @@ public class ReminderTest {
         //
         //Then
         //
-        assertEquals(reminder.getDescription(), "test description");
+        assertEquals("test description",reminder.getDescription());
 
     }
 
@@ -193,7 +352,22 @@ public class ReminderTest {
         //
         //Then
         //
-        assertFalse(reminder.equals(nullReminder));
+        assertNotEquals(reminder, nullReminder);
+
+    }
+
+    @Test
+    void testEqualsToSameClass()
+    {
+        //
+        //Given
+        //
+        Reminder reminder = new Reminder();
+        Student student = new Student();
+        //
+        //Then
+        //
+        assertNotEquals(reminder, student);
 
     }
 
@@ -218,7 +392,7 @@ public class ReminderTest {
         //
         //Then
         //
-        assertFalse(reminder1.equals(reminder2));
+        assertNotEquals(reminder1, reminder2);
 
     }
 
@@ -238,7 +412,7 @@ public class ReminderTest {
         //
         //Then
         //
-        assertEquals(reminder.toString(), "Reminder{creatorId=null, creatorUsername='null', id=null, dueDateTime=null, title='firstReminder', description='this is an important reminder', deleted=false}");
+        assertEquals("Reminder{creatorId=null, creatorUsername='null', id=null, dueDateTime=null, title='firstReminder', description='this is an important reminder', deleted=false}",reminder.toString());
     }
 
     @Test

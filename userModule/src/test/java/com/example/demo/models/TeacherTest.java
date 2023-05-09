@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
 
-public class TeacherTest {
+class TeacherTest {
     @Test
     void testToString()
     {
@@ -22,7 +22,7 @@ public class TeacherTest {
         //
         //Then
         //
-        assertEquals(teacher.toString(), "Teacher{teachedSubjects=[], title='testTitle', office='null', id=null, firstname='testFirstname', lastname='testLastname', email='null', username='null'}");
+        assertEquals( "Teacher{teachedSubjects=[], title='testTitle', office='null', id=null, firstname='testFirstname', lastname='testLastname', email='null', username='null'}",teacher.toString());
 
     }
 

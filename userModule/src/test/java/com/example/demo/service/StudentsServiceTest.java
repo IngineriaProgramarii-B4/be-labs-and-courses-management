@@ -49,7 +49,7 @@ class StudentsServiceTest {
 
     @Test
     void getStudentsByParamsYearTest() {
-
+        //Given
         List<Student> expected = List.of(student);
 
         Map<String, Object> args = new HashMap<>();
@@ -69,14 +69,16 @@ class StudentsServiceTest {
                 nullable(String.class)))
                 .willReturn(expected);
 
+        //When
         List<Student> result = studentsService.getStudentsByParams(args);
 
+        //Then
         assertTrue(result.containsAll(expected));
     }
 
     @Test
     void getStudentsByParamsSemesterTest() {
-
+        //Given
         List<Student> expected = List.of(student);
 
         Map<String, Object> args = new HashMap<>();
@@ -97,14 +99,16 @@ class StudentsServiceTest {
                 nullable(String.class)))
                 .willReturn(expected);
 
+        //When
         List<Student> result = studentsService.getStudentsByParams(args);
 
+        //Then
         assertTrue(result.containsAll(expected));
     }
 
     @Test
     void getStudentsByParamsRegistrationNumberTest() {
-
+        //Given
         List<Student> expected = List.of(student);
 
         Map<String, Object> args = new HashMap<>();
@@ -122,14 +126,16 @@ class StudentsServiceTest {
                 eq("RegNumberTest")))
                 .willReturn(expected);
 
+        //When
         List<Student> result = studentsService.getStudentsByParams(args);
 
+        //Then
         assertTrue(result.containsAll(expected));
     }
 
     @Test
     void getStudentsByParamsIdTest() {
-
+        //Given
         List<Student> expected = List.of(student);
 
         Map<String, Object> args = new HashMap<>();
@@ -149,26 +155,32 @@ class StudentsServiceTest {
                 nullable(String.class)))
                 .willReturn(expected);
 
+        //When
         List<Student> result = studentsService.getStudentsByParams(args);
 
+        //Then
         assertTrue(result.containsAll(expected));
     }
 
     @Test
     void saveStudentTest() {
+        //When
         when(studentsRepository.save(student)).thenReturn(student);
 
         studentsService.saveStudent(student);
 
+        //Then
         verify(studentsRepository, times(1)).save(student);
     }
 
     @Test
     void updateStudentTest() {
+        //When
         doNothing().when(studentsRepository).updateStudent(student.getId(), student.getFirstname(), student.getLastname(), student.getEmail(), student.getUsername(), student.getYear(), student.getSemester(), student.getRegistrationNumber());
 
         studentsService.updateStudent(student.getId(), student);
 
+        //Then
         verify(studentsRepository, times(1)).updateStudent(student.getId(), student.getFirstname(), student.getLastname(), student.getEmail(), student.getUsername(), student.getYear(), student.getSemester(), student.getRegistrationNumber());
     }
 }

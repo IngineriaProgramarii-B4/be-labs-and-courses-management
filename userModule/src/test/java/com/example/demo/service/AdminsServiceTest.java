@@ -47,7 +47,7 @@ class AdminsServiceTest {
 
     @Test
     void getAdminsByParamsOfficeTest() {
-
+        //Given
         List<Admin> expected = List.of(admin);
 
         Map<String, Object> args = new HashMap<>();
@@ -64,14 +64,16 @@ class AdminsServiceTest {
                 nullable(String.class)))
                 .willReturn(expected);
 
+        //When
         List<Admin> result = adminsService.getAdminsByParams(args);
 
+        //Then
         assertTrue(result.containsAll(expected));
     }
 
     @Test
     void getAdminsByParamsDepartmentTest() {
-
+        //Given
         List<Admin> expected = List.of(admin);
 
         Map<String, Object> args = new HashMap<>();
@@ -90,14 +92,16 @@ class AdminsServiceTest {
                 eq("DepartmentTest")))
                 .willReturn(expected);
 
+        //When
         List<Admin> result = adminsService.getAdminsByParams(args);
 
+        //Then
         assertTrue(result.containsAll(expected));
     }
 
     @Test
     void getAdminsByParamsIdTest() {
-
+        //Given
         List<Admin> expected = List.of(admin);
 
         Map<String, Object> args = new HashMap<>();
@@ -116,25 +120,31 @@ class AdminsServiceTest {
                 nullable(String.class)))
                 .willReturn(expected);
 
+        //When
         List<Admin> result = adminsService.getAdminsByParams(args);
 
+        //Then
         assertTrue(result.containsAll(expected));
     }
 
     @Test
     void saveAdminTest() {
+        //When
         when(adminsRepository.save(admin)).thenReturn(admin);
         adminsService.saveAdmin(admin);
 
+        //Then
         verify(adminsRepository, times(1)).save(admin);
     }
 
     @Test
     void updateAdminTest() {
+        //When
         doNothing().when(adminsRepository).updateAdmin(admin.getId(), admin.getFirstname(), admin.getLastname(), admin.getEmail(), admin.getUsername(), admin.getOffice(), admin.getDepartment());
 
         adminsService.updateAdmin(admin.getId(), admin);
 
+        //Then
         verify(adminsRepository, times(1)).updateAdmin(admin.getId(), admin.getFirstname(), admin.getLastname(), admin.getEmail(), admin.getUsername(), admin.getOffice(), admin.getDepartment());
     }
 }

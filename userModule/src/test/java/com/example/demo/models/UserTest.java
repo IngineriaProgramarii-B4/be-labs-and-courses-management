@@ -3,13 +3,43 @@ package com.example.demo.models;
 import com.example.models.Student;
 import com.example.models.Teacher;
 import com.example.models.User;
-import jakarta.validation.constraints.AssertFalse;
-import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertFalse;
+import java.util.UUID;
 
-public class UserTest {
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+
+class UserTest {
+
+    private Student student1, student2;
+
+    @BeforeEach
+    public void setup() {
+        student1 = new Student(
+                "testName",
+                "testSurename",
+                "testemail@mail.com",
+                "testUser",
+                1,
+                1,
+                "testRegistrationNumber",
+                null
+        );
+
+        student2 = new Student(
+                "testName",
+                "testSurename",
+                "testemail@mail.com",
+                "testUser",
+                1,
+                1,
+                "testRegistrationNumber",
+                null
+        );
+    }
+
     @Test
     void testEquals()
     {
@@ -26,6 +56,139 @@ public class UserTest {
         //
         //Then
         //
-        assertFalse(user1.equals(user2));
+        assertNotEquals(user1, user2);
+    }
+
+    @Test
+    void testEqualsToNull()
+    {
+        //
+        //Given
+        //
+        User user1 = new Student();
+
+        //
+        //When
+        //
+        User user2 = null;
+
+        //
+        //Then
+        //
+        assertNotEquals(user1, user2);
+    }
+
+    @Test
+    void testEqualsToNullParams()
+    {
+        //
+        //Given
+        //
+        Student student = student1;
+
+        //
+        //When
+        //
+        student.setLastname("ceva");
+
+        //
+        //Then
+        //
+        assertNotEquals(student,student2);
+    }
+
+    @Test
+    void testEqualsToNullParams2()
+    {
+        //
+        //Given
+        //
+        Student student = student1;
+
+        //
+        //When
+        //
+        student.setFirstname("ceva");
+
+        //
+        //Then
+        //
+        assertNotEquals(student,student2);
+    }
+
+    @Test
+    void testEqualsToNullParams3()
+    {
+        //
+        //Given
+        //
+        Student student = student1;
+
+        //
+        //When
+        //
+        student.setUsername("ceva");
+
+        //
+        //Then
+        //
+        assertNotEquals(student,student2);
+    }
+
+    @Test
+    void testEqualsToNullParams4()
+    {
+        //
+        //Given
+        //
+        Student student = student1;
+
+        //
+        //When
+        //
+        student.setEmail("ceva");
+
+        //
+        //Then
+        //
+        assertNotEquals(student, student2);
+    }
+
+    @Test
+    void testEqualsToNullParams5()
+    {
+        //
+        //Given
+        //
+        Student student = student1;
+
+        //
+        //When
+        //
+        student.setId(UUID.randomUUID());
+
+        //
+        //Then
+        //
+        assertNotEquals(student, student2);
+    }
+
+    @Test
+    void testEqualsToNullParams6()
+    {
+        //
+        //Given
+        //
+        Student student = student1;
+
+        //
+        //When
+        //
+        student.setType(3);
+
+        //
+        //Then
+        //
+        assertNotEquals(student, student2);
     }
 }
