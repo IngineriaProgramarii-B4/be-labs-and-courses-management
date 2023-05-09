@@ -47,6 +47,12 @@ class ResourceTest {
         resource.setDeleted(false);
         assertFalse(resource.isDeleted());
     }
+
+    @Test
+    void getId(){
+        Resource resource1=new Resource(1,"Physics_romania.png","savedResources/Physics_romania.png","image/png",false);
+        assertEquals(1, resource1.getId());
+    }
     @Test
     void getTimeStamp() {
         LocalDateTime localDateTime = LocalDateTime.now();

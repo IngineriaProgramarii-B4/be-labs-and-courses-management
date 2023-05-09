@@ -3,3 +3,6 @@ userModule/target
 target
 userModule/settings.xml
 *.png
+userModule/src/main/resources/application.properties
+userModule/pom.xml
+settings.xml

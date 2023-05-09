@@ -22,12 +22,18 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -216,25 +222,38 @@ class ResourceControllerTest {
     }
 
     @Test
-    void getResourceFile() {
-        Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, new ArrayList<>(), false),
-                        new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
-                List.of(new Evaluation(3L, "Seminar", 0.5F, "Test", false),
-                        new Evaluation(4L, "Laboratory", 0.5F, "Test", false))
-                , false);
-        when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
-        when(componentService.getComponentByType(subject.getTitle(), "Laboratory")).thenReturn(Optional.of(new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)));
-        Resource resource = new Resource("Book", "savedResources/Physics_romania.png", "image/png", false);
-        when(resourceService.getResourceByTitle(subject.getTitle(), "Laboratory", "Book")).thenReturn(Optional.of(resource));
+    void getResourceFile() throws IOException {
+        // Given
+        String subjectTitle = "Mathematics";
+        String componentType = "Assignment";
+        String resourceTitle = "Instructions";
+        String resourceLocation = "D:/be-labs-and-courses-management/savedResources/Physics_romania.png";
+        String resourceType = "image/png";
+        Subject subject = new Subject();
+        subject.setTitle(subjectTitle);
+        Component component = new Component();
+        component.setType(componentType);
+        Resource resource = new Resource();
+        resource.setTitle(resourceTitle);
+        resource.setLocation(resourceLocation);
+        resource.setType(resourceType);
 
-        ResponseEntity<byte[]> result = resourceController.getResourceFile("Algebraic Foundations of Science", "Laboratory", "Book");
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertEquals("image/png", Objects.requireNonNull(result.getHeaders().getContentType()).toString());
+        when(subjectService.getSubjectByTitle(subjectTitle)).thenReturn(Optional.of(subject));
+        when(componentService.getComponentByType(subjectTitle, componentType)).thenReturn(Optional.of(component));
+        when(resourceService.getResourceByTitle(subjectTitle, componentType, resourceTitle)).thenReturn(Optional.of(resource));
+        byte[] expectedFile = Files.readAllBytes(new File(resourceLocation).toPath());
+
+        // When
+        ResponseEntity<byte[]> response = resourceController.getResourceFile(subjectTitle, componentType, resourceTitle);
+
+        // Then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(resourceType, response.getHeaders().getContentType().toString());
+        assertArrayEquals(expectedFile, response.getBody());
     }
 
-    /*@Test
-    void getResourceFileFileReadError() throws Exception {
+    @Test
+    void getResourceFileFileReadError(){
         Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
                 List.of(new Component(3, "Seminar", 14, new ArrayList<>(), false),
                         new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
@@ -245,10 +264,10 @@ class ResourceControllerTest {
         when(componentService.getComponentByType(subject.getTitle(), "Laboratory")).thenReturn(Optional.of(new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)));
         Resource resource = new Resource("Book", "savedResources/Physics_romania.png", "image/png", false);
         when(resourceService.getResourceByTitle(subject.getTitle(), "Laboratory", "Book")).thenReturn(Optional.of(resource));
-        when(Files.readAllBytes(any(Path.class))).thenThrow(new IOException("Failed to read file"));
+
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> resourceController.getResourceFile("Algebraic Foundations of Science", "Laboratory", "Book"));
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.getStatusCode());
-    }*/
+    }
 
     @Test
     void getResourceFileSubjectNotFound(){

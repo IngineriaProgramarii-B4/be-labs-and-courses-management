@@ -293,23 +293,24 @@ class SubjectControllerTest {
 
     @Test
     public void testGetSubjectImageSuccess() throws Exception {
-        Subject mockSubject = new Subject();
-        Resource resource = new Resource(1, "Physics_romania.png", "savedResources\\Physics_romania.png", "image/png", false);
-        mockSubject.setImage(resource);
+        // Given
+        String title = "Example Title";
+        String location = "D:/be-labs-and-courses-management/savedResources/Physics_romania.png";
+        String type = "image/png";
+        Subject subject = new Subject();
+        subject.setTitle(title);
+        Resource resource = new Resource(1,"image" ,location, type, false);
+        subject.setImage(resource);
 
-        // Mock the subjectService.getSubjectByTitle() method to return the mock Subject object
-        when(subjectService.getSubjectByTitle("test")).thenReturn(Optional.of(mockSubject));
+        when(subjectService.getSubjectByTitle(title)).thenReturn(Optional.of(subject));
+        byte[] expectedImage = Files.readAllBytes(new File(location).toPath());
 
-        String absolutePath = new File("").getAbsolutePath();
-        String path = mockSubject.getImage().getLocation();
-        String filePath = absolutePath + "\\" + path;
-        System.out.println(filePath);
+        // When
+        ResponseEntity<byte[]> response = subjectController.getSubjectImage(title);
 
-        byte[] mockImageBytes = Files.readAllBytes(new File(filePath).toPath());
-
-        ResponseEntity<byte[]> response = subjectController.getSubjectImage("test");
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertArrayEquals(mockImageBytes, response.getBody());
+        assertEquals(type, response.getHeaders().getContentType().toString());
+        assertArrayEquals(expectedImage, response.getBody());
     }
 
 }

@@ -40,6 +40,12 @@ class ComponentTest {
     }
 
     @Test
+    void getId(){
+        Component component1=new Component(1,"Course",10,null,false);
+        assertEquals(1, component1.getId());
+    }
+
+    @Test
     void addResource() {
         component.addResource(new Resource("Physics_romania.png", "savedResources/Physics_romania.png", "image/png", false));
         assertEquals(1, component.getResources().size());
@@ -77,6 +83,14 @@ class ComponentTest {
         assertEquals("savedResources/Physics_romania.png", component.getResources().get(0).getLocation());
         assertEquals("image/png", component.getResources().get(0).getType());
         assertTrue(component.getResources().get(0).isDeleted());
+    }
+
+    @Test
+    void softDeleteResourceNotExistingInComponent(){
+        assertEquals(0, component.getResources().size());
+        Resource resource1 = new Resource("Physics_romania1.png", "savedResources/Physics_romania1.png", "image/png", false);
+        component.softDeleteResource(resource1);
+        assertEquals(0, component.getResources().size());
     }
 
     @Test
