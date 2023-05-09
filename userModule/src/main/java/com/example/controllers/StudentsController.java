@@ -1,5 +1,6 @@
 package com.example.controllers;
 
+import com.example.models.Grade;
 import com.example.models.Student;
 import com.example.services.StudentsService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,11 +11,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.*;
 
 @CrossOrigin
 @RestController
@@ -37,6 +40,9 @@ public class StudentsController {
             ),
             @ApiResponse(responseCode = "404", description = "Haven't found students that match the requirements",
                     content = @Content
+            ),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content
             )
     })
     @GetMapping(value = {"/students"})
@@ -48,7 +54,6 @@ public class StudentsController {
         }
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
-
     @Operation(summary = "Receive necessary data in order to update information about a student in the database")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Resource updated successfully",
@@ -72,8 +77,72 @@ public class StudentsController {
                     content = @Content)
     })
     @PostMapping(value = "/students")
-    public ResponseEntity<String> saveStudent(@RequestBody Student student) {
+    public ResponseEntity<Student> saveStudent(@RequestBody Student student) {
         studentsService.saveStudent(student);
-        return new ResponseEntity<>("Resource added successfully", HttpStatus.CREATED);
+        return new ResponseEntity<>(student, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/students/{id}")
+    public ResponseEntity<Student> getStudentById(@PathVariable("id") String id) {
+        Student student = studentsService.getStudentById(UUID.fromString(id));
+        if (student != null) {
+            return new ResponseEntity<>(student, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // <-------------------------------- FROM CATALOG ----------------------------------> //
+
+    // La acest Get, cred ca e mai ok sa intoarcem doar ResponseEntity ca sa nu apara exception pe front
+    @GetMapping("students/{id}/grades")
+    public ResponseEntity<List<Grade>> getStudentByIdGrades(@PathVariable("id") String id) {
+        Optional<Student> students = Optional.ofNullable(studentsService.getStudentById(UUID.fromString(id)));
+        if (students.isPresent()) {
+            return new ResponseEntity<>(students.get().getGrades(), HttpStatus.OK);
+        } else {
+            throw new NullPointerException();
+        }
+    }
+
+    @PostMapping(path = "students/{id}/grades",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Nullable
+    public ResponseEntity<Grade> addGrade(@PathVariable UUID id, @RequestBody Grade grade) {
+        Optional <Student> students = Optional.ofNullable(studentsService.getStudentById(id));
+        if (students.isPresent()) {
+            studentsService.addGrade(id, grade);
+            return new ResponseEntity<>(grade, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // ResponseEntity<> poate avea si un singur argument de HttpStatus, nu e necesar null
+    @Nullable
+    @DeleteMapping(value = "students/{id}/grades/{gradeId}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Grade> deleteGrade(@PathVariable UUID id, @PathVariable int gradeId) {
+        Grade isRemoved = studentsService.deleteGrade(id, gradeId);
+        if (isRemoved == null) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(isRemoved, HttpStatus.OK);
+    }
+
+    @Nullable
+    @PutMapping("students/{id}/grades/{gradeId}")
+    public ResponseEntity<Grade> updateGradeValue(@PathVariable("id") UUID id, @PathVariable("gradeId") int gradeId,@RequestParam(required = false) String evaluationDate,@RequestParam(required = false) Integer value){
+        Optional<Student> student = Optional.ofNullable(studentsService.getStudentById(id));
+        if (student.isPresent()) {
+            Optional<Grade> grade = Optional.ofNullable(studentsService.getGradeById(id, gradeId));
+            if (grade.isPresent()){
+                studentsService.updateGrade(id,value,evaluationDate,gradeId);
+                return new ResponseEntity<>(grade.get(), HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 }

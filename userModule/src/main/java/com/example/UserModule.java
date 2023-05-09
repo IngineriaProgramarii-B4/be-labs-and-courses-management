@@ -22,8 +22,8 @@ public class UserModule {
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:3000", "https://lovely-khapse-e453f1.netlify.app")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
+                        .allowedHeaders("*");
+//                        .allowCredentials(true);
             }
         };
     }
