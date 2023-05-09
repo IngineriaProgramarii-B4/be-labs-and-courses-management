@@ -22,6 +22,8 @@ public interface CourseDao {
 
     int updateSubjectByTitle(String title, Subject subject);
 
+    int saveImageToSubject(String title, Resource image);
+
     /*
       Component
      */

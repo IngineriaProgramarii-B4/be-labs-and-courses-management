@@ -11,4 +11,5 @@ public class SecurityConstants {
     }
     public static final long JWT_EXPIRATION = 70000;
     public static final SecretKey JWT_SECRET = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    public static final long RESET_TOKEN_EXPIRATION = 900000; // 15 minutes
 }

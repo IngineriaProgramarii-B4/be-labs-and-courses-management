@@ -2,6 +2,8 @@ package com.example.coursesmodule.service;
 
 import com.example.coursesmodule.dao.CourseDao;
 import com.example.coursesmodule.model.Component;
+import com.example.coursesmodule.model.Evaluation;
+import com.example.coursesmodule.model.Resource;
 import com.example.coursesmodule.model.Subject;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,24 +25,24 @@ public class ComponentService {
     }
 
     public boolean validateComponent(String title, Component component) {
-        if(component.getNumberWeeks() <= 0) return false;
+        if(component.getNumberWeeks() <= 0 || component.isDeleted()) return false;
         if(!validateType(component.getType()))
             return false;
         Optional<Subject> subject = courseDao.selectSubjectByTitle(title);
         if(subject.isEmpty()) return false;
-        for(Component comp : subject.get().getComponentList())
+        for(Component comp : courseDao.getComponents(title))
             if(comp.getType().equals(component.getType()))
                 return false;
         return true;
     }
 
     public boolean validateComponentToUpdate(String title, String type, Component component) {
-        if(component.getNumberWeeks() <= 0) return false;
+        if(component.getNumberWeeks() <= 0 || component.isDeleted()) return false;
         if(!Objects.equals(component.getType(), type))
             return false;
         Optional<Subject> subject = courseDao.selectSubjectByTitle(title);
         if(subject.isEmpty()) return false;
-        for(Component comp : subject.get().getComponentList())
+        for(Component comp : courseDao.getComponents(title))
             if(comp.getType().equals(component.getType())&& !comp.getType().equals(type))
                 return false;
         return true;
@@ -67,9 +69,24 @@ public class ComponentService {
     }
 
     public int deleteComponentByType(String title, String type) {
-        if(validateType(type))
+        ResourceService resourceService = new ResourceService(courseDao);
+
+        if(!validateType(type))
+            return 0;
+
+        Optional<Subject> subject = courseDao.selectSubjectByTitle(title);
+        if(subject.isEmpty()) return 0;
+
+        List<Resource> resources = courseDao.getResourcesForComponentType(title, type);
+        for (Resource resource : resources) {
+            String resourceTitle = resource.getTitle();
+            resourceService.deleteResourceByTitle(title, type, resourceTitle);
+        }
+
+        Optional<Evaluation> evaluation = courseDao.getEvaluationMethodByComponent(title, type);
+        if (evaluation.isEmpty())
             return courseDao.deleteComponentByType(title, type);
-        return 0;
+        return courseDao.deleteEvaluationMethod(title, type) & courseDao.deleteComponentByType(title, type);
     }
 
     public int updateComponentByType(String title, String type, Component component) {
