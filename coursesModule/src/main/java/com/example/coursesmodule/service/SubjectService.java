@@ -45,7 +45,7 @@ public class SubjectService {
         return false;
     }
 
-    private boolean validateUpdate(String title, String title1) {
+    public boolean validateUpdate(String title, String title1) {
         if(title.equals(title1))
             return true;
         for(Subject subject : courseDao.selectAllSubjects()) //only non-deleted subjects
@@ -175,7 +175,6 @@ public class SubjectService {
 
             if (oldImage != null) {
                 File oldImageFile = new File(oldImageLocation);
-                System.out.println(oldImageLocation);
                 String oldImageLocationUpdated = oldImageLocation.substring(
                         0,
                         oldImageLocation.lastIndexOf("/") + 1

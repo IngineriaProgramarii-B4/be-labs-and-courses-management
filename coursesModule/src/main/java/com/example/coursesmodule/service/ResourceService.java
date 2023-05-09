@@ -79,6 +79,7 @@ public class ResourceService {
     public Optional<Resource> getResourceByTitle(String title, String type, String resourceTitle) {
         return courseDao.getResourceByTitleForComponentType(title, type, resourceTitle);
     }
+
     public int deleteResourceByTitle(String title, String type, String resourceTitle) {
         Optional<Resource> optionalResource = courseDao.getResourceByTitleForComponentType(title, type, resourceTitle);
         if (optionalResource.isEmpty()) {
