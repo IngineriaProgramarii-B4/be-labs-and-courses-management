@@ -56,7 +56,7 @@ class AdminsRepositoryTest {
     void findAdminsByParamsEmailNonexistentTest() {
 
         //OUTPUT
-        String email = "testemail@mail.com";
+        String email = "abracadabra@mail.com";
 
         List<Admin> result = adminsRepository.findAdminsByParams(
                 null,
@@ -110,7 +110,7 @@ class AdminsRepositoryTest {
     void findAdminsByParamsUsernameNonexistentTest() {
 
         //OUTPUT
-        String username = "testUser";
+        String username = "abracadabra";
 
         List<Admin> result = adminsRepository.findAdminsByParams(
                 null,

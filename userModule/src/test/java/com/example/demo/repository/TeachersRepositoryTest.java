@@ -114,7 +114,7 @@ class TeachersRepositoryTest {
     void findTeachersByParamsUsernameNonexistentTest() {
 
         //OUTPUT
-        String username = "testUser";
+        String username = "abracadabra";
 
         List<Teacher> result = teachersRepository.findTeachersByParams(
                 null,
