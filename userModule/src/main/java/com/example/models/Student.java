@@ -6,10 +6,14 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.util.*;
 
 @Entity
+@SQLDelete(sql="UPDATE Student SET deleted = true WHERE id=?")
+@Where(clause = "deleted=false")
 @Table(name = "students")
 public class Student extends User {
     private Set<String> enrolledCourses = new HashSet<>();
@@ -25,6 +29,8 @@ public class Student extends User {
     private int maxGradeId = 0;
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Grade> grades = new ArrayList<>();
+
+    private boolean deleted = false;
     // <--------------------------------------------------------------------------------> //
 
     public Student(UUID id, String firstname,
@@ -59,7 +65,6 @@ public class Student extends User {
 
     /* default ctor */
     public Student() {
-
     }
 
     public Set<String> getEnrolledCourses() {
@@ -98,6 +103,14 @@ public class Student extends User {
         enrolledCourses.add(course);
     }
 
+    public boolean isDeleted(){
+        return deleted;
+    }
+    public Student setDeleted() {
+        deleted = true;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
@@ -116,7 +129,6 @@ public class Student extends User {
 //    public void setElectives(Integer year, Integer semester) {
 //
 //    }
-
 
     @Override
     public int hashCode() {
@@ -160,5 +172,15 @@ public class Student extends User {
             }
         }
         return null;
+    }
+    // ** //
+    public List<Grade> getGradesBySubject(String subject) {
+        List<Grade> gradesList = new ArrayList<>();
+        for (Grade grade : this.getGrades()) {
+            if (grade.getSubject().getTitle().equals(subject)) {
+                gradesList.add(grade);
+            }
+        }
+        return gradesList;
     }
 }

@@ -59,7 +59,7 @@ public class Subject {
                    @JsonProperty("description") String description,
                    @JsonProperty("components") List<Component> componentList,
                    @JsonProperty("evaluations") List<Evaluation> evaluationList,
-                   @JsonProperty("isDeleted") boolean isDeleted
+                   @JsonProperty("isDeleted") boolean isDeleted // ar trebui sa fie dat ca false implicit
     ) {
         this.id = id;
         this.title = title;

@@ -57,7 +57,7 @@ class StudentsRepositoryTest {
     void findStudentsByParamsEmailNonexistentTest() {
 
         //OUTPUT
-        String email = "testemail@mail.com";
+        String email = "abracadabra@mail.com";
 
         List<Student> result = studentsRepository.findStudentsByParams(
                 null,
@@ -171,7 +171,7 @@ class StudentsRepositoryTest {
     void findStudentsByParamsRegistrationNumberNonexistentTest() {
 
         //OUTPUT
-        String regisNr = "testRegistrationNumber";
+        String regisNr = "abracadabra";
 
         List<Student> result = studentsRepository.findStudentsByParams(
                 null,

@@ -101,9 +101,51 @@ public class StudentsController {
         if (students.isPresent()) {
             return new ResponseEntity<>(students.get().getGrades(), HttpStatus.OK);
         } else {
-            throw new NullPointerException();
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
+
+    // ** //
+    @GetMapping("students/{id}/{subject}")
+    public List<Grade> getStudentByIdSubjectGrades(@PathVariable("id") UUID id, @PathVariable String subject) {
+        Optional<Student> student = Optional.ofNullable(studentsService.getStudentById(id));
+        if (student.isPresent()) {
+            List<Grade> gradesList = student.get().getGradesBySubject(subject);
+            if (gradesList.isEmpty()) {
+                return List.of();
+            }
+            return new ResponseEntity<>(gradesList, HttpStatus.OK).getBody();
+        }
+        else return List.of();
+    }
+
+    @Nullable
+    @DeleteMapping(value = "students/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Student> delete(@PathVariable("id") UUID id) {
+        Optional<Student> isRemoved = Optional.ofNullable(studentsService.getStudentById(id));
+        if (isRemoved.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        isRemoved.get().setDeleted();
+        return new ResponseEntity<>(isRemoved.get(), HttpStatus.OK);
+    }
+
+    //
+    @GetMapping("students/{id}/grades/{gradeId}")
+    @Nullable
+    public ResponseEntity<Grade> getGradeById(@PathVariable("id") UUID id, @PathVariable("gradeId") int gradeId) {
+        Optional<Student> student = Optional.ofNullable(studentsService.getStudentById(id));
+        if (student.isPresent()) {
+            Optional<Grade> grade = Optional.ofNullable(studentsService.getGradeById(id, gradeId));
+            if (grade.isPresent()){
+                return new ResponseEntity<>(grade.get(), HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    //
 
     @PostMapping(path = "students/{id}/grades",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -127,7 +169,7 @@ public class StudentsController {
     public ResponseEntity<Grade> deleteGrade(@PathVariable UUID id, @PathVariable int gradeId) {
         Grade isRemoved = studentsService.deleteGrade(id, gradeId);
         if (isRemoved == null) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(isRemoved, HttpStatus.OK);
     }
