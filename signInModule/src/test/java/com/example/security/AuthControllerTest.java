@@ -11,6 +11,8 @@ import com.example.security.repository.RoleRepository;
 import com.example.security.repository.UserRepository;
 import com.example.security.security.EmailService;
 import com.example.security.security.JWTGenerator;
+import com.example.security.service.UserService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +23,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,6 +38,7 @@ class AuthControllerTest {
     private JWTGenerator jwtGenerator;
     private AuthController authController;
     private EmailService emailService;
+    private UserService userService;
 
     @BeforeEach
     public void setUp() {
@@ -45,7 +49,7 @@ class AuthControllerTest {
         jwtGenerator = Mockito.mock(JWTGenerator.class);
         emailService = Mockito.mock(EmailService.class);
 
-        authController = new AuthController(authenticationManager, userRepository, roleRepository, passwordEncoder, jwtGenerator, emailService);
+        authController = new AuthController(authenticationManager, userRepository, roleRepository, passwordEncoder, jwtGenerator, emailService, userService);
     }
 
     @Test
@@ -114,7 +118,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void testForgotPassword() {
+    void testForgotPassword() throws MessagingException, UnsupportedEncodingException {
         ForgotPasswordRequestBody forgotPasswordRequestBody = new ForgotPasswordRequestBody();
         forgotPasswordRequestBody.setEmail("test@example.com");
 

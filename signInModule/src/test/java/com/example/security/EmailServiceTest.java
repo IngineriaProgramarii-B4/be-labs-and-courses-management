@@ -3,6 +3,7 @@ package com.example.security;
 
 import com.example.security.model.UserEntity;
 import com.example.security.security.EmailService;
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +13,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+
+import java.io.UnsupportedEncodingException;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -36,7 +39,7 @@ import static org.mockito.ArgumentMatchers.any;
     }
 
     @Test
-     void testSendPasswordResetEmail() {
+     void testSendPasswordResetEmail() throws MessagingException, UnsupportedEncodingException {
         emailService.sendPasswordResetEmail(user, resetToken);
 
         Mockito.verify(mailSender, Mockito.times(1)).send(any(SimpleMailMessage.class));
