@@ -59,12 +59,12 @@ public class StudentsService {
 
     // <-------------------------------- FROM CATALOG ----------------------------------> //
 
-    // te poti folosi de getStudentsByParams
+    // te poti folosi de getStudentsByParams - nu, ca da o lista de studenti si n-am nevoie de lista daca sigur o sa-mi returneze un singur student
     public Student getStudentById(UUID id) {
         return studentsRepository.findStudentById(id);
     }
 
-    // asta nu ar trebui in GradeService? ca si toate cele de mai jos, avand in vedere ca returneaza Grade
+    // asta nu ar trebui in GradeService? ca si toate cele de mai jos, avand in vedere ca returneaza Grade - perhaps
     public Grade getGradeById(UUID id, int gradeId) {
         Student student = studentsRepository.findStudentById(id);
         Grade grade = student.getGradeById(gradeId);
@@ -80,6 +80,16 @@ public class StudentsService {
         Student student = getStudentById(id);
         student.addGrade(grade);
         return grade;
+    }
+
+    @Transactional
+    public Student delete(UUID id) {
+        Student student = studentsRepository.findStudentById(id);
+        try {
+            return student.setDeleted();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Transactional
