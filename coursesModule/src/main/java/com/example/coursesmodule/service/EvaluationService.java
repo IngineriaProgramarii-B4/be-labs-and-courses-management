@@ -22,9 +22,14 @@ public class EvaluationService {
 
     public boolean validateEval(String title, Evaluation evaluation){
         double sum = 0.;
-        for(Evaluation eval : courseDao.getEvaluationMethods(title))
-            sum+=eval.getValue();
-        if(sum+evaluation.getValue() > 1.0 || evaluation.isDeleted())
+        for(Evaluation eval : courseDao.getEvaluationMethods(title)) {
+            if(!eval.getComponent().equals(evaluation.getComponent()) && !eval.isDeleted()) {
+                sum += Math.floor(eval.getValue() * 100) / 100;
+                sum = Math.floor(sum * 100) / 100;
+            }
+        }
+        double finalSum = Math.floor((sum + evaluation.getValue()) * 100) / 100;
+        if(finalSum > 1.0 || evaluation.isDeleted())
             return false;
         for(Component comp : courseDao.getComponents(title))
             if(comp.getType().equals(evaluation.getComponent()))
@@ -51,8 +56,9 @@ public class EvaluationService {
 
     public int addEvaluationMethod(String title, Evaluation evaluation){
         Optional<Evaluation> eval = courseDao.getEvaluationMethodByComponent(title, evaluation.getComponent());
-        if(validateEval(title, evaluation) && eval.isEmpty())
+        if(validateEval(title, evaluation) && eval.isEmpty()){
             return courseDao.addEvaluationMethod(title, evaluation);
+        }
         return 0;
     }
 
