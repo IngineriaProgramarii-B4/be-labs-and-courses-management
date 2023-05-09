@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,14 +57,14 @@ public class ResourceService {
         if(courseDao.addResourceForComponentType(title, type, resource) == 0)
             return 0;
         try {
-            String absolutePath = new File("").getAbsolutePath();
-            String folderPath = absolutePath + "/" + RESOURCE_PATH;
-            File folder = new File(folderPath);
+            String absPath = new File("").getAbsolutePath();
+            Path absolutePath = Path.of(absPath);
+            Path folderPath = absolutePath.resolve(RESOURCE_PATH);
+            File folder = new File(folderPath.toString());
             if (!folder.exists()) {
                 folder.mkdir();
             }
-
-            file.transferTo(new File(folderPath + fileName));
+            file.transferTo(new File(folderPath.resolve(fileName).toString()));
             return 1;
         } catch (Exception e) {
             e.printStackTrace();

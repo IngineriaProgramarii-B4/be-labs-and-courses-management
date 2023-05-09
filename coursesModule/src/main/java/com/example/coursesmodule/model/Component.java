@@ -1,11 +1,9 @@
 package com.example.coursesmodule.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
-
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,19 +30,11 @@ public class Component {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
     @Column(name = "created_at", nullable = false)
-    private Date createdAt;
+    private LocalDateTime createdAt;
     @Column(name = "updated_at", nullable = false)
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
     public Component() {
-    }
-
-    public Component(UUID id, String type, int numberWeeks, List<Resource> resources, boolean isDeleted) {
-        this.id = id;
-        this.type = type;
-        this.numberWeeks = numberWeeks;
-        this.resources = resources;
-        this.isDeleted = isDeleted;
     }
 
     public Component(String type, int numberWeeks, List<Resource> resources, boolean isDeleted) {
@@ -86,9 +76,6 @@ public class Component {
         return numberWeeks;
     }
 
-    public UUID getId() {
-        return id;
-    }
 
     public boolean isDeleted() {
         return isDeleted;
@@ -109,20 +96,11 @@ public class Component {
             resources.set(index, resource);
         }
     }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 

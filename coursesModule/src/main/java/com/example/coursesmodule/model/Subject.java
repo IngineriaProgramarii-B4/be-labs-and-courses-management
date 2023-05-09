@@ -3,6 +3,7 @@ package com.example.coursesmodule.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -45,26 +46,12 @@ public class Subject {
     @Column(name="is_deleted", nullable = false)
     private boolean isDeleted;
     @Column(name = "created_at", nullable = false)
-    private Date createdAt;
+    private LocalDateTime createdAt;
     @Column(name = "updated_at", nullable = false)
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
     //constructors
     public Subject() {
-    }
-
-    public Subject(UUID id, String title, int credits, int year, int semester, String description,
-                   List<Component> componentList, List<Evaluation> evaluationList, boolean isDeleted) {
-        this.id = id;
-        this.title = title;
-        this.credits = credits;
-        this.year = year;
-        this.semester = semester;
-        this.description = description;
-        this.componentList = componentList;
-        this.evaluationList = evaluationList;
-        this.image = null;
-        this.isDeleted = isDeleted;
     }
 
     public Subject(String title, int credits, int year, int semester, String description, List<Component> componentList,
@@ -83,10 +70,6 @@ public class Subject {
     //setters
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public void setCredits(int credits) {
@@ -128,10 +111,6 @@ public class Subject {
         return title;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
     public int getCredits() {
         return credits;
     }
@@ -158,19 +137,10 @@ public class Subject {
         return isDeleted;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -211,7 +181,6 @@ public class Subject {
     @Override
     public String toString() {
         return "Subject{" +
-                "id=" + id +
                 ", title='" + title + '\'' +
                 ", credits=" + credits +
                 ", year=" + year +

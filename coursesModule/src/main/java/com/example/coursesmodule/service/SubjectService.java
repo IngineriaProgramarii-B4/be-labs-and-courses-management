@@ -95,8 +95,10 @@ public class SubjectService {
             String type = component.getType();
             componentService.deleteComponentByType(title, type);
         }
-
-        Resource oldImage = courseDao.selectSubjectByTitle(title).get().getImage();
+        Optional<Subject> subject = courseDao.selectSubjectByTitle(title);
+        Resource oldImage = new Resource();
+        if(subject.isPresent())
+            oldImage = subject.get().getImage();
         if (oldImage != null) {
             File oldImageFile = new File(oldImage.getLocation());
             String oldImageLocation = oldImage.getLocation(); //RESOURCE_PATH/Subject_image.jpg
@@ -128,7 +130,10 @@ public class SubjectService {
                 boolean renameSuccessful = resFile.renameTo(new File(newResLocation));
             }
 
-        Resource oldImage = courseDao.selectSubjectByTitle(title).get().getImage();
+        Optional<Subject> subject1 = courseDao.selectSubjectByTitle(title);
+        Resource oldImage = null;
+        if(subject1.isPresent())
+            oldImage = subject1.get().getImage();
         if (oldImage != null) {
             String oldImageLocation = oldImage.getLocation();
             File oldImageFile = new File(oldImageLocation);

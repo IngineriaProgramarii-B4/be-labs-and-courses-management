@@ -1,10 +1,9 @@
 package com.example.coursesmodule.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -29,19 +28,11 @@ public class Evaluation {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
     @Column(name = "created_at", nullable = false)
-    private Date createdAt;
+    private LocalDateTime createdAt;
     @Column(name = "updated_at", nullable = false)
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
     public Evaluation() {
-    }
-
-    public Evaluation(UUID id, String component, float value, String description, boolean isDeleted) {
-        this.id = id;
-        this.component = component;
-        this.value = value;
-        this.description = description;
-        this.isDeleted = isDeleted;
     }
 
     public Evaluation(String component, float value, String description, boolean isDeleted) {
@@ -54,10 +45,6 @@ public class Evaluation {
 
     public UUID getId() {
         return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public String getComponent() {
@@ -91,27 +78,16 @@ public class Evaluation {
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
     }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
     @Override
     public String toString() {
         return "Evaluation{" +
-                "id=" + id +
                 ", component='" + component + '\'' +
                 ", value=" + value +
                 ", isDeleted=" + isDeleted +

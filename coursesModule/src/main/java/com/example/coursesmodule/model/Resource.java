@@ -2,9 +2,7 @@ package com.example.coursesmodule.model;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
-
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -32,9 +30,9 @@ public class Resource {
     )
     private String location;
     @Column(name="created_at", nullable = false)
-    private Date createdAt;
+    private LocalDateTime createdAt;
     @Column(name="updated_at", nullable = false)
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
     @Column(
             name = "type",
             nullable = false
@@ -48,18 +46,6 @@ public class Resource {
 
     public Resource() {
 
-    }
-
-    public Resource(UUID id,
-                    String title,
-                    String location,
-                    String type,
-                    boolean isDeleted) {
-        this.id = id;
-        this.title = title;
-        this.location = location;
-        this.type = type;
-        this.isDeleted = isDeleted;
     }
 
     public Resource(String title, String location, String type, boolean isDeleted) {
@@ -86,9 +72,6 @@ public class Resource {
     }
 
     //getters
-    public UUID getId() {
-        return id;
-    }
     public String getTitle() {
         return title;
     }
@@ -98,20 +81,10 @@ public class Resource {
     public String getType() {
         return type;
     }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 

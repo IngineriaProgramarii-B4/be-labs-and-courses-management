@@ -14,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -183,14 +182,9 @@ public class SubjectServiceTest {
         String title = "Math";
         Subject updatedSubject = new Subject("Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         when(courseDao.selectSubjectByTitle(title)).thenReturn(Optional.empty());
-        String message = "";
 
-        try {
-            subjectService.updateSubjectByTitle("Math", updatedSubject);
-        } catch (NoSuchElementException e) {
-            message = e.getMessage();
-        }
+        int result = subjectService.updateSubjectByTitle("Math", updatedSubject);
+        assertEquals(0, result);
 
-        assertEquals("No value present", message);
     }
 }

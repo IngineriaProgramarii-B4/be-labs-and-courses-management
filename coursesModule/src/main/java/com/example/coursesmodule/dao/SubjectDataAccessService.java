@@ -5,13 +5,10 @@ import com.example.coursesmodule.repository.ComponentRepo;
 import com.example.coursesmodule.repository.EvaluationRepo;
 import com.example.coursesmodule.repository.ResourceRepo;
 import com.example.coursesmodule.repository.SubjectRepo;
-import org.junit.jupiter.api.DisplayNameGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,15 +25,20 @@ public class SubjectDataAccessService implements CourseDao{
 
     @Autowired
     private EvaluationRepo evaluationRepo;
+    
+    private static final String DATA_FORMAT = "dd/MM/yyyy HH:mm:ss";
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATA_FORMAT);
+    private LocalDateTime formatDateTime(){
+        LocalDateTime dateTime = LocalDateTime.now();
+        return LocalDateTime.parse(formatter.format(dateTime), formatter);
+    }
 
     // SUBJECTS
 
     @Override
     public int insertSubject(Subject subject) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        java.util.Date date = new java.util.Date();
-        subject.setCreatedAt(new Date(formatter.format(date)));
-        subject.setUpdatedAt(new Date(formatter.format(date)));
+        subject.setCreatedAt(formatDateTime());
+        subject.setUpdatedAt(formatDateTime());
         subjectRepo.save(subject);
         return 1;
     }
@@ -63,8 +65,6 @@ public class SubjectDataAccessService implements CourseDao{
             return 0;
         Subject subjectToDelete = optionalSubject.get();
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        java.util.Date date = new java.util.Date();
         Resource oldImage = optionalSubject.get().getImage();
         if (oldImage != null) {
             String oldImageLocation = oldImage.getLocation(); //RESOURCE_PATH/Subject_image.jpg
@@ -74,14 +74,14 @@ public class SubjectDataAccessService implements CourseDao{
             ) + "DELETED_" + title + "_" + oldImage.getTitle();
             oldImage.setLocation(oldImageLocationUpdated);
             oldImage.setDeleted(true);
-            oldImage.setUpdatedAt(new Date(formatter.format(date)));
+            oldImage.setUpdatedAt(formatDateTime());
             resourceRepo.save(oldImage);
             subjectToDelete.setImage(oldImage);
         }
 
         subjectToDelete.setDeleted(true);
         subjectToDelete.setImage(oldImage);
-        subjectToDelete.setUpdatedAt(new Date(formatter.format(date)));
+        subjectToDelete.setUpdatedAt(formatDateTime());
         subjectRepo.save(subjectToDelete);
         return 1;
     }
@@ -92,8 +92,6 @@ public class SubjectDataAccessService implements CourseDao{
         if(subjectToUpdate == null)
             return 0;
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        java.util.Date date = new java.util.Date();
 
         if (!subjectToUpdate.getTitle().equals(subject.getTitle())) {
             subjectToUpdate.setTitle(subject.getTitle());
@@ -127,7 +125,6 @@ public class SubjectDataAccessService implements CourseDao{
             ) + subject.getTitle() + "_" + oldImage.getTitle();
 
             oldImage.setLocation(locationOfOldImageUpdated);
-            //oldImage location: RESOURCE_PATH/OldSubjectTitle_image.jpg -> RESOURCE_PATH/NewSubjectTitle_image.jpg;
             resourceRepo.save(oldImage);
         }
 
@@ -136,7 +133,7 @@ public class SubjectDataAccessService implements CourseDao{
         subjectToUpdate.setSemester(subject.getSemester());
         subjectToUpdate.setDescription(subject.getDescription());
 
-        subjectToUpdate.setUpdatedAt(new Date(formatter.format(date)));
+        subjectToUpdate.setUpdatedAt(formatDateTime());
         subjectRepo.save(subjectToUpdate);
         return 1;
     }
@@ -147,8 +144,6 @@ public class SubjectDataAccessService implements CourseDao{
         if(subjectToUpdate == null)
             return 0;
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        java.util.Date date = new java.util.Date();
         Resource oldImage = subjectToUpdate.getImage();
         if (oldImage != null) {
             String oldImageLocation = oldImage.getLocation(); //RESOURCE_PATH/Subject_image.jpg
@@ -158,16 +153,15 @@ public class SubjectDataAccessService implements CourseDao{
             ) + "OUTDATED_" + title + "_" + oldImage.getTitle();
 
             oldImage.setLocation(oldImageLocationUpdated);
-            //oldImage location: RESOURCE_PATH/Subject_image.jpg -> RESOURCE_PATH/OUTDATED_Subject_image.jpg;
 
             oldImage.setDeleted(true);
-            oldImage.setUpdatedAt(new Date(formatter.format(date)));
+            oldImage.setUpdatedAt(formatDateTime());
             resourceRepo.save(oldImage);
         }
-        image.setCreatedAt(new Date(formatter.format(date)));
-        image.setUpdatedAt(new Date(formatter.format(date)));
+        image.setCreatedAt(formatDateTime());
+        image.setUpdatedAt(formatDateTime());
         subjectToUpdate.setImage(image);
-        subjectToUpdate.setUpdatedAt(new Date(formatter.format(date)));
+        subjectToUpdate.setUpdatedAt(formatDateTime());
         subjectRepo.save(subjectToUpdate);
         return 1;
     }
@@ -179,12 +173,10 @@ public class SubjectDataAccessService implements CourseDao{
         Subject subjectToModify = subjectRepo.findSubjectByTitle(title).orElse(null);
         if(subjectToModify == null)
             return 0;
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        java.util.Date date = new java.util.Date();
-        component.setCreatedAt(new Date(formatter.format(date)));
-        component.setUpdatedAt(new Date(formatter.format(date)));
+        component.setCreatedAt(formatDateTime());
+        component.setUpdatedAt(formatDateTime());
         subjectToModify.addComponent(component);
-        subjectToModify.setUpdatedAt(new Date(formatter.format(date)));
+        subjectToModify.setUpdatedAt(formatDateTime());
         subjectRepo.save(subjectToModify);
         return 1;
     }
@@ -208,9 +200,7 @@ public class SubjectDataAccessService implements CourseDao{
         if(componentToDelete == null)
             return 0;
         componentToDelete.setDeleted(true);
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        java.util.Date date = new java.util.Date();
-        componentToDelete.setUpdatedAt(new Date(formatter.format(date)));
+        componentToDelete.setUpdatedAt(formatDateTime());
         subjectToModify.softDeleteComponent(componentToDelete);
         componentRepo.save(componentToDelete);
         subjectRepo.save(subjectToModify);
@@ -225,9 +215,7 @@ public class SubjectDataAccessService implements CourseDao{
         componentToUpdate.setNumberWeeks(component.getNumberWeeks());
         componentToUpdate.setType(component.getType());
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        java.util.Date date = new java.util.Date();
-        componentToUpdate.setUpdatedAt(new Date(formatter.format(date)));
+        componentToUpdate.setUpdatedAt(formatDateTime());
 
         componentRepo.save(componentToUpdate);
         return 1;
@@ -250,11 +238,9 @@ public class SubjectDataAccessService implements CourseDao{
         Component componentToModify = componentRepo.findBySubjectTitleAndType(title, type).orElse(null);
         if(componentToModify == null)
             return 0;
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        java.util.Date date = new java.util.Date();
-        resource.setCreatedAt(new Date(formatter.format(date)));
-        resource.setUpdatedAt(new Date(formatter.format(date)));
-        componentToModify.setUpdatedAt(new Date(formatter.format(date)));
+        resource.setCreatedAt(formatDateTime());
+        resource.setUpdatedAt(formatDateTime());
+        componentToModify.setUpdatedAt(formatDateTime());
         componentToModify.addResource(resource);
         componentRepo.save(componentToModify);
         return 1;
@@ -267,9 +253,7 @@ public class SubjectDataAccessService implements CourseDao{
             return 0;
         resourceToUpdate.setTitle(resource.getTitle());
         resourceToUpdate.setLocation(resource.getLocation());
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        java.util.Date date = new java.util.Date();
-        resourceToUpdate.setUpdatedAt(new Date(formatter.format(date)));
+        resourceToUpdate.setUpdatedAt(formatDateTime());
         resourceRepo.save(resourceToUpdate);
         return 1;
     }
@@ -288,9 +272,7 @@ public class SubjectDataAccessService implements CourseDao{
                 0,
                 resourceToDelete.getLocation().lastIndexOf("/") + 1
         ) + "DELETED_" + subjectTitle + "_" + componentType + "_" + resourceTitle);
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        java.util.Date date = new java.util.Date();
-        resourceToDelete.setUpdatedAt(new Date(formatter.format(date)));
+        resourceToDelete.setUpdatedAt(formatDateTime());
         resourceRepo.save(resourceToDelete);
 
         componentToModify.softDeleteResource(resourceToDelete);
@@ -306,11 +288,9 @@ public class SubjectDataAccessService implements CourseDao{
         Subject subjectToModify = subjectRepo.findSubjectByTitle(title).orElse(null);
         if(subjectToModify == null)
             return 0;
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        java.util.Date date = new java.util.Date();
-        evaluationMethod.setCreatedAt(new Date(formatter.format(date)));
-        evaluationMethod.setUpdatedAt(new Date(formatter.format(date)));
-        subjectToModify.setUpdatedAt(new Date(formatter.format(date)));
+        evaluationMethod.setCreatedAt(formatDateTime());
+        evaluationMethod.setUpdatedAt(formatDateTime());
+        subjectToModify.setUpdatedAt(formatDateTime());
         subjectToModify.addEvaluation(evaluationMethod);
         subjectRepo.save(subjectToModify);
         return 1;
@@ -335,9 +315,7 @@ public class SubjectDataAccessService implements CourseDao{
         if(evaluationToDelete == null)
             return 0;
         evaluationToDelete.setDeleted(true);
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        java.util.Date date = new java.util.Date();
-        evaluationToDelete.setUpdatedAt(new Date(formatter.format(date)));
+        evaluationToDelete.setUpdatedAt(formatDateTime());
         subjectToModify.softDeleteEvaluation(evaluationToDelete);
         evaluationRepo.save(evaluationToDelete);
         subjectRepo.save(subjectToModify);
@@ -352,9 +330,7 @@ public class SubjectDataAccessService implements CourseDao{
         evaluationToUpdate.setComponent(evaluationMethod.getComponent());
         evaluationToUpdate.setValue(evaluationMethod.getValue());
         evaluationToUpdate.setDescription(evaluationMethod.getDescription());
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        java.util.Date date = new java.util.Date();
-        evaluationToUpdate.setUpdatedAt(new Date(formatter.format(date)));
+        evaluationToUpdate.setUpdatedAt(formatDateTime());
         evaluationRepo.save(evaluationToUpdate);
         return 1;
     }
