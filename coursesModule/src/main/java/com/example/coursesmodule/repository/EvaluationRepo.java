@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-public interface EvaluationRepo extends JpaRepository<Evaluation, Integer> {
+public interface EvaluationRepo extends JpaRepository<Evaluation, UUID> {
     @Query("SELECT e FROM Subject s JOIN s.evaluationList e WHERE s.title = ?1 AND s.isDeleted = FALSE AND e.isDeleted = FALSE")
     List<Evaluation> findAllBySubjectTitle(String title);
 

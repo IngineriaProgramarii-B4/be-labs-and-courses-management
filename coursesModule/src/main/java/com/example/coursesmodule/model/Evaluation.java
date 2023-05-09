@@ -2,21 +2,24 @@ package com.example.coursesmodule.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+
+import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Table(name = "evaluation")
 public class Evaluation {
     @Id
-    @SequenceGenerator(
+    @GenericGenerator(
             name = "evaluation_sequence",
-            sequenceName = "evaluation_sequence",
-            allocationSize = 1
+            strategy = "org.hibernate.id.UUIDGenerator"
     )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
+            strategy = GenerationType.IDENTITY,
             generator = "evaluation_sequence"
     )
-    private Long id;
+    private UUID id;
     @Column(name = "component", nullable = false)
     private String component;
     @Column(name = "value", nullable = false)
@@ -25,15 +28,15 @@ public class Evaluation {
     private String description;
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
+    @Column(name = "created_at", nullable = false)
+    private Date createdAt;
+    @Column(name = "updated_at", nullable = false)
+    private Date updatedAt;
 
     public Evaluation() {
     }
 
-    public Evaluation(@JsonProperty("id") Long id,
-                      @JsonProperty("component") String component,
-                      @JsonProperty("value") float value,
-                      @JsonProperty("description") String description,
-                      @JsonProperty("isDeleted") boolean isDeleted) {
+    public Evaluation(UUID id, String component, float value, String description, boolean isDeleted) {
         this.id = id;
         this.component = component;
         this.value = value;
@@ -41,11 +44,19 @@ public class Evaluation {
         this.isDeleted = isDeleted;
     }
 
-    public Long getId() {
+    public Evaluation(String component, float value, String description, boolean isDeleted) {
+        this.id = UUID.randomUUID();
+        this.component = component;
+        this.value = value;
+        this.description = description;
+        this.isDeleted = isDeleted;
+    }
+
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -79,6 +90,22 @@ public class Evaluation {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     @Override

@@ -67,6 +67,7 @@ public class SubjectService {
     public int addSubject(Subject subject) {
         if(!validateSubject(subject))
             return 0;
+
         return courseDao.insertSubject(subject);
     }
 

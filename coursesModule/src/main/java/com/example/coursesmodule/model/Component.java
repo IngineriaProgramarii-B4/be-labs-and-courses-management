@@ -2,24 +2,26 @@ package com.example.coursesmodule.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "component")
 public class Component {
     @Id
-    @SequenceGenerator(
-            name = "approfundation_sequence",
-            sequenceName = "approfundation_sequence",
-            allocationSize = 1
+    @GenericGenerator(
+            name = "component_sequence",
+            strategy = "org.hibernate.id.UUIDGenerator"
     )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "approfundation_sequence"
+            strategy = GenerationType.IDENTITY,
+            generator = "component_sequence"
     )
-    private int id;
+    private UUID id;
     @Column(name = "type", nullable = false)
     private String type;
     @Column(name = "number_weeks", nullable = false)
@@ -29,16 +31,24 @@ public class Component {
     private List<Resource> resources = new ArrayList<>();
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
+    @Column(name = "created_at", nullable = false)
+    private Date createdAt;
+    @Column(name = "updated_at", nullable = false)
+    private Date updatedAt;
 
     public Component() {
     }
 
-    public Component(@JsonProperty("id") int id,
-                     @JsonProperty("type") String type,
-                     @JsonProperty("numberWeeks") int numberWeeks,
-                     @JsonProperty("resources") List<Resource> resources,
-                     @JsonProperty("isDeleted") boolean isDeleted) {
+    public Component(UUID id, String type, int numberWeeks, List<Resource> resources, boolean isDeleted) {
         this.id = id;
+        this.type = type;
+        this.numberWeeks = numberWeeks;
+        this.resources = resources;
+        this.isDeleted = isDeleted;
+    }
+
+    public Component(String type, int numberWeeks, List<Resource> resources, boolean isDeleted) {
+        this.id = UUID.randomUUID();
         this.type = type;
         this.numberWeeks = numberWeeks;
         this.resources = resources;
@@ -76,7 +86,7 @@ public class Component {
         return numberWeeks;
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -98,6 +108,22 @@ public class Component {
             resource.setDeleted(true);
             resources.set(index, resource);
         }
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     @Override

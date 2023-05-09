@@ -1,8 +1,7 @@
 package com.example.coursesmodule.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-
+import org.hibernate.annotations.GenericGenerator;
 
 import java.util.*;
 
@@ -10,16 +9,15 @@ import java.util.*;
 @Table(name = "subject")
 public class Subject {
     @Id
-    @SequenceGenerator(
+    @GenericGenerator(
             name = "subject_sequence",
-            sequenceName = "subject_sequence",
-            allocationSize = 1
+            strategy = "org.hibernate.id.UUIDGenerator"
     )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
+            strategy = GenerationType.IDENTITY,
             generator = "subject_sequence"
     )
-    private int id;
+    private UUID id;
     @Column(name = "title", nullable = false)
     private String title;
     @Column(name = "credits", nullable = false)
@@ -42,25 +40,21 @@ public class Subject {
     @JoinColumn(name = "subject_id", referencedColumnName = "id")
     private List<Evaluation> evaluationList = new ArrayList<>();
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "subject_id", referencedColumnName = "id")
+    @JoinColumn(name = "image_id", referencedColumnName = "id")
     private Resource image;
     @Column(name="is_deleted", nullable = false)
     private boolean isDeleted;
+    @Column(name = "created_at", nullable = false)
+    private Date createdAt;
+    @Column(name = "updated_at", nullable = false)
+    private Date updatedAt;
 
     //constructors
     public Subject() {
     }
 
-    public Subject(@JsonProperty("id") int id,
-                   @JsonProperty("title") String title,
-                   @JsonProperty("credits") int credits,
-                   @JsonProperty("year") int year,
-                   @JsonProperty("semester") int semester,
-                   @JsonProperty("description") String description,
-                   @JsonProperty("components") List<Component> componentList,
-                   @JsonProperty("evaluations") List<Evaluation> evaluationList,
-                   @JsonProperty("isDeleted") boolean isDeleted
-    ) {
+    public Subject(UUID id, String title, int credits, int year, int semester, String description,
+                   List<Component> componentList, List<Evaluation> evaluationList, boolean isDeleted) {
         this.id = id;
         this.title = title;
         this.credits = credits;
@@ -73,12 +67,25 @@ public class Subject {
         this.isDeleted = isDeleted;
     }
 
+    public Subject(String title, int credits, int year, int semester, String description, List<Component> componentList,
+                   List<Evaluation> evaluationList, boolean isDeleted) {
+        this.id = UUID.randomUUID();
+        this.title = title;
+        this.credits = credits;
+        this.year = year;
+        this.semester = semester;
+        this.description = description;
+        this.componentList = componentList;
+        this.evaluationList = evaluationList;
+        this.isDeleted = isDeleted;
+    }
+
     //setters
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -121,7 +128,7 @@ public class Subject {
         return title;
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -149,6 +156,22 @@ public class Subject {
 
     public boolean isDeleted() {
         return isDeleted;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     //additional methods
