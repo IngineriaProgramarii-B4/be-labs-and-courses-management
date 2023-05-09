@@ -1,10 +1,11 @@
 package com.example.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 import java.util.Objects;
 import java.util.UUID;
-
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -22,17 +23,29 @@ public abstract class User {
      * 1 - teacher
      * 2 - student
      * */
+    @Min(value=0)
+    @Max(value=2)
     protected int type;
 
-    public User() {
+    protected User() {
 
     }
 
-    public User(String firstname, String lastname, String email, String username) {
+    protected User(UUID id, String firstname, String lastname, String email, String username, int type) {
+        this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.username = username;
+        this.type = type;
+    }
+
+    protected User(String firstname, String lastname, String email, String username, int type) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.username = username;
+        this.type = type;
     }
 
     public UUID getId() {
@@ -75,10 +88,20 @@ public abstract class User {
         this.username = username;
     }
 
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
     @Override
     public boolean equals(Object user) {
+
         if (this == user)
             return true;
+
         if (user == null || getClass() != user.getClass())
             return false;
 
@@ -91,7 +114,8 @@ public abstract class User {
         return Objects.hash(id, firstname, lastname, email, username, type);
     }
 
-    //    public void login(String username, String password) {
+
+//    public void login(String username, String password) {
 //        //todo
 //    }
 //

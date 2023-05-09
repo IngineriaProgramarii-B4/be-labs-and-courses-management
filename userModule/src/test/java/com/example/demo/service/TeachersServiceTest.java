@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,17 +15,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-public class TeachersServiceTest {
+class TeachersServiceTest {
 
     @InjectMocks
     TeachersService teachersService;
@@ -57,6 +54,8 @@ public class TeachersServiceTest {
         Map<String, Object> args = new HashMap<>();
 
         args.put("office", "OfficeTest");
+
+        args.put("id", "");
 
         given(teachersRepository.findTeachersByParams(
                 nullable(UUID.class),
@@ -98,16 +97,46 @@ public class TeachersServiceTest {
     }
 
     @Test
+    void getTeachersByParamsIdTest() {
+
+        List<Teacher> expected = List.of(teacher);
+
+        Map<String, Object> args = new HashMap<>();
+
+        UUID idTest = UUID.randomUUID();
+
+        args.put("id", idTest);
+
+        given(teachersRepository.findTeachersByParams(
+                eq(idTest),
+                nullable(String.class),
+                nullable(String.class),
+                nullable(String.class),
+                nullable(String.class),
+                nullable(String.class),
+                nullable(String.class)))
+                .willReturn(expected);
+
+        List<Teacher> result = teachersService.getTeachersByParams(args);
+
+        assertTrue(result.containsAll(expected));
+    }
+
+    @Test
     void saveTeacherTest() {
+        when(teachersRepository.save(teacher)).thenReturn(teacher);
 
-        TeachersService teachersServiceMock = mock(TeachersService.class);
+        teachersService.saveTeacher(teacher);
 
-        ArgumentCaptor<Teacher> teacherToCapture = ArgumentCaptor.forClass(Teacher.class);
+        verify(teachersRepository, times(1)).save(teacher);
+    }
 
-        doNothing().when(teachersServiceMock).saveTeacher(teacherToCapture.capture());
+    @Test
+    void updateTeacherTest() {
+        doNothing().when(teachersRepository).updateTeacher(teacher.getId(), teacher.getFirstname(), teacher.getLastname(), teacher.getEmail(), teacher.getUsername(), teacher.getOffice(), teacher.getTitle());
 
-        teachersServiceMock.saveTeacher(teacher);
+        teachersService.updateTeacher(teacher.getId(), teacher);
 
-        assertEquals(teacher, teacherToCapture.getValue());
+        verify(teachersRepository, times(1)).updateTeacher(teacher.getId(), teacher.getFirstname(), teacher.getLastname(), teacher.getEmail(), teacher.getUsername(), teacher.getOffice(), teacher.getTitle());
     }
 }

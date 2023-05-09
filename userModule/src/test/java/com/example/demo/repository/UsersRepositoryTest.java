@@ -29,8 +29,8 @@ class UsersRepositoryTest {
                 "testSurname",
                 "testemail@mail.com",
                 "testUser",
-                0,
-                0,
+                1,
+                1,
                 "testRegistrationNumber",
                 null
         );
@@ -78,8 +78,8 @@ class UsersRepositoryTest {
                 "testSurname",
                 "testemail@mail.com",
                 "testUser",
-                0,
-                0,
+                1,
+                1,
                 "testRegistrationNumber",
                 null
         );

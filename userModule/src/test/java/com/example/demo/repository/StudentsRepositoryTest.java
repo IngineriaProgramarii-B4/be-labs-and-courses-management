@@ -27,8 +27,8 @@ class StudentsRepositoryTest {
                 "testSurename",
                 "testemail@mail.com",
                 "testUser",
-                0,
-                0,
+                1,
+                1,
                 "testRegistrationNumber",
                 null
         );
@@ -84,8 +84,8 @@ class StudentsRepositoryTest {
                 "testSurname",
                 "testemail@mail.com",
                 "testUser",
-                0,
-                0,
+                1,
+                1,
                 "testRegistrationNumber",
                 null
         );
@@ -141,8 +141,8 @@ class StudentsRepositoryTest {
                 "testSurname",
                 "testemail@mail.com",
                 "testUser",
-                0,
-                0,
+                1,
+                1,
                 "testRegistrationNumber",
                 null
         );
@@ -158,8 +158,8 @@ class StudentsRepositoryTest {
                 null,
                 null,
                 null,
-                0,
-                0,
+                1,
+                1,
                 regisNr
         );
 
@@ -179,8 +179,8 @@ class StudentsRepositoryTest {
                 null,
                 null,
                 null,
-                0,
-                0,
+                1,
+                1,
                 regisNr
         );
 

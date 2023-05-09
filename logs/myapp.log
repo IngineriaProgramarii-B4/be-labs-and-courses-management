@@ -1,0 +1,146 @@
+2023-04-28T12:03:36.718+03:00  INFO 14100 --- [main] com.example.security.SignInApplication   : Starting SignInApplication using Java 19.0.2 with PID 14100 (C:\Facultate\AnII sem 2\IP\be-labs-and-courses-management\signInModule\target\classes started by Denis in C:\Facultate\AnII sem 2\IP\be-labs-and-courses-management)
+2023-04-28T12:03:36.734+03:00  INFO 14100 --- [main] com.example.security.SignInApplication   : No active profile set, falling back to 1 default profile: "default"
+2023-04-28T12:03:38.359+03:00  INFO 14100 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-04-28T12:03:38.450+03:00  INFO 14100 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 80 ms. Found 2 JPA repository interfaces.
+2023-04-28T12:03:39.367+03:00  INFO 14100 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8082 (http)
+2023-04-28T12:03:39.380+03:00  INFO 14100 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-04-28T12:03:39.380+03:00  INFO 14100 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.7]
+2023-04-28T12:03:39.514+03:00  INFO 14100 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-04-28T12:03:39.514+03:00  INFO 14100 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2694 ms
+2023-04-28T12:03:39.714+03:00  INFO 14100 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-04-28T12:03:39.791+03:00  INFO 14100 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.1.7.Final
+2023-04-28T12:03:40.236+03:00  INFO 14100 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-04-28T12:03:40.543+03:00  INFO 14100 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@28e7bb31
+2023-04-28T12:03:40.547+03:00  INFO 14100 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-04-28T12:03:40.601+03:00  INFO 14100 --- [main] SQL dialect                              : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+2023-04-28T12:03:41.919+03:00  INFO 14100 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-04-28T12:03:41.931+03:00  INFO 14100 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-04-28T12:03:42.656+03:00  WARN 14100 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2023-04-28T12:03:42.777+03:00  INFO 14100 --- [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2023-04-28T12:03:43.717+03:00  INFO 14100 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@1f5f4d48, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2f025e9e, org.springframework.security.web.context.SecurityContextHolderFilter@46573cfe, org.springframework.security.web.header.HeaderWriterFilter@7ddcd3d, org.springframework.security.web.authentication.logout.LogoutFilter@7ec68821, com.example.security.security.JwtAuthenticationFilter@7ade62a6, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@2f03fdc0, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2f7d8a7c, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@3e371088, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2c8e096, org.springframework.security.web.session.SessionManagementFilter@4daead88, org.springframework.security.web.access.ExceptionTranslationFilter@16e5c19f, org.springframework.security.web.access.intercept.AuthorizationFilter@2178d296]
+2023-04-28T12:03:44.107+03:00  INFO 14100 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8082 (http) with context path ''
+2023-04-28T12:03:44.120+03:00  INFO 14100 --- [main] com.example.security.SignInApplication   : Started SignInApplication in 8.596 seconds (process running for 9.433)
+2023-04-28T12:03:46.604+03:00  INFO 14100 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-04-28T12:03:46.611+03:00  INFO 14100 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2023-04-28T12:03:46.619+03:00  INFO 14100 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2023-04-28T12:03:54.490+03:00  INFO 16296 --- [main] com.example.security.SignInApplication   : Starting SignInApplication using Java 19.0.2 with PID 16296 (C:\Facultate\AnII sem 2\IP\be-labs-and-courses-management\signInModule\target\classes started by Denis in C:\Facultate\AnII sem 2\IP\be-labs-and-courses-management)
+2023-04-28T12:03:54.494+03:00  INFO 16296 --- [main] com.example.security.SignInApplication   : No active profile set, falling back to 1 default profile: "default"
+2023-04-28T12:03:57.341+03:00  INFO 16296 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-04-28T12:03:57.521+03:00  INFO 16296 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 161 ms. Found 2 JPA repository interfaces.
+2023-04-28T12:03:58.876+03:00  INFO 16296 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8082 (http)
+2023-04-28T12:03:58.890+03:00  INFO 16296 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-04-28T12:03:58.891+03:00  INFO 16296 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.7]
+2023-04-28T12:03:59.160+03:00  INFO 16296 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-04-28T12:03:59.161+03:00  INFO 16296 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4536 ms
+2023-04-28T12:03:59.508+03:00  INFO 16296 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-04-28T12:03:59.648+03:00  INFO 16296 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.1.7.Final
+2023-04-28T12:04:00.283+03:00  INFO 16296 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-04-28T12:04:00.827+03:00  INFO 16296 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@532dacf5
+2023-04-28T12:04:00.831+03:00  INFO 16296 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-04-28T12:04:00.931+03:00  INFO 16296 --- [main] SQL dialect                              : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+2023-04-28T12:04:04.183+03:00  INFO 16296 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-04-28T12:04:04.201+03:00  INFO 16296 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-04-28T12:04:05.819+03:00  WARN 16296 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2023-04-28T12:04:05.959+03:00  INFO 16296 --- [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2023-04-28T12:04:07.193+03:00  INFO 16296 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@4932d580, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7603cfc2, org.springframework.security.web.context.SecurityContextHolderFilter@7388486e, org.springframework.security.web.header.HeaderWriterFilter@1e366f0f, org.springframework.security.web.authentication.logout.LogoutFilter@141eb85b, com.example.security.security.JwtAuthenticationFilter@4ef28dc4, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@15254569, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@7c0b792e, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@3333245e, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@60256d1b, org.springframework.security.web.session.SessionManagementFilter@3677c508, org.springframework.security.web.access.ExceptionTranslationFilter@4a1c14a6, org.springframework.security.web.access.intercept.AuthorizationFilter@6067e7c1]
+2023-04-28T12:04:07.816+03:00  INFO 16296 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8082 (http) with context path ''
+2023-04-28T12:04:07.835+03:00  INFO 16296 --- [main] com.example.security.SignInApplication   : Started SignInApplication in 14.101 seconds (process running for 14.708)
+2023-04-28T12:04:35.298+03:00  INFO 16296 --- [http-nio-8082-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-04-28T12:04:35.301+03:00  INFO 16296 --- [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-04-28T12:04:35.315+03:00  INFO 16296 --- [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 12 ms
+2023-04-28T12:04:36.403+03:00 DEBUG 16296 --- [http-nio-8082-exec-2] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2023-04-28T12:04:36.492+03:00 DEBUG 16296 --- [http-nio-8082-exec-2] org.hibernate.SQL                        : 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+2023-04-28T12:04:47.639+03:00 DEBUG 16296 --- [http-nio-8082-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2023-04-28T12:04:47.641+03:00 DEBUG 16296 --- [http-nio-8082-exec-3] org.hibernate.SQL                        : 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+2023-04-28T12:04:56.581+03:00 DEBUG 16296 --- [http-nio-8082-exec-4] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2023-04-28T12:04:56.584+03:00 DEBUG 16296 --- [http-nio-8082-exec-4] org.hibernate.SQL                        : 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+2023-04-28T12:05:00.614+03:00 DEBUG 16296 --- [http-nio-8082-exec-5] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2023-04-28T12:05:00.617+03:00 DEBUG 16296 --- [http-nio-8082-exec-5] org.hibernate.SQL                        : 
+    select
+        r1_0.user_id,
+        r1_1.id,
+        r1_1.name 
+    from
+        user_roles r1_0 
+    join
+        roles r1_1 
+            on r1_1.id=r1_0.role_id 
+    where
+        r1_0.user_id=?
+2023-04-28T12:05:00.766+03:00 DEBUG 16296 --- [http-nio-8082-exec-5] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.email,
+        u1_0.password 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+2023-04-28T12:06:02.343+03:00  INFO 16296 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-04-28T12:06:02.345+03:00  INFO 16296 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2023-04-28T12:06:02.348+03:00  INFO 16296 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

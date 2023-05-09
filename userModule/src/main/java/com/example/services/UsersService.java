@@ -22,13 +22,11 @@ public class UsersService {
         String lastname = (String) params.get("lastname");
         String email = (String) params.get("email");
         String username = (String) params.get("username");
-        if (params.containsKey("id")) {
-            if (!params.get("id").equals("")) {
+        if (params.containsKey("id") && (!params.get("id").equals(""))) {
                 id = UUID.fromString((String) params.get("id"));
-            }
+
         }
 
-        List<User> users = usersRepository.findUsersByParams(id, firstname, lastname, email, username);
-        return users;
+        return usersRepository.findUsersByParams(id, firstname, lastname, email, username);
     }
 }

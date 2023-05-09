@@ -1,1 +1,5 @@
 .idea
+userModule/target
+target
+userModule/settings.xml
+*.png

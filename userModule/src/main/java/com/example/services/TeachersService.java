@@ -2,6 +2,7 @@ package com.example.services;
 
 import com.example.models.Teacher;
 import com.example.repository.TeachersRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,18 +27,22 @@ public class TeachersService {
         String title = (String) params.get("title");
 
 
-        if (params.containsKey("id")) {
-            if (!params.get("id").equals("")) {
-                id = UUID.fromString((String) params.get("id"));
-            }
+        if (params.containsKey("id") && (!params.get("id").equals(""))) {
+                id = (UUID) params.get("id");
+
         }
 
-        List<Teacher> teachers = teachersRepository.findTeachersByParams(id, firstname, lastname, email, username, office, title);
-
-        return teachers;
+        return teachersRepository.findTeachersByParams(id, firstname, lastname, email, username, office, title);
     }
 
     public void saveTeacher(Teacher teacher) {
         teachersRepository.save(teacher);
     }
+
+    @Transactional
+    public void updateTeacher(UUID id, Teacher teacher) {
+        // TODO : update the courses, it implies another table that makes connection between teacher and subjects
+        teachersRepository.updateTeacher(id, teacher.getFirstname(), teacher.getLastname(), teacher.getEmail(), teacher.getUsername(), teacher.getOffice(), teacher.getTitle());
+    }
+
 }

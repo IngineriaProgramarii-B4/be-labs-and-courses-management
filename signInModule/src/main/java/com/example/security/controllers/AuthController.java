@@ -30,7 +30,7 @@ import java.util.List;
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+
     private final PasswordEncoder passwordEncoder;
     private final JWTGenerator jwtGenerator;
 
@@ -38,7 +38,6 @@ public class AuthController {
     public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JWTGenerator jwtGenerator) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtGenerator = jwtGenerator;
     }
@@ -55,7 +54,6 @@ public class AuthController {
             roles = user.getRoles();
         }
         String token = jwtGenerator.generateToken(authentication,roles);
-        Cookie[] cookiesArray = request.getCookies();
         return new ResponseEntity<>(new AuthResponseDto(token), HttpStatus.OK);
     }
 
@@ -63,6 +61,10 @@ public class AuthController {
     public ResponseEntity<String> register(@RequestBody RegisterRequestBody registerRequestBody) {
         UserEntity user;
         try {
+            if (userRepository.existsByEmail(registerRequestBody.getEmail())) {
+                return new ResponseEntity<>("Email is already in use!", HttpStatus.BAD_REQUEST);
+            }
+
             if (userRepository.existsById(registerRequestBody.getUserId())) {
                 user = userRepository.findByUserId(registerRequestBody.getUserId());
                 if (StringUtils.hasText(user.getEmail()) && StringUtils.hasText(user.getPassword())) {
@@ -73,7 +75,7 @@ public class AuthController {
                     userRepository.save(user);
                 }
             } else {
-                return new ResponseEntity<>("User not found!",HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("User not found!", HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
             return new ResponseEntity<>("Error when saving user!", HttpStatus.INTERNAL_SERVER_ERROR);

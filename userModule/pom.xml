@@ -59,8 +59,11 @@
     </dependencies>
 
     <properties>
-        <maven.compiler.source>18</maven.compiler.source>
-        <maven.compiler.target>18</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <sonar.host.url>http://localhost:9000</sonar.host.url>
+        <sonar.token>sqp_615a48005d12776e98ef7fd83b1590ccce08dc78</sonar.token>
+        <sonar.projectKey>userModule</sonar.projectKey>
     </properties>
 
 </project>

@@ -2,17 +2,40 @@ package com.example.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "students")
 public class Student extends User {
     private Set<String> enrolledCourses = new HashSet<>();
+    @Min(value=1)
+    @Max(value=3)
     private int year;
+    @Min(value=1)
+    @Max(value=6)
     private int semester;
     private String registrationNumber;
+
+    public Student(UUID id,
+                   String firstname,
+                   String lastname,
+                   String email,
+                   String username,
+                   int year,
+                   int semester,
+                   String registrationNumber,
+                   Set<String> enrolledCourses) {
+        super(id, firstname, lastname, email, username, 2);
+        this.enrolledCourses = enrolledCourses;
+        this.year = year;
+        this.semester = semester;
+        this.registrationNumber = registrationNumber;
+    }
 
     public Student(String firstname,
                    String lastname,
@@ -22,13 +45,14 @@ public class Student extends User {
                    int semester,
                    String registrationNumber,
                    Set<String> enrolledCourses) {
-        super(firstname, lastname, email, username);
+        super(firstname, lastname, email, username, 2);
         this.enrolledCourses = enrolledCourses;
         this.year = year;
         this.semester = semester;
         this.registrationNumber = registrationNumber;
     }
 
+    /* default ctor */
     public Student() {
 
     }
@@ -85,7 +109,18 @@ public class Student extends User {
                 '}';
     }
 
-    public void setElectives(Integer year, Integer semester) {
+//    public void setElectives(Integer year, Integer semester) {
+//
+//    }
 
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object user) {
+        return super.equals(user);
     }
 }

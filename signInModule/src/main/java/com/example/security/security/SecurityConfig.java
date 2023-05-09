@@ -17,17 +17,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig{
     private final JwtAuthEntryPoint authEntryPoint;
-    private final CustomUserDetailsService userDetailsService;
 
     @Autowired
     public SecurityConfig(JwtAuthEntryPoint authEntryPoint, CustomUserDetailsService userDetailsService) {
         this.authEntryPoint = authEntryPoint;
-        this.userDetailsService = userDetailsService;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
-    {
+    {    // Disabling CSRF protection is safe here since the application uses JWT for authentication and is stateless
+
         http
                 .csrf().disable()
                 .exceptionHandling()
@@ -37,9 +36,12 @@ public class SecurityConfig{
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests ()
+                .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**", "/webjars/**").permitAll()
                 .requestMatchers("/api/v1/auth/**").permitAll()
                 .requestMatchers("/api/v1/demo-controller/student").hasAuthority("STUDENT")
                 .requestMatchers("/api/v1/demo-controller/teacher").hasAuthority("TEACHER")
+                .requestMatchers("/swagger-ui.html#/").permitAll()
+                .requestMatchers("/index.html").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic();

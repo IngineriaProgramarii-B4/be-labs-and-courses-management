@@ -8,6 +8,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @Configuration
 public class RemindersConfiguration {
 
@@ -61,9 +63,7 @@ public class RemindersConfiguration {
                     "Al doilea examen din sesiune"
             );
 
-            remindersRepository.save(reminder1);
-            remindersRepository.save(reminder2);
-            remindersRepository.save(reminder3);
+            remindersRepository.saveAll(List.of(reminder1, reminder2, reminder3));
         };
     }
 }

@@ -1,14 +1,23 @@
 package com.example.controllers;
 
 import com.example.models.Reminder;
+import com.example.models.Student;
 import com.example.services.RemindersService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @CrossOrigin
 @RestController
@@ -21,31 +30,100 @@ public class RemindersController {
         this.remindersService = remindersService;
     }
 
-    @GetMapping(value = {"/reminders"})
-    public List<Reminder> getRemindersByParams(@RequestParam Map<String, Object> params) {
-        List<Reminder> reminders = remindersService.getRemindersByParams(params);
+    @Operation(summary = "Get a specific reminder of a specific user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found the reminder.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Student.class))
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Haven't found the reminder.",
+                    content = @Content
+            )
+    })
+    @GetMapping(value = {"/reminders/{username}/{id}"})
+    public ResponseEntity<List<Reminder>> getRemindersByParams(@PathVariable String username, @PathVariable UUID id) {
+        Map<String, Object> args = new HashMap<>();
 
-        if(reminders.isEmpty())
-        {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        args.put("creatorUsername", username);
+        args.put("id", id);
+
+        List<Reminder> reminders = remindersService.getRemindersByParams(args);
+
+        if (reminders.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return reminders;
+        return new ResponseEntity<>(reminders, HttpStatus.OK);
     }
 
-    @GetMapping(value = {"/logged/reminders"})
-    public List<Reminder> getRemindersOfLoggedUser() {
-        Map<String, Object> params = Map.of("creatorUsername", (Object) "loggeduser");
+    @Operation(summary = "Get a list of reminders of a specific user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found reminders",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Student.class))
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Haven't found reminders",
+                    content = @Content
+            )
+    })
+    @GetMapping(value = {"/reminders/{username}"})
+    public ResponseEntity<List<Reminder>> getRemindersOfLoggedUser(@PathVariable String username) {
+
+        Map<String, Object> params = Map.of("creatorUsername", username);
 
         List<Reminder> reminders = remindersService.getRemindersByParams(params);
-        if(reminders.isEmpty())
-        {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        if (reminders.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return reminders;
+        return new ResponseEntity<>(reminders, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/reminder")
-    public void updateReminder(@RequestBody Reminder reminder) {
+    @Operation(summary = "Receive necessary data in order to add a new reminder in the database.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Resource added successfully.",
+                    content = @Content)
+    })
+    @PostMapping(value = "/reminders")
+    public ResponseEntity<Void> saveReminder(@RequestBody Reminder reminder) {
         remindersService.saveReminder(reminder);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Soft deleting an existing reminder from the database.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Haven't found a reminder to delete with those descriptions",
+                    content = @Content),
+            @ApiResponse(responseCode = "204", description = "Reminder soft deleted successfully",
+                    content = @Content)
+    })
+    @DeleteMapping(value = "/reminders/{id}")
+    public ResponseEntity<Void> deleteReminder(@PathVariable UUID id) {
+        if (!remindersService.getRemindersByParams(Map.of("id", id)).isEmpty()) {
+            remindersService.removeReminder(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @Operation(summary = "Receive necessary data in order to update information about a reminder in the database")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Resource updated successfully",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Haven't found reminder that match the requirements",
+                    content = @Content
+            )
+    })
+    @PatchMapping(value = "/reminder/{id}")
+    public ResponseEntity<Void> updateReminder(@PathVariable UUID id, @RequestBody Reminder reminder) {
+        if (!remindersService.getRemindersByParams(Map.of("id", id)).isEmpty()) {
+            remindersService.updateReminder(id, reminder);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
