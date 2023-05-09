@@ -51,13 +51,9 @@ class StudentsServiceTest {
 
     @Test
     void getStudentsByParamsYearTest() {
-
         List<Student> expected = List.of(student);
-
         Map<String, Object> args = new HashMap<>();
-
         args.put("year", "1");
-
         given(studentsRepository.findStudentsByParams(
                 nullable(UUID.class),
                 nullable(String.class),
@@ -131,7 +127,7 @@ class StudentsServiceTest {
 
         ArgumentCaptor<Student> studentToCapture = ArgumentCaptor.forClass(Student.class);
 
-        doNothing().when(studentsServiceMock).saveStudent(studentToCapture.capture());
+        when(studentsServiceMock.saveStudent(studentToCapture.capture())).thenReturn(studentToCapture.capture());
 
         studentsServiceMock.saveStudent(student);
 
