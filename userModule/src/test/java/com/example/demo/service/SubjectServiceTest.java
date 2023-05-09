@@ -1,10 +1,11 @@
-package com.example.coursesmodule.service;
+package com.example.demo.service;
 
-import com.example.coursesmodule.dao.CourseDao;
-import com.example.coursesmodule.model.Component;
-import com.example.coursesmodule.model.Evaluation;
-import com.example.coursesmodule.model.Resource;
-import com.example.coursesmodule.model.Subject;
+import com.example.dao.CourseDao;
+import com.example.models.Component;
+import com.example.models.Evaluation;
+import com.example.models.Resource;
+import com.example.models.Subject;
+import com.example.services.SubjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
