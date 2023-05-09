@@ -36,25 +36,25 @@ class EvaluationServiceTest {
                 List.of(new Component(1, "Course", 10, new ArrayList<>(),false)),
                 new ArrayList<>(), false);
         when(courseDao.selectSubjectByTitle("Maths")).thenReturn(Optional.of(subject));
-        Evaluation evaluation = new Evaluation(1L,"Course", 0.2f, "Exam", false);
+        Evaluation evaluation = new Evaluation("Course", 0.2f, "Exam", false);
         assertTrue(evaluationService.validateEval("Maths", evaluation));
     }*/
 
     @Test
     void validateEvalReturnsFalseForInvalidComponent() {
-        Evaluation evaluation = new Evaluation(1L,"Invalid", 0.2f, "Exam", false);
+        Evaluation evaluation = new Evaluation("Invalid", 0.2f, "Exam", false);
         assertFalse(evaluationService.validateEval("Maths", evaluation));
     }
 
     @Test
     void validateEvalReturnsFalseForInvalidValue(){
-        Evaluation evaluation = new Evaluation(1L,"Course", 1.2f, "Exam", false);
+        Evaluation evaluation = new Evaluation("Course", 1.2f, "Exam", false);
         assertFalse(evaluationService.validateEval("Maths", evaluation));
     }
 
     @Test
     void validateEvalReturnsFalseForDeletedEvaluation(){
-        Evaluation evaluation = new Evaluation(1L,"Course", 0.2f, "Exam", true);
+        Evaluation evaluation = new Evaluation("Course", 0.2f, "Exam", true);
         assertFalse(evaluationService.validateEval("Maths", evaluation));
     }
 
@@ -66,10 +66,10 @@ class EvaluationServiceTest {
 
     @Test
     void getEvaluationMethods() {
-        Subject subject = new Subject(1, "Maths", 4, 1, 1, "description",
-                List.of(new Component(1, "Course", 10, new ArrayList<>(),false)),
+        Subject subject = new Subject("Maths", 4, 1, 1, "description",
+                List.of(new Component("Course", 10, new ArrayList<>(),false)),
                 new ArrayList<>(), false);
-        Evaluation evaluation = new Evaluation(1L,"Course", 0.2f, "Exam", false);
+        Evaluation evaluation = new Evaluation("Course", 0.2f, "Exam", false);
         subject.setEvaluationList(List.of(evaluation));
         when(courseDao.getEvaluationMethods("Maths")).thenReturn(List.of(evaluation));
         assertEquals(List.of(evaluation), evaluationService.getEvaluationMethods("Maths"));
@@ -80,7 +80,7 @@ class EvaluationServiceTest {
         Subject subject = new Subject(1, "Maths", 4, 1, 1, "description",
                 List.of(new Component(1, "Course", 10, new ArrayList<>(),false)),
                 new ArrayList<>(), false);
-        Evaluation evaluation = new Evaluation(1L,"Course", 0.2f, "Exam", false);
+        Evaluation evaluation = new Evaluation("Course", 0.2f, "Exam", false);
         subject.setEvaluationList(List.of(evaluation));
         when(courseDao.getEvaluationMethodByComponent("Maths", "Course")).thenReturn(Optional.of(evaluation));
         assertEquals(Optional.of(evaluation), evaluationService.getEvaluationMethodByComponent("Maths", "Course"));
@@ -96,7 +96,7 @@ class EvaluationServiceTest {
 
     @Test
     void addEvaluationMethodReturnsFalseForInvalidComponent() {
-        Evaluation evaluation = new Evaluation(1L,"Invalid", 0.2f, "Exam", false);
+        Evaluation evaluation = new Evaluation("Invalid", 0.2f, "Exam", false);
         assertEquals(0, evaluationService.addEvaluationMethod("Maths", evaluation));
     }
 

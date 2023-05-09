@@ -11,10 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,21 +25,19 @@ public class SubjectServiceTest {
     @Mock
     private CourseDao courseDao;
 
-    private MockMvc mockMvc;
-
     @InjectMocks
     private SubjectService subjectService;
 
     @BeforeEach
     void setUp(){
-        mockMvc= MockMvcBuilders.standaloneSetup(subjectService).build();
+
     }
 
     @Test
     void getAllSubjects() {
         List<Subject> subjects = new ArrayList<>();
-        subjects.add(new Subject(1, "Math", 5, 1, 1, "description A", new ArrayList<>(), new ArrayList<>(), false));
-        subjects.add(new Subject(2, "English", 4, 1, 1, "description B", new ArrayList<>(), new ArrayList<>(), false));
+        subjects.add(new Subject("Math", 5, 1, 1, "description A", new ArrayList<>(), new ArrayList<>(), false));
+        subjects.add(new Subject("English", 4, 1, 1, "description B", new ArrayList<>(), new ArrayList<>(), false));
         when(courseDao.selectAllSubjects()).thenReturn(subjects);
 
         List<Subject> result = subjectService.getAllSubjects();
@@ -67,7 +61,7 @@ public class SubjectServiceTest {
 
     @Test
     void getSubjectByTitleExists() {
-        Subject subject = new Subject(4, "Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
+        Subject subject = new Subject("Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
         courseDao.insertSubject(subject);
 
         when(courseDao.selectSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
@@ -87,7 +81,7 @@ public class SubjectServiceTest {
 
     @Test
     void getSubjectByTitleEmpty() {
-        Subject subject = new Subject(4, "Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
+        Subject subject = new Subject("Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
         courseDao.insertSubject(subject);
 
         when(courseDao.selectAllSubjects()).thenReturn(List.of(subject));
@@ -99,14 +93,13 @@ public class SubjectServiceTest {
     @Test
     void getSubjectsByYearAndSemester() {
         List<Subject> subjects = new ArrayList<>();
-        subjects.add(new Subject(2, "Physics", 5, 1, 2, "description", List.of(new Component(2, "Course", 10, List.of(new Resource("Book.pdf", "savedResources/Book.pdf", "application/pdf", false)), false)),
-                List.of(new Evaluation(1L, "Course", 0.5f, "description B", false)), false));
+        subjects.add(new Subject("Physics", 5, 1, 2, "description", List.of(new Component("Course", 10, List.of(new Resource("Book.pdf", "savedResources/Book.pdf", "application/pdf", false)), false)),
+                List.of(new Evaluation("Course", 0.5f, "description B", false)), false));
         when(courseDao.getSubjectsByYearAndSemester(1, 2)).thenReturn(subjects);
 
         List<Subject> result = subjectService.getSubjectsByYearAndSemester(1, 2);
 
         assertEquals(1, result.size());
-        assertEquals(2, result.get(0).getId());
         assertEquals("Physics", result.get(0).getTitle());
         assertEquals(5, result.get(0).getCredits());
         assertEquals(1, result.get(0).getYear());
@@ -121,7 +114,7 @@ public class SubjectServiceTest {
 
     @Test
     void addSubjectSuccessful() {
-        Subject subject = new Subject(4, "Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
+        Subject subject = new Subject("Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
         when(courseDao.insertSubject(subject)).thenReturn(1);
 
         assertEquals(1, subjectService.addSubject(subject));
@@ -129,15 +122,15 @@ public class SubjectServiceTest {
 
     @Test
     void addSubjectThatAlreadyExists() {
-        Subject subject = new Subject(4, "Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
+        Subject subject = new Subject("Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
         courseDao.insertSubject(subject);
         assertEquals(0, subjectService.addSubject(subject));
     }
 
     @Test
     void addSubjectWithSameName() {
-        Subject subject1 = new Subject(4, "Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
-        Subject subject2 = new Subject(6, "Algebraic Foundations of Science", 2, 3, 2, "yes gonna pass", new ArrayList<>(), new ArrayList<>(), false);
+        Subject subject1 = new Subject("Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
+        Subject subject2 = new Subject("Algebraic Foundations of Science", 2, 3, 2, "yes gonna pass", new ArrayList<>(), new ArrayList<>(), false);
         courseDao.insertSubject(subject1);
 
         assertEquals(0, subjectService.addSubject(subject1));
@@ -146,7 +139,7 @@ public class SubjectServiceTest {
 
     @Test
     void deleteSubjectByTitleSuccessful() {
-        Subject subject = new Subject(4, "Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
+        Subject subject = new Subject("Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
         courseDao.insertSubject(subject);
 
         when(courseDao.selectSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
@@ -164,7 +157,7 @@ public class SubjectServiceTest {
     @Test
     void updateSubjectByTitleSuccessful() {
         String title = "Math";
-        Subject updatedSubject = new Subject(1, "Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
+        Subject updatedSubject = new Subject("Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         when(courseDao.selectSubjectByTitle(title)).thenReturn(Optional.of(new Subject()));
         when(courseDao.updateSubjectByTitle(title, updatedSubject)).thenReturn(1);
 
@@ -176,7 +169,7 @@ public class SubjectServiceTest {
     @Test
     void updateSubjectByTitleInvalidSubject() {
         String title = "Math";
-        Subject updatedSubject = new Subject(1, "Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
+        Subject updatedSubject = new Subject("Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         when(courseDao.selectSubjectByTitle(title)).thenReturn(Optional.of(new Subject()));
         when(courseDao.updateSubjectByTitle(title, updatedSubject)).thenReturn(0);
 
@@ -188,7 +181,7 @@ public class SubjectServiceTest {
     @Test
     void updateSubjectByTitleNotFound() {
         String title = "Math";
-        Subject updatedSubject = new Subject(1, "Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
+        Subject updatedSubject = new Subject("Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         when(courseDao.selectSubjectByTitle(title)).thenReturn(Optional.empty());
         String message = "";
 

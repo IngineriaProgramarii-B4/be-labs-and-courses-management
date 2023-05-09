@@ -29,13 +29,6 @@ class ResourceTest {
     }
 
     @Test
-    void setTimeStamp() {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        resource.setTimeStamp(localDateTime);
-        assertEquals(localDateTime, resource.getTimeStamp());
-    }
-
-    @Test
     void setType() {
         resource.setType("image/png");
         assertEquals("image/png", resource.getType());
@@ -46,18 +39,11 @@ class ResourceTest {
         resource.setDeleted(false);
         assertFalse(resource.isDeleted());
     }
-    @Test
-    void getTimeStamp() {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        resource.setTimeStamp(localDateTime);
-        assertEquals(localDateTime, resource.getTimeStamp());
-    }
 
     @Test
     void testToString() {
         resource.setTitle("Physics_romania.png");
         resource.setLocation("savedResources/Physics_romania.png");
-        resource.setTimeStamp(LocalDateTime.now());
         resource.setType("image/png");
         resource.setDeleted(false);
         assertEquals("Resource{title='Physics_romania.png', location='savedResources/Physics_romania.png', type='image/png', isDeleted=false}", resource.toString());

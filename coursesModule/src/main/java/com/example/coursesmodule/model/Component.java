@@ -129,8 +129,7 @@ public class Component {
     @Override
     public String toString() {
         return "Component{" +
-                "id=" + id +
-                ", type='" + type + '\'' +
+                "type='" + type + '\'' +
                 ", numberWeeks=" + numberWeeks +
                 ", resources=" + resources +
                 ", isDeleted=" + isDeleted +

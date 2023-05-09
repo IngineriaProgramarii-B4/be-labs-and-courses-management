@@ -16,8 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -41,27 +39,24 @@ class ResourceControllerTest {
     @Mock
     private ComponentService componentService;
 
-    private MockMvc mockMvc;
-
     @InjectMocks
     private ResourceController resourceController;
 
     @BeforeEach
     void setUp(){
-        mockMvc= MockMvcBuilders.standaloneSetup(resourceController).build();
     }
 
     @Test
     void getResources() {
-        Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, new ArrayList<>(), false),
-                        new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
-                List.of(new Evaluation(3L, "Seminar", 0.5F, "Test", false),
-                        new Evaluation(4L, "Laboratory", 0.5F, "Test", false))
+        Subject subject = new Subject("Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
+                List.of(new Component("Seminar", 14, new ArrayList<>(), false),
+                        new Component( "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
+                List.of(new Evaluation("Seminar", 0.5F, "Test", false),
+                        new Evaluation("Laboratory", 0.5F, "Test", false))
                 , false);
         Resource resource = subject.getComponentList().get(1).getResources().get(0);
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
-        when(componentService.getComponentByType(subject.getTitle(), "Seminar")).thenReturn(Optional.of(new Component(3, "Seminar", 14, new ArrayList<>(), false)));
+        when(componentService.getComponentByType(subject.getTitle(), "Seminar")).thenReturn(Optional.of(new Component("Seminar", 14, new ArrayList<>(), false)));
         when(resourceService.getResources("Algebraic Foundations of Science", "Seminar")).thenReturn(subject.getComponentList().get(1).getResources());
         List<Resource> result = resourceController.getResources("Algebraic Foundations of Science", "Seminar");
         assertEquals(1, result.size());
@@ -81,11 +76,11 @@ class ResourceControllerTest {
 
     @Test
     void getResourcesComponentNotFound(){
-        Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, new ArrayList<>(), false),
-                        new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
-                List.of(new Evaluation(3L, "Seminar", 0.5F, "Test", false),
-                        new Evaluation(4L, "Laboratory", 0.5F, "Test", false))
+        Subject subject = new Subject("Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
+                List.of(new Component("Seminar", 14, new ArrayList<>(), false),
+                        new Component("Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
+                List.of(new Evaluation("Seminar", 0.5F, "Test", false),
+                        new Evaluation("Laboratory", 0.5F, "Test", false))
                 , false);
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
         when(componentService.getComponentByType(subject.getTitle(), "Course")).thenReturn(Optional.empty());
@@ -96,15 +91,15 @@ class ResourceControllerTest {
 
     @Test
     void getResourceByTitle() {
-        Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, new ArrayList<>(), false),
-                        new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
-                List.of(new Evaluation(3L, "Seminar", 0.5F, "Test", false),
-                        new Evaluation(4L, "Laboratory", 0.5F, "Test", false))
+        Subject subject = new Subject("Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
+                List.of(new Component("Seminar", 14, new ArrayList<>(), false),
+                        new Component("Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
+                List.of(new Evaluation("Seminar", 0.5F, "Test", false),
+                        new Evaluation("Laboratory", 0.5F, "Test", false))
                 , false);
         Resource resource = subject.getComponentList().get(1).getResources().get(0);
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
-        when(componentService.getComponentByType(subject.getTitle(), "Seminar")).thenReturn(Optional.of(new Component(3, "Seminar", 14, new ArrayList<>(), false)));
+        when(componentService.getComponentByType(subject.getTitle(), "Seminar")).thenReturn(Optional.of(new Component("Seminar", 14, new ArrayList<>(), false)));
         when(resourceService.getResourceByTitle(subject.getTitle(), "Seminar", "Book")).thenReturn(Optional.of(resource));
         Resource result = resourceController.getResourceByTitle("Algebraic Foundations of Science", "Seminar", "Book");
         assertEquals(resource.getTitle(), result.getTitle());
@@ -124,11 +119,11 @@ class ResourceControllerTest {
 
     @Test
     void getResourceByTitleComponentNotFound(){
-        Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, new ArrayList<>(), false),
-                        new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
-                List.of(new Evaluation(3L, "Seminar", 0.5F, "Test", false),
-                        new Evaluation(4L, "Laboratory", 0.5F, "Test", false))
+        Subject subject = new Subject("Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
+                List.of(new Component("Seminar", 14, new ArrayList<>(), false),
+                        new Component("Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
+                List.of(new Evaluation("Seminar", 0.5F, "Test", false),
+                        new Evaluation("Laboratory", 0.5F, "Test", false))
                 , false);
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
         when(componentService.getComponentByType(subject.getTitle(), "Course")).thenReturn(Optional.empty());
@@ -139,14 +134,14 @@ class ResourceControllerTest {
 
     @Test
     void getResourceByTitleResourceNotFound(){
-        Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, new ArrayList<>(), false),
-                        new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
-                List.of(new Evaluation(3L, "Seminar", 0.5F, "Test", false),
-                        new Evaluation(4L, "Laboratory", 0.5F, "Test", false))
+        Subject subject = new Subject("Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
+                List.of(new Component("Seminar", 14, new ArrayList<>(), false),
+                        new Component("Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
+                List.of(new Evaluation("Seminar", 0.5F, "Test", false),
+                        new Evaluation("Laboratory", 0.5F, "Test", false))
                 , false);
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
-        when(componentService.getComponentByType(subject.getTitle(), "Seminar")).thenReturn(Optional.of(new Component(3, "Seminar", 14, new ArrayList<>(), false)));
+        when(componentService.getComponentByType(subject.getTitle(), "Seminar")).thenReturn(Optional.of(new Component("Seminar", 14, new ArrayList<>(), false)));
         when(resourceService.getResourceByTitle(subject.getTitle(), "Seminar", "Book")).thenReturn(Optional.empty());
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> resourceController.getResourceByTitle("Algebraic Foundations of Science", "Seminar", "Book"));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
@@ -155,16 +150,16 @@ class ResourceControllerTest {
 
     @Test
     void addResourceFile() {
-        Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, new ArrayList<>(), false),
-                        new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
-                List.of(new Evaluation(3L, "Seminar", 0.5F, "Test", false),
-                        new Evaluation(4L, "Laboratory", 0.5F, "Test", false))
+        Subject subject = new Subject("Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
+                List.of(new Component("Seminar", 14, new ArrayList<>(), false),
+                        new Component("Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
+                List.of(new Evaluation("Seminar", 0.5F, "Test", false),
+                        new Evaluation("Laboratory", 0.5F, "Test", false))
                 , false);
         MultipartFile file = new MockMultipartFile("Physics_romania.png", "Physics_romania.png", "image/png", "Physics_romania.png".getBytes());
 
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
-        when(componentService.getComponentByType(subject.getTitle(), "Seminar")).thenReturn(Optional.of(new Component(3, "Seminar", 14, new ArrayList<>(), false)));
+        when(componentService.getComponentByType(subject.getTitle(), "Seminar")).thenReturn(Optional.of(new Component("Seminar", 14, new ArrayList<>(), false)));
         when(resourceService.addResource(file, subject.getTitle(), "Seminar")).thenReturn(1);
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> resourceController.addResourceFile("Algebraic Foundations of Science", "Seminar", file));
@@ -183,11 +178,11 @@ class ResourceControllerTest {
 
     @Test
     void addResourceFileComponentNotFound(){
-        Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, new ArrayList<>(), false),
-                        new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
-                List.of(new Evaluation(3L, "Seminar", 0.5F, "Test", false),
-                        new Evaluation(4L, "Laboratory", 0.5F, "Test", false))
+        Subject subject = new Subject("Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
+                List.of(new Component("Seminar", 14, new ArrayList<>(), false),
+                        new Component("Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
+                List.of(new Evaluation("Seminar", 0.5F, "Test", false),
+                        new Evaluation("Laboratory", 0.5F, "Test", false))
                 , false);
         MultipartFile file = new MockMultipartFile("Physics_romania.png", "Physics_romania.png", "image/png", "Physics_romania.png".getBytes());
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
@@ -199,15 +194,15 @@ class ResourceControllerTest {
 
     @Test
     void addResourceFileResourceNotFound(){
-        Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, new ArrayList<>(), false),
-                        new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
-                List.of(new Evaluation(3L, "Seminar", 0.5F, "Test", false),
-                        new Evaluation(4L, "Laboratory", 0.5F, "Test", false))
+        Subject subject = new Subject("Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
+                List.of(new Component("Seminar", 14, new ArrayList<>(), false),
+                        new Component("Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
+                List.of(new Evaluation("Seminar", 0.5F, "Test", false),
+                        new Evaluation("Laboratory", 0.5F, "Test", false))
                 , false);
         MultipartFile file = new MockMultipartFile("Physics_romania.png", "Physics_romania.png", "image/png", "Physics_romania.png".getBytes());
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
-        when(componentService.getComponentByType(subject.getTitle(), "Seminar")).thenReturn(Optional.of(new Component(3, "Seminar", 14, new ArrayList<>(), false)));
+        when(componentService.getComponentByType(subject.getTitle(), "Seminar")).thenReturn(Optional.of(new Component("Seminar", 14, new ArrayList<>(), false)));
         when(resourceService.addResource(file, subject.getTitle(), "Seminar")).thenReturn(0);
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> resourceController.addResourceFile("Algebraic Foundations of Science", "Seminar", file));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
@@ -216,14 +211,14 @@ class ResourceControllerTest {
 
     @Test
     void getResourceFile() {
-        Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, new ArrayList<>(), false),
-                        new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
-                List.of(new Evaluation(3L, "Seminar", 0.5F, "Test", false),
-                        new Evaluation(4L, "Laboratory", 0.5F, "Test", false))
+        Subject subject = new Subject("Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
+                List.of(new Component("Seminar", 14, new ArrayList<>(), false),
+                        new Component("Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
+                List.of(new Evaluation("Seminar", 0.5F, "Test", false),
+                        new Evaluation("Laboratory", 0.5F, "Test", false))
                 , false);
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
-        when(componentService.getComponentByType(subject.getTitle(), "Laboratory")).thenReturn(Optional.of(new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)));
+        when(componentService.getComponentByType(subject.getTitle(), "Laboratory")).thenReturn(Optional.of(new Component("Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)));
         Resource resource = new Resource("Book", "savedResources/Physics_romania.png", "image/png", false);
         when(resourceService.getResourceByTitle(subject.getTitle(), "Laboratory", "Book")).thenReturn(Optional.of(resource));
 
@@ -234,11 +229,11 @@ class ResourceControllerTest {
 
     /*@Test
     void getResourceFileFileReadError() throws Exception {
-        Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, new ArrayList<>(), false),
+        Subject subject = new Subject("Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
+                List.of(new Component("Seminar", 14, new ArrayList<>(), false),
                         new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
-                List.of(new Evaluation(3L, "Seminar", 0.5F, "Test", false),
-                        new Evaluation(4L, "Laboratory", 0.5F, "Test", false))
+                List.of(new Evaluation("Seminar", 0.5F, "Test", false),
+                        new Evaluation("Laboratory", 0.5F, "Test", false))
                 , false);
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
         when(componentService.getComponentByType(subject.getTitle(), "Laboratory")).thenReturn(Optional.of(new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)));
@@ -260,11 +255,11 @@ class ResourceControllerTest {
 
     @Test
     void getResourceFileComponentNotFound(){
-        Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, new ArrayList<>(), false),
-                        new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
-                List.of(new Evaluation(3L, "Seminar", 0.5F, "Test", false),
-                        new Evaluation(4L, "Laboratory", 0.5F, "Test", false))
+        Subject subject = new Subject("Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
+                List.of(new Component("Seminar", 14, new ArrayList<>(), false),
+                        new Component("Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
+                List.of(new Evaluation("Seminar", 0.5F, "Test", false),
+                        new Evaluation("Laboratory", 0.5F, "Test", false))
                 , false);
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
         when(componentService.getComponentByType(subject.getTitle(), "Laboratory")).thenReturn(Optional.empty());
@@ -276,14 +271,14 @@ class ResourceControllerTest {
 
     @Test
     void getResourceFileEmptyResource(){
-        Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, new ArrayList<>(), false),
-                        new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
-                List.of(new Evaluation(3L, "Seminar", 0.5F, "Test", false),
-                        new Evaluation(4L, "Laboratory", 0.5F, "Test", false))
+        Subject subject = new Subject("Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
+                List.of(new Component("Seminar", 14, new ArrayList<>(), false),
+                        new Component("Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
+                List.of(new Evaluation("Seminar", 0.5F, "Test", false),
+                        new Evaluation("Laboratory", 0.5F, "Test", false))
                 , false);
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
-        when(componentService.getComponentByType(subject.getTitle(), "Seminar")).thenReturn(Optional.of(new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)));
+        when(componentService.getComponentByType(subject.getTitle(), "Seminar")).thenReturn(Optional.of(new Component( "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)));
         when(resourceService.getResourceByTitle(subject.getTitle(), "Seminar", "Book")).thenReturn(Optional.empty());
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> resourceController.getResourceFile("Algebraic Foundations of Science", "Seminar", "Book"));
@@ -293,14 +288,14 @@ class ResourceControllerTest {
 
     @Test
     void deleteResourceByTitle() {
-        Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, new ArrayList<>(), false),
-                        new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
-                List.of(new Evaluation(3L, "Seminar", 0.5F, "Test", false),
-                        new Evaluation(4L, "Laboratory", 0.5F, "Test", false))
+        Subject subject = new Subject("Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
+                List.of(new Component("Seminar", 14, new ArrayList<>(), false),
+                        new Component("Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
+                List.of(new Evaluation("Seminar", 0.5F, "Test", false),
+                        new Evaluation("Laboratory", 0.5F, "Test", false))
                 , false);
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
-        when(componentService.getComponentByType(subject.getTitle(), "Seminar")).thenReturn(Optional.of(new Component(3, "Seminar", 14, new ArrayList<>(), false)));
+        when(componentService.getComponentByType(subject.getTitle(), "Seminar")).thenReturn(Optional.of(new Component("Seminar", 14, new ArrayList<>(), false)));
         when(resourceService.deleteResourceByTitle(subject.getTitle(), "Seminar", "Book")).thenReturn(1);
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> resourceController.deleteResourceByTitle("Algebraic Foundations of Science", "Seminar", "Book"));
@@ -318,11 +313,11 @@ class ResourceControllerTest {
 
     @Test
     void deleteResourceByTitleComponentNotFound(){
-        Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, new ArrayList<>(), false),
-                        new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
-                List.of(new Evaluation(3L, "Seminar", 0.5F, "Test", false),
-                        new Evaluation(4L, "Laboratory", 0.5F, "Test", false))
+        Subject subject = new Subject("Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
+                List.of(new Component("Seminar", 14, new ArrayList<>(), false),
+                        new Component("Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
+                List.of(new Evaluation("Seminar", 0.5F, "Test", false),
+                        new Evaluation("Laboratory", 0.5F, "Test", false))
                 , false);
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
         when(componentService.getComponentByType(subject.getTitle(), "Course")).thenReturn(Optional.empty());
@@ -333,14 +328,14 @@ class ResourceControllerTest {
 
     @Test
     void deleteResourceByTitleResourceNotFound(){
-        Subject subject = new Subject(3, "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
-                List.of(new Component(3, "Seminar", 14, new ArrayList<>(), false),
-                        new Component(4, "Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
-                List.of(new Evaluation(3L, "Seminar", 0.5F, "Test", false),
-                        new Evaluation(4L, "Laboratory", 0.5F, "Test", false))
+        Subject subject = new Subject("Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
+                List.of(new Component("Seminar", 14, new ArrayList<>(), false),
+                        new Component("Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics_romania.png", "image/png", false)), false)),
+                List.of(new Evaluation("Seminar", 0.5F, "Test", false),
+                        new Evaluation("Laboratory", 0.5F, "Test", false))
                 , false);
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
-        when(componentService.getComponentByType(subject.getTitle(), "Seminar")).thenReturn(Optional.of(new Component(3, "Seminar", 14, new ArrayList<>(), false)));
+        when(componentService.getComponentByType(subject.getTitle(), "Seminar")).thenReturn(Optional.of(new Component("Seminar", 14, new ArrayList<>(), false)));
         when(resourceService.deleteResourceByTitle(subject.getTitle(), "Seminar", "Book")).thenReturn(0);
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> resourceController.deleteResourceByTitle("Algebraic Foundations of Science", "Seminar", "Book"));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
