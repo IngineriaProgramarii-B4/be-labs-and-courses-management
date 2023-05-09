@@ -30,7 +30,6 @@ import static org.mockito.Mockito.when;
 class StudentsServiceTest2 {
     @InjectMocks
     StudentsService studentsService;
-
     @Mock
     StudentsRepository studentsRepository;
 
@@ -50,6 +49,9 @@ class StudentsServiceTest2 {
                 new HashSet<>(Arrays.asList("IP", "PA", "SGBD", "TW", "SE")));
         Subject subject = new Subject(69, "Mocked", 6, 2, 3, null, null,null,false);
         grade = new Grade(7, subject, "12.02.1996");
+
+        studentsService.saveStudent(student);
+
     }
     @Test
     public void canGetAllStudents() {
@@ -76,62 +78,53 @@ class StudentsServiceTest2 {
     public void canGetStudentById() {
         // given
 
-        when(studentsRepository.findById(student.getId())).thenReturn(Optional.of(student));
-        assertEquals(Optional.of(student), studentsRepository.findById(student.getId()));
+        when(studentsRepository.findStudentById(student.getId())).thenReturn(student);
+        assertEquals(Optional.of(student).get(), studentsRepository.findStudentById(student.getId()));
 
         // when
         Optional<Student> get = Optional.ofNullable(studentsService.getStudentById(student.getId()));
 
         //then
         ArgumentCaptor<Student> studentArgumentCaptor = ArgumentCaptor.forClass(Student.class);
-        studentsRepository.save(studentArgumentCaptor.capture());
 
         // Verify that save() method is called with the expected argument
         verify(studentsRepository).save(studentArgumentCaptor.capture());
 
-        Optional<Student> captured = Optional.ofNullable(studentArgumentCaptor.getValue());
+        Optional<Student> captured = Optional.of(studentArgumentCaptor.getValue());
 
         assertNotNull(get);
         assertEquals(get, captured);
 
-        // given not existent student
+        // given not existing student
         assertNull(studentsService.getStudentById(UUID.randomUUID()));
     }
     @Test
-    public void canAddStudent() {
+    public void canSaveStudent() {
         // given
-
-        // then
         ArgumentCaptor<Student> studentArgumentCaptor = ArgumentCaptor.forClass(Student.class);
-        studentsRepository.save(studentArgumentCaptor.capture());
         verify(studentsRepository).save(studentArgumentCaptor.capture());
 
-        Optional<Student> get = Optional.ofNullable(studentsService.getStudentById(student.getId()));
-        Optional<Student> captured = Optional.ofNullable(studentArgumentCaptor.getValue());
-        assertEquals(captured, get);
+        Student captured = studentArgumentCaptor.getValue();
+        assertEquals(captured, student);
+
+        // given null student
+        Student shouldBeNull = studentsService.saveStudent(null);
+        assertNull(shouldBeNull);
     }
+    @Test
+    public void canDeleteStudent() {
+        // given
+        when(studentsRepository.findStudentById(student.getId())).thenReturn(student);
+        // when
+        Student deleted = studentsService.deleteStudent(student.getId());
 
-    /* In serviciu nu exista metoda de delete */
+        // then
+        assertTrue(deleted.isDeleted());
 
-//    @Test
-//    public void canDeleteStudent() {
-//        // given
-//
-//        // when
-//        studentsService.delete(student);
-//
-//        // then
-//        ArgumentCaptor<Student> studentArgumentCaptor = ArgumentCaptor.forClass(Student.class);
-//        verify(studentsRepository).delete(studentArgumentCaptor.capture());
-//
-//        Student captured = studentArgumentCaptor.getValue();
-//        assertEquals(captured, student);
-//
-//        // given null student
-//
-//        Student shouldBeNull = studentsService.delete(null);
-//        assertNull(shouldBeNull);
-//    }
+        // given not existing student
+        Student shouldBeNull = studentsService.deleteStudent(UUID.randomUUID());
+        assertNull(shouldBeNull);
+    }
 
     @Test
     public void canAddGrade() {
@@ -165,11 +158,11 @@ class StudentsServiceTest2 {
         studentsService.addGrade(student.getId(), grade);
 
         // when
-        Grade deleted = studentsService.deleteGrade(studentsService.getStudentById(student.getId()).getId(), grade.getId());
+        studentsService.deleteGrade(studentsService.getStudentById(student.getId()).getId(), grade.getId());
         // then
         assertTrue(grade.isDeleted());
 
-        // given not existent grade
+        // given not existing grade
         try {
             studentsService.deleteGrade(studentsService.getStudentById(student.getId()).getId(), 9999);
         }
@@ -196,7 +189,7 @@ class StudentsServiceTest2 {
         // then
         assertEquals(returned, grade);
 
-        // given not existent grade
+        // given not existing grade
         try {
             studentsService.getGradeById(studentsService.getStudentById(student.getId()).getId(), 9999);
         }
@@ -222,24 +215,25 @@ class StudentsServiceTest2 {
 
         assertEquals(updated, grade);
 
+        // given not existing student
+        Student shouldBeNull = studentsService.deleteStudent(UUID.randomUUID());
+        assertNull(shouldBeNull);
 
         try {
             // given invalid grade
             studentsService.updateGrade(studentsService.getStudentById(student.getId()).getId(), 0, null, grade.getId());
+
         }
         // then
         catch (IllegalStateException e) {
             System.out.println(e);
-        }
-        finally {
-            // given invalid evaluation date format
-            try {
-                studentsService.updateGrade(studentsService.getStudentById(student.getId()).getId(), 3, "ad.ad.ad", grade.getId());
-            }
-            // then
-            catch (IllegalArgumentException e){
-                System.out.println(e);
-            }
+
+            // given invalid eval date
+
+            studentsService.updateGrade(studentsService.getStudentById(student.getId()).getId(), 3, "ad.ad.ad", grade.getId());
+
+            // then should be changed to default value
+            assertEquals("01.01.1980", grade.getEvaluationDate());
         }
     }
 }

@@ -89,7 +89,6 @@ class StudentsControllerTest2 {
         assertNotNull(studentCreated);
         assertEquals(student,studentCreated);
 
-
     }
     @Test
     void getStudentByIdAPI() throws Exception {
@@ -223,7 +222,7 @@ class StudentsControllerTest2 {
     @Test
     void deleteStudentAPI() throws Exception {
         when(studentsService.getStudentById(student.getId())).thenReturn(student);
-        when(studentsService.delete(student.getId())).thenAnswer((Answer<Student>) invocationOnMock -> student.setDeleted());
+        when(studentsService.deleteStudent(student.getId())).thenAnswer((Answer<Student>) invocationOnMock -> student.setDeleted());
 
         MvcResult deleteStudentResult = mvc.perform(delete("/api/v1/students/{id}", student.getId())
                         .content(asJsonString(student))
