@@ -11,6 +11,8 @@ import com.example.security.repository.RoleRepository;
 import com.example.security.repository.UserRepository;
 import com.example.security.security.EmailService;
 import com.example.security.security.JWTGenerator;
+import com.example.security.service.StudentService;
+import com.example.security.service.TeacherService;
 import com.example.security.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,6 +41,8 @@ class AuthControllerTest {
     private AuthController authController;
     private EmailService emailService;
     private UserService userService;
+    private StudentService studentService;
+    private TeacherService teacherService;
 
     @BeforeEach
     public void setUp() {
@@ -49,7 +53,7 @@ class AuthControllerTest {
         jwtGenerator = Mockito.mock(JWTGenerator.class);
         emailService = Mockito.mock(EmailService.class);
 
-        authController = new AuthController(authenticationManager, userRepository, roleRepository, passwordEncoder, jwtGenerator, emailService, userService);
+        authController = new AuthController(authenticationManager, userRepository, roleRepository, passwordEncoder, jwtGenerator, emailService, userService, studentService, teacherService);
     }
 
     @Test

@@ -32,10 +32,10 @@ public class EmailService {
     public void sendPasswordResetEmail(UserEntity user, String url) throws MessagingException, UnsupportedEncodingException {
 
         String subject = "Password Reset Request Verification";
-        String senderName = "User Registration Portal Service";
+        String senderName = "Labs and Courses Portal Service";
         String mailContent = "<p> Hi, </p>"+
-                "<p><b>You recently requested to reset your password,</b>"+"" +
-                "Please, follow the link below to complete the action.</p>"+
+                "<p><b>You recently requested to reset your password.</b>"+"" +
+                " Please, follow the link below to complete the action.</p>"+
                 "<a href=\"" +url+ "\">Reset password</a>"+
                 "<p> Users Registration Portal Service";
         MimeMessage message = mailSender.createMimeMessage();
