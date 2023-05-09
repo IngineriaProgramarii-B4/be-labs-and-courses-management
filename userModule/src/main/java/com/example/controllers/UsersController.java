@@ -12,8 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.example.security.JWTGenerator.extractEmailFromTokenWithoutVerification;
 
 @CrossOrigin
 @RestController
@@ -47,4 +52,21 @@ public class UsersController {
         }
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
+
+    @PostMapping(value = "/users/loggedUser")
+    public ResponseEntity<User> getLoggedUser(@RequestBody String token) {
+        String finalToken = token.substring(1, token.length() - 1);
+        User user;
+        try {
+            String email = extractEmailFromTokenWithoutVerification(finalToken);
+            Map<String, Object> params = new HashMap<>();
+            params.put("email", email);
+            user = usersService.getUsersByParams(params).get(0);
+            return new ResponseEntity<>(user, HttpStatus.CREATED);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
 }

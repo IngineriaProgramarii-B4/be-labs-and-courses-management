@@ -53,6 +53,15 @@ public class UsersConfiguration {
                     1,
                     "12300000GSGVGDS1",
                     new HashSet<>(Arrays.asList("RC", "LFAC", "BD", "AG", "QC")));
+            Student stud4 = new Student(
+                    "Duluta",
+                    "George",
+                    "george.duluta@yahoo.com",
+                    "sfdgsdf",
+                    2,
+                    1,
+                    "12300000GdsaS1",
+                    new HashSet<>(Arrays.asList("RC", "LFAC", "BD", "AG", "QC")));
             Admin admin1 = new Admin(
                     "Cuzic",
                     "Diana",
@@ -60,7 +69,7 @@ public class UsersConfiguration {
                     "dianacuzic",
                     "P1",
                     "Secretariat");
-            usersRepository.saveAll(List.of(stud1, teacher1, stud2, admin1, stud3));
+            usersRepository.saveAll(List.of(stud1, teacher1, stud2, admin1, stud3, stud4));
         };
     }
 }

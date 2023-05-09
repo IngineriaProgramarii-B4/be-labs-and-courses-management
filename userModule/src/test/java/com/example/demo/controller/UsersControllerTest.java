@@ -16,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -164,4 +163,5 @@ class UsersControllerTest {
         //Then
         assertEquals(HttpStatus.NOT_FOUND.value(), result);
     }
+
 }

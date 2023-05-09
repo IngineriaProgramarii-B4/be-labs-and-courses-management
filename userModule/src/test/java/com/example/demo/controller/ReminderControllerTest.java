@@ -157,7 +157,7 @@ class ReminderControllerTest {
     }
 
     @Test
-    void saveAdminTest() {
+    void saveReminderTest() {
         MockHttpServletRequest request = new MockHttpServletRequest();
 
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
