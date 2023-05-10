@@ -200,7 +200,7 @@ class SubjectDataAccessServiceTest {
     }
 
     @Test
-    public void testUpdateSubjectWithOldImage() {
+    void testUpdateSubjectWithOldImage() {
         Resource image = new Resource("image","location","type", false);
         Subject subject = new Subject("Title", 6, 1, 2, "Description",
                 new ArrayList<>(), new ArrayList<>(), false);

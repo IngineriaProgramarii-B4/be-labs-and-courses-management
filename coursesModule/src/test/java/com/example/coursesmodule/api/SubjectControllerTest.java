@@ -46,7 +46,7 @@ class SubjectControllerTest {
     private SubjectController subjectController;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(subjectController).build();
     }
 
@@ -267,7 +267,7 @@ class SubjectControllerTest {
     }
 
     @Test
-    public void testGetSubjectImageNoImage(){
+    void testGetSubjectImageNoImage(){
         String title = "Test Subject";
 
         Subject subject = new Subject();
@@ -285,7 +285,7 @@ class SubjectControllerTest {
 
 
     @Test
-    public void testGetSubjectImageSuccess() throws Exception {
+    void testGetSubjectImageSuccess() throws Exception {
         Subject mockSubject = new Subject();
         Resource resource = new Resource("Physics_romania.png", "savedResources\\Physics_romania.png", "image/png", false);
         mockSubject.setImage(resource);

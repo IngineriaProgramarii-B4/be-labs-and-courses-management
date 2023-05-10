@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class SubjectServiceTest {
+class SubjectServiceTest {
     @Mock
     private CourseDao courseDao;
 
@@ -115,21 +115,21 @@ public class SubjectServiceTest {
     }
 
     @Test
-    public void validateSubjectTestTitleEmpty() {
+    void validateSubjectTestTitleEmpty() {
         Subject subject = new Subject("", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         boolean result = subjectService.validateSubject(subject);
         assertFalse(result);
     }
 
     @Test
-    public void validateSubjectTestIsDeleted() {
+    void validateSubjectTestIsDeleted() {
         Subject subject = new Subject("Maths", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), true);
         boolean result = subjectService.validateSubject(subject);
         assertFalse(result);
     }
 
     @Test
-    public void validateSubjectTestDuplicateTitle() {
+    void validateSubjectTestDuplicateTitle() {
         List<Subject> subjects = new ArrayList<>();
         Subject subject = new Subject("Maths", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         subjects.add(subject);
@@ -142,14 +142,14 @@ public class SubjectServiceTest {
     }
 
     @Test
-    public void validateSubjectTestSuccessfulNoComponents() {
+    void validateSubjectTestSuccessfulNoComponents() {
         Subject subject = new Subject("Maths", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         boolean result = subjectService.validateSubject(subject);
         assertTrue(result);
     }
 
     @Test
-    public void validateSubjectTestDuplicateComponentTypes() {
+    void validateSubjectTestDuplicateComponentTypes() {
         Component component1 = new Component("Course", 2, new ArrayList<>(), false);
         Component component2 = new Component("Course", 2, new ArrayList<>(), false);
         Component component3 = new Component("Seminar", 3, new ArrayList<>(), false);
@@ -161,7 +161,7 @@ public class SubjectServiceTest {
     }
 
     @Test
-    public void validateSubjectTestSuccessful() {
+    void validateSubjectTestSuccessful() {
         Component component1 = new Component("Course", 2, new ArrayList<>(), false);
         Component component2 = new Component("Laboratory", 2, new ArrayList<>(), false);
         Component component3 = new Component("Seminar", 3, new ArrayList<>(), false);
@@ -173,7 +173,7 @@ public class SubjectServiceTest {
     }
 
     @Test
-    public void validateSubjectTestDeleted() {
+     void validateSubjectTestDeleted() {
         Component component1 = new Component("Course", 2, new ArrayList<>(), true);
         Component component2 = new Component("Course", 2, new ArrayList<>(), false);
         Component component3 = new Component("Seminar", 3, new ArrayList<>(), false);
@@ -334,7 +334,9 @@ public class SubjectServiceTest {
         if (imageFile.exists())
             imageFile.delete();
         newFile.delete();
-        folder.delete();
+        File[] filesInSavedResources = folder.listFiles();
+        if (filesInSavedResources == null || filesInSavedResources.length == 0)
+            folder.delete();
     }
 
     @Test
@@ -404,7 +406,6 @@ public class SubjectServiceTest {
         courseDao.insertSubject(subject);
         Subject updatedSubject = new Subject("Mathematics", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
 
-
         when(courseDao.selectSubjectByTitle("Maths")).thenReturn(Optional.of(subject));
         when(courseDao.updateSubjectByTitle("Maths", updatedSubject)).thenReturn(1);
 
@@ -416,7 +417,57 @@ public class SubjectServiceTest {
         if (imageFile.exists())
             imageFile.delete();
         newFile.delete();
-        folder.delete();
+        File[] filesInSavedResources = folder.listFiles();
+        if (filesInSavedResources == null || filesInSavedResources.length == 0)
+            folder.delete();
+    }
+
+    @Test
+    void updateSubjectByTitleResourcesRenamed() {
+        Component component = new Component("Course", 14, new ArrayList<>(), false);
+        Subject subject = new Subject("Maths", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
+        String absolutePath = new File("").getAbsolutePath();
+        String folderPath = absolutePath + "/" + "savedResources/";
+
+        File folder = new File(folderPath);
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+
+        File resourceFile = new File(folderPath + "Maths_Course_image.jpg");
+        File updatedResourceFile = new File(folderPath + "Mathematics_Course_image.jpg");
+        try {
+            resourceFile.createNewFile();
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+
+        component.addResource(new Resource(
+                "image.jpg",
+                resourceFile.getParentFile().getAbsolutePath() + "/Maths_Course_image.jpg",
+                "image/jpeg",
+                false
+        ));
+        subject.addComponent(component);
+        courseDao.insertSubject(subject);
+        Subject updatedSubject = new Subject("Mathematics", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
+
+        when(courseDao.getComponents("Maths")).thenReturn(List.of(component));
+        when(courseDao.getResourcesForComponentType("Maths", "Course")).thenReturn(component.getResources());
+        when(courseDao.selectSubjectByTitle("Maths")).thenReturn(Optional.of(subject));
+        when(courseDao.updateSubjectByTitle("Maths", updatedSubject)).thenReturn(1);
+
+        int result = subjectService.updateSubjectByTitle("Maths", updatedSubject);
+        assertFalse(resourceFile.exists());
+        assertTrue(updatedResourceFile.exists());
+        assertEquals(1, result);
+
+        if (resourceFile.exists())
+            resourceFile.delete();
+        updatedResourceFile.delete();
+        File[] filesInSavedResources = folder.listFiles();
+        if (filesInSavedResources == null || filesInSavedResources.length == 0)
+            folder.delete();
     }
 
     @Test
@@ -453,7 +504,9 @@ public class SubjectServiceTest {
         assertTrue(imageFile.exists());
 
         imageFile.delete();
-        folder.delete();
+        File[] filesInSavedResources = folder.listFiles();
+        if (filesInSavedResources == null || filesInSavedResources.length == 0)
+            folder.delete();
     }
 
     @Test
@@ -502,6 +555,10 @@ public class SubjectServiceTest {
 
         oldImageFile.delete();
         newImageFile.delete();
-        folder.delete();
+        File[] filesInSavedResources = folder.listFiles();
+        if (filesInSavedResources == null || filesInSavedResources.length == 0)
+            folder.delete();
     }
+
+    // TODO: check if resources were renamed too after changing
 }

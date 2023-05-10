@@ -88,7 +88,7 @@ public class Evaluation {
     @Override
     public String toString() {
         return "Evaluation{" +
-                ", component='" + component + '\'' +
+                "component='" + component + '\'' +
                 ", value=" + value +
                 ", isDeleted=" + isDeleted +
                 '}';

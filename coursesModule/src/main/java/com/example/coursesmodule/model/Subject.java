@@ -167,7 +167,7 @@ public class Subject {
     }
 
     public void removeEvaluation(Evaluation evaluation) {
-        evaluationList.add(evaluation);
+        evaluationList.remove(evaluation);
     }
 
     public void softDeleteEvaluation(Evaluation evaluation) {
@@ -181,7 +181,7 @@ public class Subject {
     @Override
     public String toString() {
         return "Subject{" +
-                ", title='" + title + '\'' +
+                "title='" + title + '\'' +
                 ", credits=" + credits +
                 ", year=" + year +
                 ", semester=" + semester +

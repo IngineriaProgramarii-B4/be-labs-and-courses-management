@@ -41,6 +41,7 @@ class EvaluationControllerTest {
     @BeforeEach
     void setUp() {
     }
+
     @Test
     void getEvaluationMethods() {
         Subject subject = new Subject( "Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",

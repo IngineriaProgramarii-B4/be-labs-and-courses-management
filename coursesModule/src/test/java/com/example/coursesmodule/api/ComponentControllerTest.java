@@ -32,8 +32,7 @@ class ComponentControllerTest {
     private ComponentController componentController;
 
     @BeforeEach
-    public void setUp() {
-
+    void setUp() {
     }
 
     @Test
