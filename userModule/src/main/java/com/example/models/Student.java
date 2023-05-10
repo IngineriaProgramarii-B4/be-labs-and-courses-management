@@ -109,11 +109,6 @@ public class Student extends User {
                 '}';
     }
 
-//    public void setElectives(Integer year, Integer semester) {
-//
-//    }
-
-
     @Override
     public int hashCode() {
         return super.hashCode();

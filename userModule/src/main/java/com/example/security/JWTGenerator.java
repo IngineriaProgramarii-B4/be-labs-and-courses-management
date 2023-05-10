@@ -2,12 +2,13 @@ package com.example.security;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.IOException;
 import java.util.Base64;
 import java.util.Map;
 
 public class JWTGenerator {
+    private JWTGenerator() {
+
+    }
     public static String extractEmailFromTokenWithoutVerification(String jwtToken) {
         String[] jwtTokenParts = jwtToken.split("\\.");
         if (jwtTokenParts.length != 3) {

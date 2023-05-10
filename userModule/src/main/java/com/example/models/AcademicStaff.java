@@ -29,22 +29,6 @@ public abstract class AcademicStaff extends User {
         this.office = office;
     }
 
-    /*public void manageCatalog() {
-
-    }
-
-    public void postAnnouncement() {
-
-    }
-
-    public void addResource() {
-
-    }
-
-    public void generateReports() {
-
-    }*/
-
     @Override
     public int hashCode() {
         return super.hashCode();

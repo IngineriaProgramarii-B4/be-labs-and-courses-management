@@ -113,33 +113,4 @@ public abstract class User {
     public int hashCode() {
         return Objects.hash(id, firstname, lastname, email, username, type);
     }
-
-
-//    public void login(String username, String password) {
-//        //todo
-//    }
-//
-//    public void logout() { //no args needed
-//        //todo
-//    }
-//
-//    public void getCatalog() {
-//
-//    }
-//
-//    public void seeAnnouncements() {
-//
-//    }
-//
-//    public void getNetwork() {
-//
-//    }
-//
-//    public void setReminders() {
-//
-//    }
-//
-//    void seeResource(File resource) {
-//
-//    }
 }

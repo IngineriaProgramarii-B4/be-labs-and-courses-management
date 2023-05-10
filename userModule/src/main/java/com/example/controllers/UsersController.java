@@ -12,15 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.example.security.JWTGenerator.extractEmailFromTokenWithoutVerification;
 
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("api/v1/")
 public class UsersController {
@@ -66,7 +63,7 @@ public class UsersController {
             user = usersService.getUsersByParams(Map.of("email", email)).get(0);
             return new ResponseEntity<>(user, HttpStatus.CREATED);
         } catch (RuntimeException e) {
-            System.err.println("An error occurred at object mapping");
+            System.out.println("An error occurred at object mapping");
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
