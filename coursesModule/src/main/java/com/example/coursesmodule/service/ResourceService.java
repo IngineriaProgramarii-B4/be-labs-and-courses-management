@@ -3,6 +3,7 @@ package com.example.coursesmodule.service;
 import com.example.coursesmodule.dao.CourseDao;
 import com.example.coursesmodule.model.Component;
 import com.example.coursesmodule.model.Resource;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 @Service
+@Transactional
 public class ResourceService {
     private final CourseDao courseDao;
     private static final String RESOURCE_PATH = "savedResources/";
