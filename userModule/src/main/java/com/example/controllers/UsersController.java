@@ -52,19 +52,21 @@ public class UsersController {
         }
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
-
+    @Operation(summary = "Get from the frontend information about the logged user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Get information about logged user successfully.",
+                    content = @Content)
+    })
     @PostMapping(value = "/users/loggedUser")
     public ResponseEntity<User> getLoggedUser(@RequestBody String token) {
         String finalToken = token.substring(1, token.length() - 1);
         User user;
         try {
             String email = extractEmailFromTokenWithoutVerification(finalToken);
-            Map<String, Object> params = new HashMap<>();
-            params.put("email", email);
-            user = usersService.getUsersByParams(params).get(0);
+            user = usersService.getUsersByParams(Map.of("email", email)).get(0);
             return new ResponseEntity<>(user, HttpStatus.CREATED);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (RuntimeException e) {
+            System.err.println("An error occurred at object mapping");
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
