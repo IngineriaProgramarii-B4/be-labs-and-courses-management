@@ -6,6 +6,9 @@ import com.example.coursesmodule.model.Resource;
 import com.example.coursesmodule.model.Subject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -17,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,31 +34,22 @@ class ResourceServiceTest {
     @InjectMocks
     private ResourceService resourceService;
 
-    @Test
-    void validateExistingResourceTestEmptyTitle() {
-        Resource resource = new Resource("", "", "image/jpeg", false);
-
-        boolean result = resourceService.validateExistingResource("Maths", "Course", resource);
-        assertFalse(result);
-    }
-/*
-
-    @Test
-    void validateExistingResourceTestEmptyLocation() {
-        Resource resource = new Resource("Resource", "", "image/jpeg", false);
+    @ParameterizedTest
+    @MethodSource("existingResourceProvider")
+    void validateExistingResourceTestsFailed(String title, String location) {
+        Resource resource = new Resource(title, location, "image/jpeg", false);
 
         boolean result = resourceService.validateExistingResource("Maths", "Course", resource);
         assertFalse(result);
     }
 
-    @Test
-    void validateExistingResourceTestNotFound() {
-        Resource resource = new Resource("Resource", "RESOURCE_PATH/Resource", "image/jpeg", false);
-
-        boolean result = resourceService.validateExistingResource("Maths", "Course", resource);
-        assertFalse(result);
+    static Stream<Arguments> existingResourceProvider() {
+        return Stream.of(
+                Arguments.of("", "RESOURCE_PATH/Resource"), //Empty title
+                Arguments.of("Resource", ""), //Empty location
+                Arguments.of("Resource", "RESOURCE_PATH/Resource") //Valid resource but not existing
+        );
     }
-*/
 
     @Test
     void validateExistingResourcesTestSuccessful() {
@@ -66,6 +61,40 @@ class ResourceServiceTest {
         when(courseDao.getResourcesForComponentType("Maths", "Course")).thenReturn(component.getResources());
         boolean result = resourceService.validateExistingResource("Maths", "Course", resource);
         assertTrue(result);
+    }
+
+    @Test
+    void validateExistingResourcesTestTypeNotFound() {
+        Component component = new Component("Course", 14, new ArrayList<>(), false);
+        Resource resource = new Resource("Resource", "RESOURCE_PATH/Resource", "image/jpeg", false);
+
+        when(courseDao.getComponents("Maths")).thenReturn(List.of(component));
+        boolean result = resourceService.validateExistingResource("Maths", "Laboratory", resource);
+        assertFalse(result);
+    }
+
+    @Test
+    void validateExistingResourcesTestNoResourcesForType() {
+        Component component = new Component("Course", 14, new ArrayList<>(), false);
+        Resource resource = new Resource("Resource", "RESOURCE_PATH/Resource", "image/jpeg", false);
+
+        when(courseDao.getComponents("Maths")).thenReturn(List.of(component));
+        when(courseDao.getResourcesForComponentType("Maths", "Course")).thenReturn(component.getResources());
+        boolean result = resourceService.validateExistingResource("Maths", "Course", resource);
+        assertFalse(result);
+    }
+
+    @Test
+    void validateExistingResourcesTestNoMatchingResources() {
+        Component component = new Component("Course", 14, new ArrayList<>(), false);
+        Resource resourceCourse = new Resource("Resource1", "RESOURCE_PATH/Resource1", "image/jpeg", false);
+        Resource resourceLaboratory= new Resource("Resource2", "RESOURCE_PATH/Resource2", "image/jpeg", false);
+        component.addResource(resourceCourse);
+
+        when(courseDao.getComponents("Maths")).thenReturn(List.of(component));
+        when(courseDao.getResourcesForComponentType("Maths", "Course")).thenReturn(component.getResources());
+        boolean result = resourceService.validateExistingResource("Maths", "Course", resourceLaboratory);
+        assertFalse(result);
     }
 
     @Test
@@ -84,24 +113,24 @@ class ResourceServiceTest {
         assertFalse(result);
     }
 
-    @Test
-    void validateNewResourceTestDuplicateTitle() {
-        Resource resource1 = new Resource("Resource1", "RESOURCE_PATH/Resource", "image/jpeg", false);
-        Resource resource2 = new Resource("Resource1", "RESOURCE_PATH/Resource2", "image/jpeg", false);
+    @ParameterizedTest
+    @MethodSource("newResourceProvider")
+    void validateNewResourceTestsDuplicate(String title1, String location1, String title2, String location2) {
+        Resource resource1 = new Resource(title1, location1, "image/jpeg", false);
+        Resource resource2 = new Resource(title2, location2, "image/jpeg", false);
 
         when(courseDao.getResourcesForComponentType("Maths", "Course")).thenReturn(List.of(resource1));
         boolean result = resourceService.validateNewResource("Maths", "Course", resource2);
         assertFalse(result);
     }
 
-    @Test
-    void validateNewResourceTestDuplicateLocation() {
-        Resource resource1 = new Resource("Resource1", "RESOURCE_PATH/Resource1", "image/jpeg", false);
-        Resource resource2 = new Resource("Resource2", "RESOURCE_PATH/Resource1", "image/jpeg", false);
-
-        when(courseDao.getResourcesForComponentType("Maths", "Course")).thenReturn(List.of(resource1));
-        boolean result = resourceService.validateNewResource("Maths", "Course", resource2);
-        assertFalse(result);
+    static Stream<Arguments> newResourceProvider() {
+        return Stream.of(
+                Arguments.of("Resource1", "RESOURCE_PATH/Resource1", "Resource1", "RESOURCE_PATH/Resource2"), //Duplicate title
+                Arguments.of("Resource1", "RESOURCE_PATH/Resource1", "Resource2", "RESOURCE_PATH/Resource1"), //Duplicate location
+                Arguments.of("Resource1", "RESOURCE_PATH/Resource1", "Resource1", "RESOURCE_PATH/Resource1"), //Duplicate title and location
+                Arguments.of("Resource1", "RESOURCE_PATH/Resource1", "Resource2", "RESOURCE_PATH/Resource2") //No duplicates but fails due to other reasons
+        );
     }
 
     @Test
@@ -141,10 +170,10 @@ class ResourceServiceTest {
         File resourceFile = new File(folderPath + "Maths_Course_image.jpg");
 
         Resource resource = new Resource(
-                        "image.jpg",
-                        resourceFile.getParentFile().getAbsolutePath() + "/Maths_Course_image.jpg",
-                        "image/jpeg",
-                        false
+                "image.jpg",
+                resourceFile.getParentFile().getAbsolutePath() + "/Maths_Course_image.jpg",
+                "image/jpeg",
+                false
         );
         MultipartFile image = new MockMultipartFile(
                 "image.jpg",
@@ -153,7 +182,7 @@ class ResourceServiceTest {
                 new byte[0]
         );
 
-        component.addResource(resource);;
+        component.addResource(resource);
         subject.addComponent(component);
         courseDao.insertSubject(subject);
         when(courseDao.getComponents("Maths")).thenReturn(List.of(component));
@@ -168,6 +197,128 @@ class ResourceServiceTest {
         File[] filesInSavedResources = folder.listFiles();
         if (filesInSavedResources == null || filesInSavedResources.length == 0)
             folder.delete();
+    }
+
+    @Test
+    void addResourceTestValidationFailure() {
+        Component component = new Component("Course", 14, new ArrayList<>(), false);
+        Subject subject = new Subject("Maths", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
+        Resource resource = new Resource(
+                "",
+                "",
+                "image/jpeg",
+                false
+        ); //empty title, location => validateNewResource return 0
+        MultipartFile image = new MockMultipartFile(
+                "image.jpg",
+                "image.jpg",
+                "image/jpeg",
+                new byte[0]
+        );
+
+        component.addResource(resource);
+        subject.addComponent(component);
+        courseDao.insertSubject(subject);
+        when(courseDao.getComponents("Maths")).thenReturn(List.of(component));
+        when(courseDao.getResourcesForComponentType("Maths", "Course")).thenReturn(new ArrayList<>());
+        int result = resourceService.addResource(image, "Maths", "Course");
+        assertEquals(0, result);
+    }
+
+    @Test
+    void addResourceTestDAOFailure() {
+        Subject subject = new Subject("Maths", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
+        MultipartFile image = new MockMultipartFile(
+                "image.jpg",
+                "image.jpg",
+                "image/jpeg",
+                new byte[0]
+        );
+
+        courseDao.insertSubject(subject);
+        when(courseDao.getComponents("Maths")).thenReturn(new ArrayList<>()); //null component => DAO failure
+        int result = resourceService.addResource(image, "Maths", "Course");
+        assertEquals(0, result);
+    }
+
+    @Test
+    void addResourceTestFolderAlreadyExists() {
+        //SonarQube says this needs to exist
+        Component component = new Component("Course", 14, new ArrayList<>(), false);
+        Subject subject = new Subject("Maths", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
+        String absolutePath = new File("").getAbsolutePath();
+        String folderPath = absolutePath + "/" + "savedResources/";
+        File folder = new File(folderPath);
+
+        File resourceFile = new File(folderPath + "Maths_Course_image.jpg");
+
+        Resource resource = new Resource(
+                "image.jpg",
+                resourceFile.getParentFile().getAbsolutePath() + "/Maths_Course_image.jpg",
+                "image/jpeg",
+                false
+        );
+        MultipartFile image = new MockMultipartFile(
+                "image.jpg",
+                "image.jpg",
+                "image/jpeg",
+                new byte[0]
+        );
+
+        component.addResource(resource);
+        subject.addComponent(component);
+        courseDao.insertSubject(subject);
+        when(courseDao.getComponents("Maths")).thenReturn(List.of(component));
+        when(courseDao.addResourceForComponentType(any(String.class), any(String.class), any(Resource.class))).thenReturn(1);
+        when(courseDao.getResourcesForComponentType("Maths", "Course")).thenReturn(new ArrayList<>());
+        int result = resourceService.addResource(image, "Maths", "Course");
+        assertTrue(resourceFile.exists());
+        assertTrue(folder.exists());
+        assertEquals(1, result);
+
+        if (resourceFile.exists())
+            resourceFile.delete();
+
+        File[] filesInSavedResources = folder.listFiles();
+        if (filesInSavedResources == null || filesInSavedResources.length == 0)
+            folder.delete();
+    }
+
+    @Test
+    void addResourceTestThrowsException() {
+        Component component = new Component("Course", 14, new ArrayList<>(), false);
+        Subject subject = new Subject("Maths/savedResources/", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
+        String absolutePath = new File("").getAbsolutePath();
+        String folderPath = absolutePath + "/" + "savedResources/";
+
+        File folder = new File(folderPath);
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+
+        File resourceFile = new File(folderPath + "Maths/savedResources/_Course_image.jpg");
+
+        Resource resource = new Resource(
+                "image.jpg",
+                resourceFile.getParentFile().getAbsolutePath() + "/Maths/savedResources_Course_image.jpg",
+                "image/jpeg",
+                false
+        ); //empty title, location => validateNewResource return 0
+        MultipartFile image = new MockMultipartFile(
+                "image.jpg",
+                "image.jpg",
+                "image/jpeg",
+                new byte[0]
+        );
+
+        component.addResource(resource);
+        subject.addComponent(component);
+        courseDao.insertSubject(subject);
+        when(courseDao.getComponents("Maths/savedResources/")).thenReturn(List.of(component));
+        when(courseDao.getResourcesForComponentType("Maths/savedResources/", "Course")).thenReturn(new ArrayList<>());
+        when(courseDao.addResourceForComponentType(any(String.class), any(String.class), any(Resource.class))).thenReturn(1);
+        int result = resourceService.addResource(image, "Maths/savedResources/", "Course");
+        assertEquals(0, result);
     }
 
     @Test
@@ -226,7 +377,7 @@ class ResourceServiceTest {
     }
 
     @Test
-     void deleteResourceByTitleTestSuccessful() {
+    void deleteResourceByTitleTestSuccessful() {
         Component component = new Component("Course", 14, new ArrayList<>(), false);
         Resource resource = new Resource("Resource", "RESOURCE_PATH/Resource", "image/jpg", false);
         component.addResource(resource);
@@ -237,6 +388,7 @@ class ResourceServiceTest {
         when(courseDao.getResourcesForComponentType("Maths", "Course")).thenReturn(component.getResources());
         int result = resourceService.deleteResourceByTitle("Maths", "Course", "Resource");
         assertEquals(1, result);
+        //"INFO: RENAME FAILED" is intended
     }
 
     @Test
