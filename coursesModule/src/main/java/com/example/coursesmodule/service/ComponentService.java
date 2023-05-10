@@ -41,11 +41,7 @@ public class ComponentService {
         if(!Objects.equals(component.getType(), type))
             return false;
         Optional<Subject> subject = courseDao.selectSubjectByTitle(title);
-        if(subject.isEmpty()) return false;
-        for(Component comp : courseDao.getComponents(title))
-            if(comp.getType().equals(component.getType())&& !comp.getType().equals(type))
-                return false;
-        return true;
+        return subject.isPresent();
     }
     public boolean validateType(String type){
         return Objects.equals(type, "Course") || Objects.equals(type, "Seminar") || Objects.equals(type, "Laboratory");

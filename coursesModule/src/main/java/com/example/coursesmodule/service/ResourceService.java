@@ -13,10 +13,13 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
+import java.util.logging.Logger;
+
 @Service
 public class ResourceService {
     private final CourseDao courseDao;
     private static final String RESOURCE_PATH = "savedResources/";
+    private static final Logger logger = Logger.getLogger(ResourceService.class.getName());
 
     @Autowired
     public ResourceService(@Qualifier("postgres") CourseDao courseDao) {
@@ -68,7 +71,7 @@ public class ResourceService {
             file.transferTo(new File(folderPath.resolve(fileName).toString()));
             return 1;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(java.util.logging.Level.SEVERE, "Exception: ", e);
             return 0;
         }
     }

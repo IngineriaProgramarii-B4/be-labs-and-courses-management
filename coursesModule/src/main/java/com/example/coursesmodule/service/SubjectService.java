@@ -16,11 +16,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import java.util.logging.Logger;
+
 @Service
 @Transactional
 public class SubjectService {
     private final CourseDao courseDao;
     private static final String RESOURCE_PATH = "savedResources/";
+
+    private static final Logger logger = Logger.getLogger(SubjectService.class.getName());
 
     @Autowired
     public SubjectService(@Qualifier("postgres") CourseDao courseDao) {
@@ -188,7 +192,7 @@ public class SubjectService {
             image.transferTo(new File(folderPath + fileName));
             return 1;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(java.util.logging.Level.SEVERE, "Exception: ", e);
             return 0;
         }
     }
