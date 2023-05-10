@@ -143,8 +143,14 @@ class SubjectServiceTest {
 
     @Test
     void validateSubjectTestSuccessfulNoComponents() {
-        Subject subject = new Subject("Maths", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
-        boolean result = subjectService.validateSubject(subject);
+        List<Subject> subjects = new ArrayList<>();
+        Subject subject1 = new Subject("Maths", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
+        subjects.add(subject1);
+        when(courseDao.selectAllSubjects()).thenReturn(subjects);
+
+        Subject subject2 = new Subject("Physics", 1, 3, 1, "description", new ArrayList<>(), new ArrayList<>(), false);
+
+        boolean result = subjectService.validateSubject(subject2);
         assertTrue(result);
     }
 
@@ -185,7 +191,7 @@ class SubjectServiceTest {
     }
 
     @Test
-    void getAllSubjects() {
+    void getAllSubjectsTest() {
         List<Subject> subjects = new ArrayList<>();
         subjects.add(new Subject("Math", 5, 1, 1, "description A", new ArrayList<>(), new ArrayList<>(), false));
         subjects.add(new Subject("English", 4, 1, 1, "description B", new ArrayList<>(), new ArrayList<>(), false));
@@ -211,7 +217,7 @@ class SubjectServiceTest {
     }
 
     @Test
-    void getSubjectByTitleExists() {
+    void getSubjectByTitleTestExists() {
         Subject subject = new Subject("Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
         courseDao.insertSubject(subject);
 
@@ -231,7 +237,7 @@ class SubjectServiceTest {
     }
 
     @Test
-    void getSubjectByTitleEmpty() {
+    void getSubjectByTitleTestEmpty() {
         Subject subject = new Subject("Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
         courseDao.insertSubject(subject);
 
@@ -242,7 +248,7 @@ class SubjectServiceTest {
     }
 
     @Test
-    void getSubjectsByYearAndSemester() {
+    void getSubjectsByYearAndSemesterTest() {
         List<Subject> subjects = new ArrayList<>();
         subjects.add(new Subject("Physics", 5, 1, 2, "description", List.of(new Component("Course", 10, List.of(new Resource("Book.pdf", "savedResources/Book.pdf", "application/pdf", false)), false)),
                 List.of(new Evaluation("Course", 0.5f, "description B", false)), false));
@@ -263,7 +269,7 @@ class SubjectServiceTest {
     }
 
     @Test
-    void addSubjectSuccessful() {
+    void addSubjectTestSuccessful() {
         Subject subject = new Subject("Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
         when(courseDao.insertSubject(subject)).thenReturn(1);
 
@@ -271,14 +277,22 @@ class SubjectServiceTest {
     }
 
     @Test
-    void addSubjectThatAlreadyExists() {
+    void addSubjectTestValidationFailure() {
+        Subject subject = new Subject("Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), true);
+        //isDeleted == true => validation failure
+
+        assertEquals(0, subjectService.addSubject(subject));
+    }
+
+    @Test
+    void addSubjectThatAlreadyExistsTest() {
         Subject subject = new Subject("Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
         courseDao.insertSubject(subject);
         assertEquals(0, subjectService.addSubject(subject));
     }
 
     @Test
-    void addSubjectWithSameName() {
+    void addSubjectWithSameNameTest() {
         Subject subject1 = new Subject("Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
         Subject subject2 = new Subject("Algebraic Foundations of Science", 2, 3, 2, "yes gonna pass", new ArrayList<>(), new ArrayList<>(), false);
         courseDao.insertSubject(subject1);
@@ -288,7 +302,7 @@ class SubjectServiceTest {
     }
 
     @Test
-    void deleteSubjectByTitleSuccessful() {
+    void deleteSubjectByTitleTestSuccessful() {
         Subject subject = new Subject("Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
         courseDao.insertSubject(subject);
 
@@ -300,7 +314,7 @@ class SubjectServiceTest {
     }
 
     @Test
-    void deleteSubjectByTitleImageRenamed() {
+    void deleteSubjectByTitleTestImageRenamed() {
         Subject subject = new Subject("Maths", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         String absolutePath = new File("").getAbsolutePath();
         String folderPath = absolutePath + "/" + "savedResources/";
@@ -340,12 +354,74 @@ class SubjectServiceTest {
     }
 
     @Test
-    void deleteSubjectByTitleFailed() {
+    void deleteSubjectByTitleTestResourcesRenamed() {
+        Component component = new Component("Course", 14, new ArrayList<>(), false);
+        Subject subject = new Subject("Maths", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
+        String absolutePath = new File("").getAbsolutePath();
+        String folderPath = absolutePath + "/" + "savedResources/";
+
+        File folder = new File(folderPath);
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+
+        File resourceFile = new File(folderPath + "Maths_Course_image.jpg");
+        File updatedResourceFile = new File(folderPath + "DELETED_Maths_Course_image.jpg");
+        try {
+            resourceFile.createNewFile();
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+
+        component.addResource(new Resource(
+                "image.jpg",
+                resourceFile.getParentFile().getAbsolutePath() + "/Maths_Course_image.jpg",
+                "image/jpeg",
+                false
+        ));
+        subject.addComponent(component);
+        courseDao.insertSubject(subject);
+
+        when(courseDao.getComponents("Maths")).thenReturn(List.of(component));
+        when(courseDao.getResourcesForComponentType("Maths", "Course")).thenReturn(component.getResources());
+        when(courseDao.getResourceByTitleForComponentType("Maths", "Course", "image.jpg")).thenReturn(Optional.of(component.getResources().get(0)));
+        when(courseDao.deleteResourceByTitleForComponentType("Maths", "Course", "image.jpg")).thenReturn(1);
+        when(courseDao.getEvaluationMethodByComponent("Maths", "Course")).thenReturn(Optional.empty());
+        when(courseDao.selectSubjectByTitle("Maths")).thenReturn(Optional.of(subject));
+        when(courseDao.selectAllSubjects()).thenReturn(List.of(subject));
+        when(courseDao.deleteSubjectByTitle("Maths")).thenReturn(1);
+
+        int result = subjectService.deleteSubjectByTitle("Maths");
+        assertFalse(resourceFile.exists());
+        assertTrue(updatedResourceFile.exists());
+        assertEquals(1, result);
+
+        if (resourceFile.exists())
+            resourceFile.delete();
+        updatedResourceFile.delete();
+        File[] filesInSavedResources = folder.listFiles();
+        if (filesInSavedResources == null || filesInSavedResources.length == 0)
+            folder.delete();
+    }
+
+    @Test
+    void deleteSubjectByTitleTestValidationFailure() {
         assertEquals(0, subjectService.deleteSubjectByTitle("Non-existent subject"));
     }
 
     @Test
-    void updateSubjectByTitleSuccessful() {
+    void deleteSubjectByTitleTestNotFound() {
+        Subject subject = new Subject("Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
+
+        when(courseDao.selectAllSubjects()).thenReturn(List.of(subject));
+        when(courseDao.selectSubjectByTitle("Math")).thenReturn(Optional.empty()); //impossible but SonarQube demands it
+        when(courseDao.deleteSubjectByTitle("Math")).thenReturn(1);
+
+        assertEquals(1, subjectService.deleteSubjectByTitle("Math"));
+    }
+
+    @Test
+    void updateSubjectByTitleTestSuccessful() {
         String title = "Math";
         Subject updatedSubject = new Subject("Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         when(courseDao.selectSubjectByTitle(title)).thenReturn(Optional.of(new Subject()));
@@ -357,7 +433,18 @@ class SubjectServiceTest {
     }
 
     @Test
-    void updateSubjectByTitleInvalidSubject() {
+    void updateSubjectByTitleTestValidationFailure() {
+        Subject subject1 = new Subject("Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
+        Subject subject2 = new Subject("Physics", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
+        Subject subject3 = new Subject("Introduction to Cryptography", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
+        courseDao.insertSubject(subject1);
+        courseDao.insertSubject(subject2);
+
+        assertEquals(0, subjectService.updateSubjectByTitle("Math", subject3));
+    }
+
+    @Test
+    void updateSubjectByTitleTestInvalidSubject() {
         String title = "Math";
         Subject updatedSubject = new Subject("Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         when(courseDao.selectSubjectByTitle(title)).thenReturn(Optional.of(new Subject()));
@@ -369,7 +456,7 @@ class SubjectServiceTest {
     }
 
     @Test
-    void updateSubjectByTitleNotFound() {
+    void updateSubjectByTitleTestNotFound() {
         String title = "Math";
         Subject updatedSubject = new Subject("Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         when(courseDao.selectSubjectByTitle(title)).thenReturn(Optional.empty());
@@ -379,7 +466,7 @@ class SubjectServiceTest {
     }
 
     @Test
-    void updateSubjectByTitleImageRenamed() {
+    void updateSubjectByTitleTestImageRenamed() {
         Subject subject = new Subject("Maths", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         String absolutePath = new File("").getAbsolutePath();
         String folderPath = absolutePath + "/" + "savedResources/";
@@ -423,7 +510,7 @@ class SubjectServiceTest {
     }
 
     @Test
-    void updateSubjectByTitleResourcesRenamed() {
+    void updateSubjectByTitleTestResourcesRenamed() {
         Component component = new Component("Course", 14, new ArrayList<>(), false);
         Subject subject = new Subject("Maths", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         String absolutePath = new File("").getAbsolutePath();
@@ -471,13 +558,25 @@ class SubjectServiceTest {
     }
 
     @Test
-    void uploadSubjectImageSubjectNotFound() {
+    void uploadSubjectImageTestDAOFailure() {
+        MultipartFile image = new MockMultipartFile(
+                "image.jpg",
+                "image.jpg",
+                "image/jpeg",
+                new byte[0]
+        );
+
+        assertEquals(0, subjectService.uploadSubjectImage("Math", image));
+    }
+
+    @Test
+    void uploadSubjectImageTestSubjectNotFound() {
         String title = "Non-Existent Subject";
         assertEquals(0, subjectService.uploadSubjectImage(title, null));
     }
 
     @Test
-    void uploadSubjectImageUploadIsSuccessful() {
+    void uploadSubjectImageTestUploadIsSuccessful() {
         Subject subject = new Subject("Maths", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         courseDao.insertSubject(subject);
         String absolutePath = new File("").getAbsolutePath();
@@ -510,7 +609,7 @@ class SubjectServiceTest {
     }
 
     @Test
-    void uploadSubjectImageOldImageRenamed() {
+    void uploadSubjectImageTestOldImageRenamed() {
         Subject subject = new Subject("Maths", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         String absolutePath = new File("").getAbsolutePath();
         String folderPath = absolutePath + "/" + "savedResources/";
@@ -559,6 +658,4 @@ class SubjectServiceTest {
         if (filesInSavedResources == null || filesInSavedResources.length == 0)
             folder.delete();
     }
-
-    // TODO: check if resources were renamed too after changing
 }

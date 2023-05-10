@@ -97,7 +97,10 @@ public class ResourceService {
         File file = new File(resource.getLocation());
 
         if (validateExistingResource(title, type, resource)) {
-            boolean renameSuccessful = file.renameTo(new File(newResLocation));
+            if (file.renameTo(new File(newResLocation))) {
+                logger.info(newResLocation);
+            }
+            else logger.info("RENAME FAILED");
             return courseDao.deleteResourceByTitleForComponentType(title, type, resourceTitle);
         }
         return 0;
