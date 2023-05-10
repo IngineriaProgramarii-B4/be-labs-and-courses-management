@@ -125,7 +125,7 @@ class TeachersRepositoryTest {
         //
         //Given
         //
-        String username = "testUser";
+        String username = "testUsr";
         //
         //When
         //

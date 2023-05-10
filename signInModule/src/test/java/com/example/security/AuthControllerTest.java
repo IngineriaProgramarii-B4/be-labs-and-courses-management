@@ -2,13 +2,19 @@ package com.example.security;
 
 import com.example.security.controllers.AuthController;
 import com.example.security.dto.AuthResponseDto;
+import com.example.security.security.ForgotPasswordRequestBody;
 import com.example.security.dto.LoginRequestBody;
 import com.example.security.dto.RegisterRequestBody;
 import com.example.security.model.Role;
 import com.example.security.model.UserEntity;
 import com.example.security.repository.RoleRepository;
 import com.example.security.repository.UserRepository;
+import com.example.security.security.EmailService;
 import com.example.security.security.JWTGenerator;
+import com.example.security.service.StudentService;
+import com.example.security.service.TeacherService;
+import com.example.security.service.UserService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,12 +25,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
- class AuthControllerTest {
+class AuthControllerTest {
 
     private AuthenticationManager authenticationManager;
     private UserRepository userRepository;
@@ -32,6 +39,10 @@ import static org.mockito.Mockito.when;
     private PasswordEncoder passwordEncoder;
     private JWTGenerator jwtGenerator;
     private AuthController authController;
+    private EmailService emailService;
+    private UserService userService;
+    private StudentService studentService;
+    private TeacherService teacherService;
 
     @BeforeEach
     public void setUp() {
@@ -40,12 +51,13 @@ import static org.mockito.Mockito.when;
         roleRepository = Mockito.mock(RoleRepository.class);
         passwordEncoder = Mockito.mock(PasswordEncoder.class);
         jwtGenerator = Mockito.mock(JWTGenerator.class);
+        emailService = Mockito.mock(EmailService.class);
 
-        authController = new AuthController(authenticationManager, userRepository, roleRepository, passwordEncoder, jwtGenerator);
+        authController = new AuthController(authenticationManager, userRepository, roleRepository, passwordEncoder, jwtGenerator, emailService, userService, studentService, teacherService);
     }
 
     @Test
-     void testLogin() {
+    void testLogin() {
         LoginRequestBody loginRequestBody = new LoginRequestBody();
         loginRequestBody.setEmail("test@example.com");
         loginRequestBody.setPassword("password");
@@ -67,28 +79,28 @@ import static org.mockito.Mockito.when;
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("test-token", response.getBody().getAccessToken());
     }
-     @Test
-     void testRegister_emailAlreadyInUse() {
-         // Arrange
-         RegisterRequestBody registerRequestBody = new RegisterRequestBody();
-         registerRequestBody.setUserId(1L);
-         registerRequestBody.setEmail("test@example.com");
-         registerRequestBody.setPassword("password");
+    @Test
+    void testRegister_emailAlreadyInUse() {
+        // Arrange
+        RegisterRequestBody registerRequestBody = new RegisterRequestBody();
+        registerRequestBody.setUserId(1L);
+        registerRequestBody.setEmail("test@example.com");
+        registerRequestBody.setPassword("password");
 
-         when(userRepository.existsByEmail("test@example.com")).thenReturn(true);
+        when(userRepository.existsByEmail("test@example.com")).thenReturn(true);
 
-         // Act
-         ResponseEntity<String> response = authController.register(registerRequestBody);
+        // Act
+        ResponseEntity<String> response = authController.register(registerRequestBody);
 
-         // Assert
-         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-         assertEquals("Email is already in use!", response.getBody());
-         verify(userRepository).existsByEmail("test@example.com");
-     }
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Email is already in use!", response.getBody());
+        verify(userRepository).existsByEmail("test@example.com");
+    }
 
 
-     @Test
-     void testRegister() {
+    @Test
+    void testRegister() {
         RegisterRequestBody registerRequestBody = new RegisterRequestBody();
         registerRequestBody.setUserId(1L);
         registerRequestBody.setEmail("test@example.com");
@@ -98,14 +110,33 @@ import static org.mockito.Mockito.when;
         user.setUserId(1L);
 
 
-       when(userRepository.existsById(1L)).thenReturn(true);
+        when(userRepository.existsById(1L)).thenReturn(true);
         when(userRepository.findByUserId(1L)).thenReturn(user);
         when(passwordEncoder.encode("password")).thenReturn("encoded-password");
-         when(userRepository.existsByEmail(registerRequestBody.getEmail())).thenReturn(false);
+        when(userRepository.existsByEmail(registerRequestBody.getEmail())).thenReturn(false);
 
-         ResponseEntity<String> response = authController.register(registerRequestBody);
+        ResponseEntity<String> response = authController.register(registerRequestBody);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("User registered success!", response.getBody());
+    }
+
+    @Test
+    void testForgotPassword() throws MessagingException, UnsupportedEncodingException {
+        ForgotPasswordRequestBody forgotPasswordRequestBody = new ForgotPasswordRequestBody();
+        forgotPasswordRequestBody.setEmail("test@example.com");
+
+        UserEntity user = new UserEntity();
+        user.setEmail("test@example.com");
+        user.setUserId(1L);
+
+        when(userRepository.findByEmail("test@example.com")).thenReturn(user);
+        when(jwtGenerator.generateResetToken(user)).thenReturn("reset-token");
+
+        ResponseEntity<String> response = authController.forgotPassword(forgotPasswordRequestBody);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Password reset email sent!", response.getBody());
+        verify(emailService).sendPasswordResetEmail(user, "reset-token");
     }
 }

@@ -61,7 +61,7 @@ class StudentsRepositoryTest {
         //
         //Given
         //
-        String email = "testemail@mail.com";
+        String email = "testmail@mail.com";
         //
         //When
         //

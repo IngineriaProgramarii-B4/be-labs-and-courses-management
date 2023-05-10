@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -77,25 +78,22 @@ class StudentsControllerTest {
 
         Map<String, Object> args = Collections.emptyMap();
 
-        //When
         when(studentsService.getStudentsByParams(args)).thenReturn(listStudents);
 
         MvcResult mvcResult = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
 
         String result = mvcResult.getResponse().getContentAsString();
 
-        //Then
         String expected = null;
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             expected = objectMapper.writeValueAsString(listStudents);
-
         } catch(JsonProcessingException e) {
             e.printStackTrace();
         }
 
-        assertEquals(expected, result);
+        assertEquals(result, expected);
     }
 
     @Test

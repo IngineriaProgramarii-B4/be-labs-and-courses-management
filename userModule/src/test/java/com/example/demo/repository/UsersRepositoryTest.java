@@ -59,7 +59,7 @@ class UsersRepositoryTest {
         //
         //Given
         //
-        String email = "testemail@mail.com";
+        String email = "testemail@ail.com";
         //
         //When
         //
@@ -115,7 +115,7 @@ class UsersRepositoryTest {
         //
         //Given
         //
-        String username = "testUser";
+        String username = "tesUser";
         //
         //When
         //
