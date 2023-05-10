@@ -105,6 +105,15 @@ class SubjectTest {
     }
 
     @Test
+    void softDeleteComponentNotFound() {
+        Component component = new Component("Course", 14, new ArrayList<>(), false);
+        assertEquals(0, subject.getComponentList().size());
+
+        subject.softDeleteComponent(component);
+        assertEquals(0, subject.getComponentList().size());
+    }
+
+    @Test
     void addEvaluation() {
         Evaluation evaluation = new Evaluation("Course", 0.5f, "evaluation description", false);
         subject.addEvaluation(evaluation);
@@ -131,6 +140,15 @@ class SubjectTest {
         subject.softDeleteEvaluation(evaluation);
         assertEquals(1, subject.getEvaluationList().size());
         assertTrue(subject.getEvaluationList().get(0).isDeleted());
+    }
+
+    @Test
+    void softDeleteEvaluationNotFound() {
+        Evaluation evaluation = new Evaluation("Course", 0.5f, "evaluation description", false);
+        assertEquals(0, subject.getEvaluationList().size());
+
+        subject.softDeleteEvaluation(evaluation);
+        assertEquals(0, subject.getEvaluationList().size());
     }
 
     @Test

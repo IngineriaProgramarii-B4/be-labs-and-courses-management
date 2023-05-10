@@ -78,6 +78,15 @@ class ComponentTest {
     }
 
     @Test
+    void softDeleteResourceNotFound() {
+        Resource resource = new Resource("Physics_romania.png", "savedResources/Physics_romania.png", "image/png", false);
+        assertEquals(0, component.getResources().size());
+
+        component.softDeleteResource(resource);
+        assertEquals(0, component.getResources().size());
+    }
+
+    @Test
     void testToString() {
         component.setResources(List.of(new Resource("Physics_romania.png", "savedResources/Physics_romania.png", "image/png", false)));
         component.setNumberWeeks(10);
