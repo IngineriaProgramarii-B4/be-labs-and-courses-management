@@ -1,5 +1,6 @@
 package com.example.security.service;
 
+import com.example.security.exception.StudentNotFoundException;
 import com.example.security.model.Teacher;
 import com.example.security.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
@@ -27,9 +28,8 @@ public class TeacherService {
         if(teacherToUpdate != null){
             teacherToUpdate.setPassword(passwordEncoder.encode(newPassword));
             teacherRepository.save(teacherToUpdate);
-            System.out.println("Student with registration number: " + teacherToUpdate.getRegistrationNumber() + " updated.");
         }
-        else throw new RuntimeException("Student not found");
+        throw new StudentNotFoundException("Student not found with registration number: " + registrationNumber);
     }
     @Transactional
     public Teacher getTeacherByRegistrationNumber(Long registrationNumber){

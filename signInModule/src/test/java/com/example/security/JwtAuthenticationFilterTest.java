@@ -21,7 +21,7 @@ import java.io.IOException;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
- class JwtAuthenticationFilterTest {
+class JwtAuthenticationFilterTest {
 
     @InjectMocks
     private JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -64,6 +64,40 @@ import static org.mockito.Mockito.*;
         verify(tokenGenerator).validateToken(token);
         verify(tokenGenerator).getEmailFromJWT(token);
         verify(customUserDetailsService).loadUserByUsername(email);
+        verify(filterChain).doFilter(request, response);
+    }
+    @Test
+    void testDoFilterInternal_invalidToken() throws ServletException, IOException {
+        when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
+        when(tokenGenerator.validateToken(token)).thenReturn(false);
+
+        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
+
+        verify(tokenGenerator).validateToken(token);
+        verify(tokenGenerator, never()).getEmailFromJWT(token);
+        verify(customUserDetailsService, never()).loadUserByUsername(any());
+        verify(filterChain).doFilter(request, response);
+    }
+    @Test
+    void testDoFilterInternal_noBearerToken() throws ServletException, IOException {
+        when(request.getHeader("Authorization")).thenReturn(token);
+
+        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
+
+        verify(tokenGenerator, never()).validateToken(token);
+        verify(tokenGenerator, never()).getEmailFromJWT(token);
+        verify(customUserDetailsService, never()).loadUserByUsername(any());
+        verify(filterChain).doFilter(request, response);
+    }
+    @Test
+    void testDoFilterInternal_nullToken() throws ServletException, IOException {
+        when(request.getHeader("Authorization")).thenReturn(null);
+
+        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
+
+        verify(tokenGenerator, never()).validateToken(any());
+        verify(tokenGenerator, never()).getEmailFromJWT(any());
+        verify(customUserDetailsService, never()).loadUserByUsername(any());
         verify(filterChain).doFilter(request, response);
     }
 }

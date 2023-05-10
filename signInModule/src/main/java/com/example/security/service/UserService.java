@@ -1,9 +1,12 @@
 package com.example.security.service;
 
+import com.example.security.exception.StudentNotFoundException;
 import com.example.security.model.UserEntity;
 import com.example.security.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserService implements IUserService{
@@ -23,7 +26,13 @@ public class UserService implements IUserService{
     }
     @Override
     public UserEntity findUserByPasswordToken(String token) {
-        return passwordResetTokenService.findUserByPasswordToken(token).get();
+        Optional<UserEntity> user = passwordResetTokenService.findUserByPasswordToken(token);
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new StudentNotFoundException("Student not found " );
+             // or throw an exception
+        }
     }
     @Override
     public void createPasswordResetTokenForUser(UserEntity user, String passwordResetToken) {

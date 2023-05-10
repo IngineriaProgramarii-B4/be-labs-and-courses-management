@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.catalina.User;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -17,7 +16,7 @@ import java.util.Date;
 public class PasswordResetToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long token_id;
+    private Long tokenId;
     private String token;
     private Date expirationTime;
     private static final int EXPIRATION_TIME = 10;
