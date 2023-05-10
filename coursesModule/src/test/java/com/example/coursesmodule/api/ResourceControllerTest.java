@@ -226,6 +226,23 @@ class ResourceControllerTest {
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals("image/png", Objects.requireNonNull(result.getHeaders().getContentType()).toString());
     }
+
+    @Test
+    void getResourceFileFileReadError(){
+        Subject subject = new Subject("Algebraic Foundations of Science", 6, 1, 2, "not gonna pass",
+                List.of(new Component("Seminar", 14, new ArrayList<>(), false),
+                        new Component("Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics.png", "image/png", false)), false)),
+                List.of(new Evaluation("Seminar", 0.5F, "Test", false),
+                        new Evaluation("Laboratory", 0.5F, "Test", false))
+                , false);
+        when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
+        when(componentService.getComponentByType(subject.getTitle(), "Laboratory")).thenReturn(Optional.of(new Component("Laboratory", 14, List.of(new Resource("Book", "savedResources/Physics.png", "image/png", false)), false)));
+        Resource resource = new Resource("Book", "savedResources/Physics.png", "image/png", false);
+        when(resourceService.getResourceByTitle(subject.getTitle(), "Laboratory", "Book")).thenReturn(Optional.of(resource));
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> resourceController.getResourceFile("Algebraic Foundations of Science", "Laboratory", "Book"));
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.getStatusCode());
+    }
     @Test
     void getResourceFileSubjectNotFound(){
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.empty());

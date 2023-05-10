@@ -77,7 +77,7 @@ class ComponentServiceTest {
     }
 
     @Test
-    public void testValidateComponent_DuplicateComponent() {
+    void testValidateComponent_DuplicateComponent() {
         List<Component> components = List.of(
                 new Component("Course", 12, new ArrayList<>(), false),
                 new Component("Laboratory", 13, new ArrayList<>(), false));
