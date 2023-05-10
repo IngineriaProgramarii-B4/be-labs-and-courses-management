@@ -21,7 +21,9 @@ class AdminsRepositoryTest {
     @DirtiesContext
     void findAdminsByParamsEmailExistsTest() {
 
-        //INPUT
+        //
+        //Given
+        //
         Admin admin = new Admin(
                 "testName",
                 "testSurname",
@@ -35,7 +37,9 @@ class AdminsRepositoryTest {
 
         adminsRepository.save(admin);
 
-        //OUTPUT
+        //
+        //When
+        //
         String email = "testemail@mail.com";
 
         List<Admin> result = adminsRepository.findAdminsByParams(
@@ -48,16 +52,21 @@ class AdminsRepositoryTest {
                 null
         );
 
-        //EXPECTING
+        //
+        //Then
+        //
         assertEquals(true, result.containsAll(expected));
     }
 
     @Test
     void findAdminsByParamsEmailNonexistentTest() {
-
-        //OUTPUT
+        //
+        //Given
+        //
         String email = "testemail@mail.com";
-
+        //
+        //When
+        //
         List<Admin> result = adminsRepository.findAdminsByParams(
                 null,
                 null,
@@ -67,16 +76,18 @@ class AdminsRepositoryTest {
                 null,
                 null
         );
-
-        //EXPECTING
+        //
+        //Then
+        //
         assertTrue(result.isEmpty());
     }
 
     @Test
     @DirtiesContext
     void findAdminsByParamsUsernameExistsTest() {
-
-        //INPUT
+        //
+        //Given
+        //
         Admin admin = new Admin(
                 "testName",
                 "testSurname",
@@ -89,7 +100,7 @@ class AdminsRepositoryTest {
 
         adminsRepository.save(admin);
 
-        //OUTPUT
+        //When
         String username = "testUser";
 
         List<Admin> result = adminsRepository.findAdminsByParams(
@@ -102,16 +113,16 @@ class AdminsRepositoryTest {
                 null
         );
 
-        //EXPECTING
+        //Then
         assertTrue(result.contains(admin));
     }
 
     @Test
     void findAdminsByParamsUsernameNonexistentTest() {
 
-        //OUTPUT
+        //Given
         String username = "testUser";
-
+        //When
         List<Admin> result = adminsRepository.findAdminsByParams(
                 null,
                 null,
@@ -122,7 +133,7 @@ class AdminsRepositoryTest {
                 null
         );
 
-        //EXPECTING
+        //Then
         assertTrue(result.isEmpty());
     }
 }

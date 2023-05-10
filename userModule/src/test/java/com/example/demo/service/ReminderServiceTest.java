@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-public class ReminderServiceTest {
+class ReminderServiceTest {
     @InjectMocks
     RemindersService remindersService;
 
@@ -68,7 +68,7 @@ public class ReminderServiceTest {
 
     @Test
     void getRemindersByParamsTest() {
-
+        //Given
         List<Reminder> expected = List.of(reminder1);
 
         Map<String, Object> args = new HashMap<>();
@@ -77,39 +77,47 @@ public class ReminderServiceTest {
         args.put("id", reminder1.getId());
 
         given(remindersRepository.findRemindersByParams(
-                eq(reminder1.getCreatorUsername()),
-                eq(reminder1.getId())
+                reminder1.getCreatorUsername(),
+                reminder1.getId()
         )).willReturn(expected);
 
+        //When
         List<Reminder> result = remindersService.getRemindersByParams(args);
 
+        //Then
         assertTrue(result.containsAll(expected));
     }
 
     @Test
     void saveReminderTest() {
+        //When
         when(remindersRepository.save(reminder1)).thenReturn(reminder1);
 
         remindersService.saveReminder(reminder1);
 
+        //Then
         verify(remindersRepository, times(1)).save(reminder1);
     }
 
     @Test
     void removeReminderTest() {
+        //When
         doNothing().when(remindersRepository).deleteById(reminder1.getId());
 
         remindersService.removeReminder(reminder1.getId());
 
+        //Then
         verify(remindersRepository, times(1)).deleteById(reminder1.getId());
     }
 
     @Test
     void updateReminderTest() {
+        //When
         doNothing().when(remindersRepository).updateReminder(reminder1.getId(), reminder1.getCreatorId(), reminder1.getCreatorUsername(), reminder1.getDueDateTime(), reminder1.getTitle(), reminder1.getDescription());
 
         remindersService.updateReminder(reminder1.getId(), reminder1);
 
+        //Then
         verify(remindersRepository, times(1)).updateReminder(reminder1.getId(), reminder1.getCreatorId(), reminder1.getCreatorUsername(), reminder1.getDueDateTime(), reminder1.getTitle(), reminder1.getDescription());
     }
 }

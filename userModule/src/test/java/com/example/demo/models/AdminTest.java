@@ -26,7 +26,7 @@ class AdminTest{
         //
         //Then
         //
-        assertEquals(admin.toString(), "Admin{department='null', office='null', id=null, firstname='testFirstName', lastname='setLastname', email='null', username='null'}");
+        assertEquals("Admin{department='null', office='null', id=null, firstname='testFirstName', lastname='setLastname', email='null', username='null'}",admin.toString());
 
     }
     @Test

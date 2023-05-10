@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 
-public class StudentTest {
+class StudentTest {
     @Test
     void tesToString()
     {
@@ -30,7 +30,7 @@ public class StudentTest {
         //
         //Then
         //
-        assertEquals(student.toString(), "Student{enrolledCourses=[], year=0, semester=0, registrationNumber='null', id=null, firstname='testFirstname', lastname='testLastname', email='null', username='null'}");
+        assertEquals("Student{enrolledCourses=[], year=0, semester=0, registrationNumber='null', id=null, firstname='testFirstname', lastname='testLastname', email='null', username='null'}",student.toString());
 
     }
 

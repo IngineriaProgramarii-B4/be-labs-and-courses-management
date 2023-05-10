@@ -48,7 +48,7 @@ class TeachersServiceTest {
 
     @Test
     void getTeachersByParamsOfficeTest() {
-
+        //Given
         List<Teacher> expected = List.of(teacher);
 
         Map<String, Object> args = new HashMap<>();
@@ -67,14 +67,16 @@ class TeachersServiceTest {
                 nullable(String.class)))
                 .willReturn(expected);
 
+        //When
         List<Teacher> result = teachersService.getTeachersByParams(args);
 
+        //Then
         assertTrue(result.containsAll(expected));
     }
 
     @Test
     void getTeachersByParamsTitleTest() {
-
+        //Given
         List<Teacher> expected = List.of(teacher);
 
         Map<String, Object> args = new HashMap<>();
@@ -91,14 +93,16 @@ class TeachersServiceTest {
                 eq("TitleTest")))
                 .willReturn(expected);
 
+        //When
         List<Teacher> result = teachersService.getTeachersByParams(args);
 
+        //Then
         assertTrue(result.containsAll(expected));
     }
 
     @Test
     void getTeachersByParamsIdTest() {
-
+        //Given
         List<Teacher> expected = List.of(teacher);
 
         Map<String, Object> args = new HashMap<>();
@@ -117,26 +121,32 @@ class TeachersServiceTest {
                 nullable(String.class)))
                 .willReturn(expected);
 
+        //When
         List<Teacher> result = teachersService.getTeachersByParams(args);
 
+        //Then
         assertTrue(result.containsAll(expected));
     }
 
     @Test
     void saveTeacherTest() {
+        //When
         when(teachersRepository.save(teacher)).thenReturn(teacher);
 
         teachersService.saveTeacher(teacher);
 
+        //Then
         verify(teachersRepository, times(1)).save(teacher);
     }
 
     @Test
     void updateTeacherTest() {
+        //When
         doNothing().when(teachersRepository).updateTeacher(teacher.getId(), teacher.getFirstname(), teacher.getLastname(), teacher.getEmail(), teacher.getUsername(), teacher.getOffice(), teacher.getTitle());
 
         teachersService.updateTeacher(teacher.getId(), teacher);
 
+        //Then
         verify(teachersRepository, times(1)).updateTeacher(teacher.getId(), teacher.getFirstname(), teacher.getLastname(), teacher.getEmail(), teacher.getUsername(), teacher.getOffice(), teacher.getTitle());
     }
 }
