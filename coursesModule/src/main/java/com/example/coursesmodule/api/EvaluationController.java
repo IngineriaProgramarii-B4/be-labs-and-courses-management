@@ -14,7 +14,7 @@ import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping(path = "api/v1/subjects/{subjectTitle}/evaluationMethods")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000")
 public class EvaluationController {
 
     private static final String SUBJECT_ERROR = "Subject not found";
