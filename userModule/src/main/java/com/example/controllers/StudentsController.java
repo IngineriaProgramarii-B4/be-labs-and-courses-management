@@ -15,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
@@ -102,7 +101,7 @@ public class StudentsController {
         if (students.isPresent()) {
             return new ResponseEntity<>(students.get().getGrades(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -158,7 +157,7 @@ public class StudentsController {
             studentsService.addGrade(id, grade);
             return new ResponseEntity<>(grade, HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -186,6 +185,6 @@ public class StudentsController {
                 return new ResponseEntity<>(grade.get(), HttpStatus.OK);
             }
         }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

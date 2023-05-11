@@ -26,10 +26,12 @@ public class TeachersService {
         String office = (String) params.get("office");
         String title = (String) params.get("title");
 
-
         if (params.containsKey("id") && (!params.get("id").equals(""))) {
+            if (params.get("id").getClass().toString().equals("class java.lang.String")) {
+                id = UUID.fromString((String) params.get("id"));
+            } else {
                 id = (UUID) params.get("id");
-
+            }
         }
 
         return teachersRepository.findTeachersByParams(id, firstname, lastname, email, username, office, title);

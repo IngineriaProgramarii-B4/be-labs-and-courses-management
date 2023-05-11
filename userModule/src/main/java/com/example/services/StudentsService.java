@@ -96,9 +96,6 @@ public class StudentsService {
 
     @Transactional
     public Grade deleteGrade(UUID id, int gradeId) {
-        List<Grade> grades;
-        Student student = studentsRepository.findStudentById(id);
-        grades = student.getGrades();
         try {
             return getGradeById(id, gradeId).setDeleted();
         } catch (Exception e) {
