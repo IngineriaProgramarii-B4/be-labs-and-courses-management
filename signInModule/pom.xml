@@ -49,9 +49,9 @@
 	<properties>
 		<java.version>17</java.version>
 		<sonar.host.url>http://localhost:9000</sonar.host.url>
-		<sonar.token>sqp_23bbf3155bfb28f8f88254d6bc31ab544e72f46a
+		<sonar.token>sqp_55156e1f2d0d7d9e118f1a97a49c818f37eaca02
 		</sonar.token>
-		<sonar.projectKey>Ip-proiect</sonar.projectKey>
+		<sonar.projectKey>Ip-Backend</sonar.projectKey>
 
 	</properties>
 	<dependencies>
