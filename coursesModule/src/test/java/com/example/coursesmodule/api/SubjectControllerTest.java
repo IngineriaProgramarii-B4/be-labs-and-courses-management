@@ -12,12 +12,10 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +32,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,7 +46,7 @@ class SubjectControllerTest {
     private SubjectController subjectController;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(subjectController).build();
     }
 
@@ -58,8 +55,8 @@ class SubjectControllerTest {
     void getAllSubjects() {
 
         List<Subject> subjects = new ArrayList<>();
-        subjects.add(new Subject(1, "Math", 5, 1, 1, "description A", new ArrayList<>(), new ArrayList<>(), false));
-        subjects.add(new Subject(2, "English", 4, 1, 1, "description B", new ArrayList<>(), new ArrayList<>(), false));
+        subjects.add(new Subject("Math", 5, 1, 1, "description A", new ArrayList<>(), new ArrayList<>(), false));
+        subjects.add(new Subject("English", 4, 1, 1, "description B", new ArrayList<>(), new ArrayList<>(), false));
         when(subjectService.getAllSubjects()).thenReturn(subjects);
 
         List<Subject> result = subjectController.getAllSubjects();
@@ -90,7 +87,6 @@ class SubjectControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
-                            "id": 1,
                             "title": "Math",
                             "credits": 5,
                             "year": 1,
@@ -106,7 +102,7 @@ class SubjectControllerTest {
     //passed
     @Test
     void addSubjectThatAlreadyExists() {
-        Subject subject = new Subject(1, "Math", 5, 1, 1, "description", new ArrayList<>(), new ArrayList<>(), false);
+        Subject subject = new Subject("Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         when(subjectService.addSubject(any())).thenReturn(0);
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> subjectController.addSubject(subject));
@@ -140,7 +136,7 @@ class SubjectControllerTest {
     @Test
     void updateSubjectById() {
         String title = "Math";
-        Subject updatedSubject = new Subject(1, "Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
+        Subject updatedSubject = new Subject("Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         when(subjectService.getSubjectByTitle(title)).thenReturn(Optional.of(new Subject()));
         when(subjectService.updateSubjectByTitle(title, updatedSubject)).thenReturn(1);
 
@@ -156,7 +152,7 @@ class SubjectControllerTest {
     @Test
     void updateSubjectByIdNotFound() {
         String title = "Physics";
-        Subject updatedSubject = new Subject(2, "Physics", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
+        Subject updatedSubject = new Subject("Physics", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         when(subjectService.getSubjectByTitle(title)).thenReturn(Optional.empty());
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> subjectController.updateSubjectByTitle(title, updatedSubject));
@@ -168,7 +164,7 @@ class SubjectControllerTest {
     @Test
     void updateSubjectWithInvalidSubject(){
         String title = "Math";
-        Subject updatedSubject = new Subject(1, "Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
+        Subject updatedSubject = new Subject("Math", 5, 1, 2, "description", new ArrayList<>(), new ArrayList<>(), false);
         when(subjectService.getSubjectByTitle(title)).thenReturn(Optional.of(new Subject()));
         when(subjectService.updateSubjectByTitle(title, updatedSubject)).thenReturn(0);
 
@@ -181,7 +177,7 @@ class SubjectControllerTest {
     //passed
     @Test
     void getSubjectByTitle() {
-        Subject subject = new Subject(4, "Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
+        Subject subject = new Subject("Algebraic Foundations of Science", 5, 1, 2, "not gonna pass", new ArrayList<>(), new ArrayList<>(), false);
         subjectService.addSubject(subject);
 
         when(subjectService.getSubjectByTitle("Algebraic Foundations of Science")).thenReturn(Optional.of(subject));
@@ -208,14 +204,13 @@ class SubjectControllerTest {
     @Test
     void getSubjectsByYearAndSemesterSuccessful() {
         List<Subject> subjects = new ArrayList<>();
-        subjects.add(new Subject(2, "Physics", 5, 1, 2, "description", List.of(new Component(2, "Course", 10, List.of(new Resource("Book.pdf", "savedResources/Book.pdf", "application/pdf", false)), false)),
-                List.of(new Evaluation(1L, "Course", 0.5f, "description B", false)), false));
+        subjects.add(new Subject("Physics", 5, 1, 2, "description", List.of(new Component("Course", 10, List.of(new Resource("Book.pdf", "savedResources/Book.pdf", "application/pdf", false)), false)),
+                List.of(new Evaluation("Course", 0.5f, "description B", false)), false));
         when(subjectService.getSubjectsByYearAndSemester(1, 2)).thenReturn(subjects);
 
         List<Subject> result = subjectController.getSubjectsByYearAndSemester(1, 2);
 
         assertEquals(1, result.size());
-        assertEquals(2, result.get(0).getId());
         assertEquals("Physics", result.get(0).getTitle());
         assertEquals(5, result.get(0).getCredits());
         assertEquals(1, result.get(0).getYear());
@@ -263,19 +258,18 @@ class SubjectControllerTest {
     }
 
     @Test
-    void testGetSubjectImageNotFound() throws Exception {
+    void testGetSubjectImageNotFound() {
         when(subjectService.getSubjectByTitle(anyString())).thenReturn(Optional.empty());
 
         ResponseEntity<byte[]> response = subjectController.getSubjectImage("Test");
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("Subject not found", new String(response.getBody()));
+        assertEquals("Subject not found", new String(Objects.requireNonNull(response.getBody())));
     }
 
     @Test
-    public void testGetSubjectImageNoImage() throws Exception {
+    void testGetSubjectImageNoImage(){
         String title = "Test Subject";
 
-        // Create a mock Subject object with no associated Image
         Subject subject = new Subject();
         subject.setTitle(title);
         subject.setImage(null);
@@ -286,14 +280,14 @@ class SubjectControllerTest {
 
         ResponseEntity<byte[]> response = subjectController.getSubjectImage(title);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("Image not found", new String(response.getBody()));
+        assertEquals("Image not found", new String(Objects.requireNonNull(response.getBody())));
     }
 
 
     @Test
-    public void testGetSubjectImageSuccess() throws Exception {
+    void testGetSubjectImageSuccess() throws Exception {
         Subject mockSubject = new Subject();
-        Resource resource = new Resource(1, "Physics_romania.png", "savedResources\\Physics_romania.png", "image/png", false);
+        Resource resource = new Resource("Physics_romania.png", "savedResources\\Physics_romania.png", "image/png", false);
         mockSubject.setImage(resource);
 
         // Mock the subjectService.getSubjectByTitle() method to return the mock Subject object

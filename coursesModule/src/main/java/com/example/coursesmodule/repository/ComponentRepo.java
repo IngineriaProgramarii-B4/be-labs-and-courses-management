@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-public interface ComponentRepo extends JpaRepository<Component, Integer> {
+public interface ComponentRepo extends JpaRepository<Component, UUID> {
    @Query("SELECT c FROM Subject s JOIN s.componentList c WHERE s.title = ?1 AND s.isDeleted = FALSE AND c.isDeleted = FALSE")
    List<Component> findAllBySubjectTitle(String title);
 

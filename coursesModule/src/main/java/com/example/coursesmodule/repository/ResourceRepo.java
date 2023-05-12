@@ -7,8 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-public interface ResourceRepo extends JpaRepository<Resource, Integer> {
+public interface ResourceRepo extends JpaRepository<Resource, UUID> {
     @Query("SELECT r FROM Subject s JOIN s.componentList c JOIN c.resources r WHERE s.title = ?1 AND s.isDeleted = FALSE AND c.type = ?2 AND c.isDeleted = FALSE AND r.isDeleted = FALSE")
     List<Resource> findAllBySubjectTitleAndComponentType(String title, String type);
 

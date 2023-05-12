@@ -1,23 +1,23 @@
 package com.example.coursesmodule.model;
 
 import jakarta.persistence.*;
-
+import org.hibernate.annotations.GenericGenerator;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "resource")
 public class Resource {
     @Id
-    @SequenceGenerator(
+    @GenericGenerator(
             name = "resource_sequence",
-            sequenceName = "resource_sequence",
-            allocationSize = 1
+            strategy = "org.hibernate.id.UUIDGenerator"
     )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
+            strategy = GenerationType.IDENTITY,
             generator = "resource_sequence"
     )
-    private int id;
+    private UUID id;
     @Column(
             name = "title",
             nullable = false
@@ -29,12 +29,10 @@ public class Resource {
             unique = true
     )
     private String location;
-    @Column(
-            name = "time_stamp",
-            nullable = false,
-            columnDefinition = "TIMESTAMP WITHOUT TIME ZONE"
-    )
-    private LocalDateTime timeStamp;
+    @Column(name="created_at", nullable = false)
+    private LocalDateTime createdAt;
+    @Column(name="updated_at", nullable = false)
+    private LocalDateTime updatedAt;
     @Column(
             name = "type",
             nullable = false
@@ -47,27 +45,14 @@ public class Resource {
 
 
     public Resource() {
-        timeStamp = LocalDateTime.now();
-    }
 
-    public Resource(int id,
-                    String title,
-                    String location,
-                    String type,
-                    boolean isDeleted) {
-        this.id = id;
-        this.title = title;
-        this.location = location;
-        this.type = type;
-        this.timeStamp = LocalDateTime.now();
-        this.isDeleted = isDeleted;
     }
 
     public Resource(String title, String location, String type, boolean isDeleted) {
+        this.id = UUID.randomUUID();
         this.title = title;
         this.location = location;
         this.type = type;
-        this.timeStamp = LocalDateTime.now();
         this.isDeleted = isDeleted;
     }
 
@@ -79,35 +64,28 @@ public class Resource {
     public void setLocation(String location) {
         this.location = location;
     }
-    public void setTimeStamp(LocalDateTime timeStamp) {
-        this.timeStamp = timeStamp;
-    }
-
     public void setType(String type) {
         this.type = type;
     }
-
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
     }
 
     //getters
-    public int getId() {
-        return id;
-    }
-
     public String getTitle() {
         return title;
     }
     public String getLocation() {
         return location;
     }
-    public LocalDateTime getTimeStamp() {
-        return timeStamp;
-    }
-
     public String getType() {
         return type;
+    }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public boolean isDeleted() {
