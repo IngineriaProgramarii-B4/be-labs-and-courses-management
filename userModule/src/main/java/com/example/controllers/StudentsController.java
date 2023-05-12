@@ -15,11 +15,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("api/v1/")
 public class StudentsController {
@@ -40,9 +42,6 @@ public class StudentsController {
             ),
             @ApiResponse(responseCode = "404", description = "Haven't found students that match the requirements",
                     content = @Content
-            ),
-            @ApiResponse(responseCode = "500", description = "Internal server error",
-                    content = @Content
             )
     })
     @GetMapping(value = {"/students"})
@@ -54,6 +53,7 @@ public class StudentsController {
         }
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
+
     @Operation(summary = "Receive necessary data in order to update information about a student in the database")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Resource updated successfully",
@@ -101,7 +101,7 @@ public class StudentsController {
         if (students.isPresent()) {
             return new ResponseEntity<>(students.get().getGrades(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -157,7 +157,7 @@ public class StudentsController {
             studentsService.addGrade(id, grade);
             return new ResponseEntity<>(grade, HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -185,6 +185,6 @@ public class StudentsController {
                 return new ResponseEntity<>(grade.get(), HttpStatus.OK);
             }
         }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

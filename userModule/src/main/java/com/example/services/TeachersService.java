@@ -26,10 +26,12 @@ public class TeachersService {
         String office = (String) params.get("office");
         String title = (String) params.get("title");
 
-
         if (params.containsKey("id") && (!params.get("id").equals(""))) {
+            if (params.get("id").getClass().toString().equals("class java.lang.String")) {
+                id = UUID.fromString((String) params.get("id"));
+            } else {
                 id = (UUID) params.get("id");
-
+            }
         }
 
         return teachersRepository.findTeachersByParams(id, firstname, lastname, email, username, office, title);
@@ -38,6 +40,7 @@ public class TeachersService {
     public void saveTeacher(Teacher teacher) {
         teachersRepository.save(teacher);
     }
+
     @Transactional
     public void updateTeacher(UUID id, Teacher teacher) {
         // TODO : update the courses, it implies another table that makes connection between teacher and subjects

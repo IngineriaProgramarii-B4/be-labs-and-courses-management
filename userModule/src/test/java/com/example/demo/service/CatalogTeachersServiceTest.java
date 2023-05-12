@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.example.models.Student;
 import com.example.models.Teacher;
 import com.example.repository.TeachersRepository;
 import com.example.services.TeachersService;
@@ -25,7 +24,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-public class TeachersServiceTest2 {
+public class CatalogTeachersServiceTest {
     @InjectMocks
     TeachersService teachersService;
     @Mock
@@ -79,7 +78,7 @@ public class TeachersServiceTest2 {
                 nullable(String.class),
                 nullable(String.class),
                 nullable(String.class)
-                ))
+        ))
                 .willReturn(List.of(teacher));
 
         Teacher get_result = teachersService.getTeachersByParams(Map.of("id", teacher.getId())).get(0);

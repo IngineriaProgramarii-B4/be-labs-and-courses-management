@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(StudentsController.class)
-class StudentsControllerTest2 {
+class CatalogStudentsControllerTest {
     @Autowired
     private MockMvc mvc;
     @Autowired
@@ -62,8 +62,8 @@ class StudentsControllerTest2 {
     void tearDown() {
     }
     @Test
-    void getAllStudentsAPI() throws Exception {
-            when(studentsService.getStudentsByParams(Map.of())).thenReturn(students);
+    void getAllStudentsTest() throws Exception {
+        when(studentsService.getStudentsByParams(Map.of())).thenReturn(students);
         MvcResult studentResult = mvc.perform(get("/api/v1/students")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -75,7 +75,7 @@ class StudentsControllerTest2 {
         assertEquals(students, studentResponse);
     }
     @Test
-    void createStudentAPI() throws Exception {
+    void createStudentTest() throws Exception {
         when(studentsService.saveStudent(any(Student.class))).thenReturn(student);
         MvcResult studentResult = mvc.perform(post("/api/v1/students")
                         .content(asJsonString(student))
@@ -91,39 +91,33 @@ class StudentsControllerTest2 {
 
     }
     @Test
-    void getStudentByIdAPI() throws Exception {
+    void getStudentByIdTest() throws Exception {
         UUID id = student.getId();
         when(studentsService.getStudentById(id)).thenReturn(student);
-        MvcResult studentResult = mvc.perform(get("/api/v1/students/{id}", id.toString())).andExpect(status().isOk()).andReturn();
+
+        // Test scenario where student is found
+        MvcResult studentResult = mvc.perform(get("/api/v1/students/{id}", id.toString()))
+                .andExpect(status().isOk())
+                .andReturn();
         Student studentCreated = objectMapper.readValue(studentResult.getResponse().getContentAsString(), Student.class);
         assertNotNull(studentCreated);
-        assertEquals(student,studentCreated);
+        assertEquals(student, studentCreated);
+
+        // Test scenario where student is not found
+        when(studentsService.getStudentById(id)).thenReturn(null);
+        mvc.perform(get("/api/v1/students/{id}", id.toString()))
+                .andExpect(status().isNotFound());
     }
+
 
     /* In StudentsController la ce ati mutat voi nu exista acest get, am vazut ca e doar in Catalog  - am mutat si getu asta */
 
     @Test
-    void getStudentByIdGradesOnSubjectAPI() throws Exception {
-        when(studentsService.getStudentById(any(UUID.class))).thenReturn(student);
-
-        MvcResult gradesList = mvc.perform(get("/api/v1/students/{id}/{subject}",  student.getId(), subject.getTitle()))
-                .andExpect(status().isOk())
-                .andReturn();
-        List<Grade> gradesResponse = objectMapper.readValue(gradesList.getResponse().getContentAsString(), new TypeReference<>() {});
-        assertNotNull(gradesResponse);
-
-        int gradesIds = 0;
-        int gradesResponseIds = 0;
-        for (Grade grade1 : grades)
-            gradesIds += grade1.getId();
-        for (Grade grade2 : gradesResponse)
-            gradesResponseIds += grade2.getId();
-
-        assertEquals(gradesIds, gradesResponseIds);
-    }
-    @Test
-    void getStudentByIdGradesAPI() throws Exception {
+    void getStudentByIdGradesTest() throws Exception {
+        // Mock the studentsService.getStudentById() method to return a non-null Student object
         when(studentsService.getStudentById(student.getId())).thenReturn(student);
+
+        // Test the case where the Student object is present
         MvcResult gradesList = mvc.perform(get("/api/v1/students/{id}/grades",  student.getId(), subject.getTitle())
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -141,7 +135,22 @@ class StudentsControllerTest2 {
             gradesResponseIds += grade2.getId();
 
         assertEquals(gradesIds, gradesResponseIds);
+
+        // Mock the studentsService.getStudentById() method to return a null object
+        when(studentsService.getStudentById(student.getId())).thenReturn(null);
+
+        // Test the case where the Student object is not present
+        MvcResult nullStudentResult = mvc.perform(get("/api/v1/students/{id}/grades",  student.getId(), subject.getTitle())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        // Check that the response entity is null
+        String nullStudentResponse = nullStudentResult.getResponse().getContentAsString();
+        assertTrue(nullStudentResponse.isEmpty());
     }
+
 
     /* Nici acest GET nu exista, exista doar put / delete cu acest endpoint  - solved */
     @Test
@@ -160,10 +169,88 @@ class StudentsControllerTest2 {
     }
 
     @Test
-    void createGradeAPI() throws Exception {
+    void TestGetGradeByIdReturnsGradeWhenStudentAndGradeExist() throws Exception {
+        // Arrange
+        UUID studentId = student.getId();
+        int gradeId = grade.getId();
+        when(studentsService.getStudentById(studentId)).thenReturn(student);
+        when(studentsService.getGradeById(studentId, gradeId)).thenReturn(grade);
+
+        // Act
+        MvcResult result = mvc.perform(get("/api/v1/students/{id}/grades/{gradeId}", studentId, gradeId))
+                .andExpect(status().isOk())
+                .andReturn();
+        Grade gradeResponse = objectMapper.readValue(result.getResponse().getContentAsString(), Grade.class);
+
+        // Assert
+        assertNotNull(gradeResponse);
+        assertEquals(grade.getId(), gradeResponse.getId());
+        assertTrue(result.getResponse().getContentAsString().contains(subject.getTitle()));
+    }
+
+    @Test
+    void TestGetGradeByIdReturnsNotFoundWhenStudentDoesNotExist() throws Exception {
+        // Arrange
+        UUID studentId = UUID.randomUUID();
+        int gradeId = grade.getId();
+        when(studentsService.getStudentById(studentId)).thenReturn(null);
+
+        // Act
+        MvcResult result = mvc.perform(get("/api/v1/students/{id}/grades/{gradeId}", studentId, gradeId))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        String content = result.getResponse().getContentAsString();
+
+        // Assert
+        assertEquals("", content);
+    }
+
+    @Test
+    void getGradeByIdReturnsNotFoundWhenGradeDoesNotExist() throws Exception {
+        // Arrange
+        UUID studentId = student.getId();
+        int gradeId = 10;
+        when(studentsService.getStudentById(studentId)).thenReturn(student);
+        when(studentsService.getGradeById(studentId, gradeId)).thenReturn(null);
+
+        // Act
+        MvcResult result = mvc.perform(get("/api/v1/students/{id}/grades/{gradeId}", studentId, gradeId))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        String content = result.getResponse().getContentAsString();
+
+        // Assert
+        assertEquals("", content);
+    }
+
+    @Test
+    void TestGetGradeByIdReturnsNotFoundWhenStudentAndGradeDoNotExist() throws Exception {
+        // Arrange
+        UUID studentId = UUID.randomUUID();
+        int gradeId = 10;
+        when(studentsService.getStudentById(studentId)).thenReturn(null);
+        when(studentsService.getGradeById(studentId, gradeId)).thenReturn(null);
+
+        // Act
+        MvcResult result = mvc.perform(get("/api/v1/students/{id}/grades/{gradeId}", studentId, gradeId))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        String content = result.getResponse().getContentAsString();
+
+        // Assert
+        assertEquals("", content);
+    }
+
+
+    @Test
+    void createGradeTest() throws Exception {
         //GradeId pus in postGradeResult inainte ca metoda Student.addGrade() sa aloce un ID.
         Grade gradeForPost = new Grade(10, subject, "12.12.1222");
         gradeForPost.setId(1);
+
+        // Non-existent student ID
+        UUID nonExistentStudentId = UUID.randomUUID();
+        when(studentsService.getStudentById(nonExistentStudentId)).thenReturn(null);
 
         when(studentsService.getStudentById(student.getId())).thenReturn(student);
         when(studentsService.addGrade(eq(student.getId()), any(Grade.class))).thenAnswer((Answer<Grade>) invocationOnMock -> {
@@ -171,6 +258,16 @@ class StudentsControllerTest2 {
             return grade;
         });
 
+        // Posting grade for a non-existent student
+        MvcResult postGradeResultNotFound = mvc.perform(post("/api/v1/students/{id}/grades", nonExistentStudentId)
+                        .content(asJsonString(gradeForPost))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        // Posting grade for an existing student
         MvcResult postGradeResult = mvc.perform(post("/api/v1/students/{id}/grades", student.getId())
                         .content(asJsonString(gradeForPost))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -182,7 +279,7 @@ class StudentsControllerTest2 {
         Grade gradeResponse = objectMapper.readValue(postGradeResult.getResponse().getContentAsString(), Grade.class);
 
         assertNotNull(gradeResponse);
-        assertEquals(gradeResponse.getId(),gradeForPost.getId());
+        assertEquals(gradeResponse.getId(), gradeForPost.getId());
 
         // given null grade
         mvc.perform(post("/api/v1/students/{id}/grades", student.getId())
@@ -195,8 +292,10 @@ class StudentsControllerTest2 {
         assertEquals(2, student.getGrades().size());
     }
 
+
+
     @Test
-    void deleteGradeAPI() throws Exception {
+    void deleteGradeTest() throws Exception {
 
         when(studentsService.getStudentById(student.getId())).thenReturn(student);
         when(studentsService.deleteGrade(student.getId(), grade.getId())).thenAnswer((Answer<Grade>) invocationOnMock -> {
@@ -220,7 +319,41 @@ class StudentsControllerTest2 {
     }
 
     @Test
-    void deleteStudentAPI() throws Exception {
+    void deleteGradeAltTest() throws Exception {
+
+        when(studentsService.getStudentById(student.getId())).thenReturn(student);
+        when(studentsService.deleteGrade(student.getId(), grade.getId())).thenReturn(null);
+
+        MvcResult deleteGradeResult = mvc.perform(delete("/api/v1/students/{id}/grades/{gradeId}", student.getId(), grade.getId())
+                        .content(asJsonString(grade))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        assertEquals(deleteGradeResult.getResponse().getContentAsString(), "");
+    }
+
+    @Test
+    void deleteNonExistentStudentTest() throws Exception {
+        UUID nonExistentStudentId = UUID.randomUUID();
+
+        when(studentsService.getStudentById(nonExistentStudentId)).thenReturn(null);
+
+        MvcResult deleteResult = mvc.perform(delete("/api/v1/students/{id}", nonExistentStudentId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        assertEquals("", deleteResult.getResponse().getContentAsString());
+    }
+
+
+    @Test
+    void deleteStudentTest() throws Exception {
         when(studentsService.getStudentById(student.getId())).thenReturn(student);
         when(studentsService.deleteStudent(student.getId())).thenAnswer((Answer<Student>) invocationOnMock -> student.setDeleted());
 
@@ -240,7 +373,8 @@ class StudentsControllerTest2 {
 
     /* Aici am vorbit cu tudor ca va trebui schimbata modul de a afisa data si vedem dupa aceea */
     @Test
-    void updateGradeValueAPI() throws Exception {
+    void updateGradeValueTest() throws Exception {
+        // Setup
         when(studentsService.getStudentById(student.getId())).thenReturn(student);
         when(studentsService.getGradeById(student.getId(), grade.getId())).thenReturn(grade);
 
@@ -254,6 +388,7 @@ class StudentsControllerTest2 {
             return toUpdate;
         });
 
+        // Test case 1: when student and grade are present
         MvcResult updateGradeResult = mvc.perform(put("/api/v1/students/{id}/grades/{gradeId}", student.getId(), grade.getId())
                         .param("evaluationDate", asJsonString(evalDateTest))
                         .param("value", asJsonString(valueTest))
@@ -267,9 +402,39 @@ class StudentsControllerTest2 {
 
         assertNotNull(gradeResponse);
         assertEquals(gradeResponse.getId(), grade.getId());
-
         assertEquals("12.12.2002", gradeResponse.getEvaluationDate());
+
+        // Test case 2: when student is not present
+        when(studentsService.getStudentById(student.getId())).thenReturn(null);
+
+        updateGradeResult = mvc.perform(put("/api/v1/students/{id}/grades/{gradeId}", student.getId(), grade.getId())
+                        .param("evaluationDate", asJsonString(evalDateTest))
+                        .param("value", asJsonString(valueTest))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        assertEquals("", updateGradeResult.getResponse().getContentAsString());
+
+        // Test case 3: when grade is not present
+        when(studentsService.getStudentById(student.getId())).thenReturn(student);
+        when(studentsService.getGradeById(student.getId(), grade.getId())).thenReturn(null);
+
+        updateGradeResult = mvc.perform(put("/api/v1/students/{id}/grades/{gradeId}", student.getId(), grade.getId())
+                        .param("evaluationDate", asJsonString(evalDateTest))
+                        .param("value", asJsonString(valueTest))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        assertEquals("", updateGradeResult.getResponse().getContentAsString());
     }
+
+
     private static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);

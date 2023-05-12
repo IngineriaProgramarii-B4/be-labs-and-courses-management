@@ -54,10 +54,12 @@ class UsersServiceTest {
 
         Map<String, Object> args = new HashMap<>();
 
-        args.put("id", "0f14d0ab-9605-4a62-a9e4-5ed26688389b");
+        UUID idTest = UUID.randomUUID();
+
+        args.put("id", idTest.toString());
 
         given(usersRepository.findUsersByParams(
-                eq(UUID.fromString("0f14d0ab-9605-4a62-a9e4-5ed26688389b")),
+                eq(idTest),
                 nullable(String.class),
                 nullable(String.class),
                 nullable(String.class),
@@ -77,6 +79,8 @@ class UsersServiceTest {
         Map<String, Object> args = new HashMap<>();
 
         args.put("firstname", "FirstnameTest");
+
+        args.put("id", "");
 
         given(usersRepository.findUsersByParams(
                 nullable(UUID.class),

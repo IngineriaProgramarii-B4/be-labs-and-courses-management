@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class StudentsServiceTest2 {
+class CatalogStudentsServiceTest {
     @InjectMocks
     StudentsService studentsService;
     @Mock
@@ -236,4 +236,79 @@ class StudentsServiceTest2 {
             assertEquals("01.01.1980", grade.getEvaluationDate());
         }
     }
+
+    @Test
+    void canUpdateGradeTest() {
+
+        // given
+        when(studentsRepository.findById(student.getId())).thenReturn(Optional.of(student));
+        assertEquals(Optional.of(student), studentsRepository.findById(student.getId()));
+
+        given(studentsService.getStudentById(student.getId()))
+                .willReturn(student);
+        studentsService.addGrade(student.getId(), grade);
+
+        // when updating with non-existing student ID
+        Grade shouldBeNull = studentsService.updateGrade(UUID.randomUUID(), 6, null, grade.getId());
+        assertNull(shouldBeNull);
+
+        // when updating with null value
+        Grade updatedNullValue = studentsService.updateGrade(student.getId(), null, null, grade.getId());
+        assertEquals(grade, updatedNullValue);
+
+        // when updating with invalid value
+        assertThrows(IllegalStateException.class,
+                () -> studentsService.updateGrade(student.getId(), 0, null, grade.getId()));
+
+        // when updating with value outside of range
+        assertThrows(IllegalStateException.class,
+                () -> studentsService.updateGrade(student.getId(), 11, null, grade.getId()));
+
+        // when updating with a valid value
+        Grade updatedValue = studentsService.updateGrade(student.getId(), 8, null, grade.getId());
+        assertEquals(8, updatedValue.getValue());
+
+        // when updating with invalid evaluation date
+        Grade updatedInvalidDate = studentsService.updateGrade(student.getId(), 8, "invalid date", grade.getId());
+        assertEquals("01.01.1980", updatedInvalidDate.getEvaluationDate());
+
+        // when updating with valid evaluation date
+        Grade updatedValidDate = studentsService.updateGrade(student.getId(), 8, "10.05.2023", grade.getId());
+        assertEquals("10.05.2023", updatedValidDate.getEvaluationDate());
+
+        // when updating with the same evaluation date
+        Grade updatedSameDate = studentsService.updateGrade(student.getId(), 8, "05.11.2022", grade.getId());
+        assertEquals("05.11.2022", updatedSameDate.getEvaluationDate());
+
+        // when updating with null value and different evaluation date
+        Grade updatedNullValueAndDate = studentsService.updateGrade(student.getId(), null, "01.01.2022", grade.getId());
+        assertEquals("01.01.2022", updatedNullValueAndDate.getEvaluationDate());
+        assertEquals(grade, updatedNullValueAndDate);
+
+        // when updating with the same evaluation date
+
+        updatedSameDate = studentsService.updateGrade(student.getId(), 8, grade.getEvaluationDate(), grade.getId());
+        assertEquals(grade.getEvaluationDate(), updatedSameDate.getEvaluationDate());
+
+
+    }
+
+    @Test
+    void testToString() {
+        // create a subject object
+        Subject subject = new Subject(0, "Test", 6, 2022, 1, "Mathematics course", null, null, false);
+
+        // create a grade object
+        Grade grade = new Grade( 9, subject, "12.12.2012");
+
+        // expected output
+        String expectedOutput = "Grade{gradeId=0value=9, subject=Subject{id=0, title='Test', credits=6, year=2022, semester=1, description='Mathematics course', componentList=null, evaluationList=null, image=null, isDeleted=false}, evaluation date=12.12.2012}";
+
+        // actual output
+        String actualOutput = grade.toString();
+
+        // compare the actual output with the expected output
+        assertEquals(expectedOutput, actualOutput);
+    }
+
 }

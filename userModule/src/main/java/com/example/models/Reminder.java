@@ -6,6 +6,7 @@ import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -25,6 +26,15 @@ public class Reminder {
 
     public Reminder() {
 
+    }
+
+    public Reminder(Student student, UUID id, String dueDateTime, String title, String description) {
+        this.creatorId = student.getId();
+        this.creatorUsername = student.getUsername();
+        this.id = id;
+        this.dueDateTime = LocalDateTime.parse(dueDateTime, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"  ));
+        this.title = title;
+        this.description = description;
     }
 
     public Reminder(Student student, String dueDateTime, String title, String description) {
@@ -89,5 +99,37 @@ public class Reminder {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "Reminder{" +
+                "creatorId=" + creatorId +
+                ", creatorUsername='" + creatorUsername + '\'' +
+                ", id=" + id +
+                ", dueDateTime=" + dueDateTime +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", deleted=" + deleted +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Reminder reminder = (Reminder) o;
+        return deleted == reminder.deleted &&
+                Objects.equals(creatorId, reminder.creatorId) &&
+                Objects.equals(creatorUsername, reminder.creatorUsername) &&
+                Objects.equals(id, reminder.id) &&
+                Objects.equals(dueDateTime, reminder.dueDateTime) &&
+                Objects.equals(title, reminder.title) &&
+                Objects.equals(description, reminder.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(creatorId, creatorUsername, id, dueDateTime, title, description, deleted);
     }
 }

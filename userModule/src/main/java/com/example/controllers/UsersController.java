@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin
+import static com.example.security.JWTGenerator.extractEmailFromTokenWithoutVerification;
+
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("api/v1/")
 public class UsersController {
@@ -47,4 +49,23 @@ public class UsersController {
         }
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
+    @Operation(summary = "Get from the frontend information about the logged user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Get information about logged user successfully.",
+                    content = @Content)
+    })
+    @PostMapping(value = "/users/loggedUser")
+    public ResponseEntity<User> getLoggedUser(@RequestBody String token) {
+        String finalToken = token.substring(1, token.length() - 1);
+        User user;
+        try {
+            String email = extractEmailFromTokenWithoutVerification(finalToken);
+            user = usersService.getUsersByParams(Map.of("email", email)).get(0);
+            return new ResponseEntity<>(user, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            System.out.println("An error occurred at object mapping");
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
 }

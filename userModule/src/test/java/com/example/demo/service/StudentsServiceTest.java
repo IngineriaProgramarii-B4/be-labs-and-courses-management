@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
@@ -51,9 +49,15 @@ class StudentsServiceTest {
 
     @Test
     void getStudentsByParamsYearTest() {
+        //Given
         List<Student> expected = List.of(student);
+
         Map<String, Object> args = new HashMap<>();
+
         args.put("year", "1");
+
+        args.put("semester", "");
+
         given(studentsRepository.findStudentsByParams(
                 nullable(UUID.class),
                 nullable(String.class),
@@ -65,19 +69,24 @@ class StudentsServiceTest {
                 nullable(String.class)))
                 .willReturn(expected);
 
+        //When
         List<Student> result = studentsService.getStudentsByParams(args);
 
+        //Then
         assertTrue(result.containsAll(expected));
     }
 
     @Test
     void getStudentsByParamsSemesterTest() {
-
+        //Given
         List<Student> expected = List.of(student);
 
         Map<String, Object> args = new HashMap<>();
 
         args.put("semester", "2");
+
+        args.put("id", "");
+        args.put("year", "");
 
         given(studentsRepository.findStudentsByParams(
                 nullable(UUID.class),
@@ -90,14 +99,16 @@ class StudentsServiceTest {
                 nullable(String.class)))
                 .willReturn(expected);
 
+        //When
         List<Student> result = studentsService.getStudentsByParams(args);
 
+        //Then
         assertTrue(result.containsAll(expected));
     }
 
     @Test
     void getStudentsByParamsRegistrationNumberTest() {
-
+        //Given
         List<Student> expected = List.of(student);
 
         Map<String, Object> args = new HashMap<>();
@@ -115,22 +126,61 @@ class StudentsServiceTest {
                 eq("RegNumberTest")))
                 .willReturn(expected);
 
+        //When
         List<Student> result = studentsService.getStudentsByParams(args);
 
+        //Then
+        assertTrue(result.containsAll(expected));
+    }
+
+    @Test
+    void getStudentsByParamsIdTest() {
+        //Given
+        List<Student> expected = List.of(student);
+
+        Map<String, Object> args = new HashMap<>();
+
+        UUID idTest = UUID.randomUUID();
+
+        args.put("id", idTest);
+
+        given(studentsRepository.findStudentsByParams(
+                eq(idTest),
+                nullable(String.class),
+                nullable(String.class),
+                nullable(String.class),
+                nullable(String.class),
+                anyInt(),
+                anyInt(),
+                nullable(String.class)))
+                .willReturn(expected);
+
+        //When
+        List<Student> result = studentsService.getStudentsByParams(args);
+
+        //Then
         assertTrue(result.containsAll(expected));
     }
 
     @Test
     void saveStudentTest() {
+        //When
+        when(studentsRepository.save(student)).thenReturn(student);
 
-        StudentsService studentsServiceMock = mock(StudentsService.class);
+        studentsService.saveStudent(student);
 
-        ArgumentCaptor<Student> studentToCapture = ArgumentCaptor.forClass(Student.class);
+        //Then
+        verify(studentsRepository, times(1)).save(student);
+    }
 
-        when(studentsServiceMock.saveStudent(studentToCapture.capture())).thenReturn(studentToCapture.capture());
+    @Test
+    void updateStudentTest() {
+        //When
+        doNothing().when(studentsRepository).updateStudent(student.getId(), student.getFirstname(), student.getLastname(), student.getEmail(), student.getUsername(), student.getYear(), student.getSemester(), student.getRegistrationNumber());
 
-        studentsServiceMock.saveStudent(student);
+        studentsService.updateStudent(student.getId(), student);
 
-        assertEquals(student, studentToCapture.getValue());
+        //Then
+        verify(studentsRepository, times(1)).updateStudent(student.getId(), student.getFirstname(), student.getLastname(), student.getEmail(), student.getUsername(), student.getYear(), student.getSemester(), student.getRegistrationNumber());
     }
 }

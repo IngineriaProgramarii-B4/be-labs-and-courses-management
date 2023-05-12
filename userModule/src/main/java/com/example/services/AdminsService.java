@@ -28,7 +28,6 @@ public class AdminsService {
 
         if (params.containsKey("id") && (!params.get("id").equals(""))) {
                 id = (UUID) params.get("id");
-
         }
 
         return adminsRepository.findAdminsByParams(id, firstname, lastname, email, username, office, department);
@@ -37,6 +36,7 @@ public class AdminsService {
     public void saveAdmin(Admin admin) {
         adminsRepository.save(admin);
     }
+
     @Transactional
     public void updateAdmin(UUID id, Admin admin) {
         adminsRepository.updateAdmin(id, admin.getFirstname(), admin.getLastname(), admin.getEmail(), admin.getUsername(), admin.getOffice(), admin.getDepartment());

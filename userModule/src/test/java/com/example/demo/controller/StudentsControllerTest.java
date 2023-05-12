@@ -1,8 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.controllers.AdminsController;
 import com.example.controllers.StudentsController;
-import com.example.models.Admin;
 import com.example.models.Student;
 import com.example.services.StudentsService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,9 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.*;
 
@@ -72,13 +71,14 @@ class StudentsControllerTest {
 
     @Test
     void getStudentsByParamsTest() throws Exception {
+        //Given
+        String url = "/api/v1/students";
+
         List<Student> listStudents = List.of(stud1, stud2, stud3);
 
         Map<String, Object> args = Collections.emptyMap();
 
         when(studentsService.getStudentsByParams(args)).thenReturn(listStudents);
-
-        String url = "/api/v1/students";
 
         MvcResult mvcResult = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
 
@@ -98,20 +98,23 @@ class StudentsControllerTest {
 
     @Test
     void getStudentsByParamsYearTest() throws Exception {
+        //Given
+        String url = "/api/v1/students?year=2";
+
         List<Student> listStudents = List.of(stud1, stud3);
 
         Map<String, Object> args = new HashMap<>();
 
         args.put("year", "2");
 
+        //When
         when(studentsService.getStudentsByParams(args)).thenReturn(listStudents);
-
-        String url = "/api/v1/students?year=2";
 
         MvcResult mvcResult = mockMvc.perform(get(url)).andExpect(status().isOk()).andReturn();
 
         String result = mvcResult.getResponse().getContentAsString();
 
+        //Then
         String expected = null;
 
         try {
@@ -121,16 +124,78 @@ class StudentsControllerTest {
             e.printStackTrace();
         }
 
-        assertEquals(result, expected);
+        assertEquals(expected, result);
     }
 
     @Test
-    void updateStudentTest() {
-        StudentsController studentsControllerMock = mock(StudentsController.class);
-        when(studentsControllerMock.updateStudent(stud1.getId(), stud1)).thenReturn(new ResponseEntity<>(HttpStatus.NO_CONTENT));
-        ResponseEntity response = studentsControllerMock.updateStudent(stud1.getId(), stud1);
-        ResponseEntity expected = new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        assertEquals(response, expected);
+    void getStudentsByParamsNonExisting() throws Exception {
+        //Given
+        String url = "/api/v1/students?lastname=NonExisting";
 
+        //When
+        when(studentsService.getStudentsByParams(Map.of("lastname", "NonExisting"))).thenReturn(Collections.emptyList());
+
+        MvcResult mvcResult = mockMvc.perform(get(url)).andReturn();
+
+        int result = mvcResult.getResponse().getStatus();
+
+        //Then
+        assertEquals(HttpStatus.NOT_FOUND.value(), result);
+    }
+
+    @Test
+    void updateStudentTest() throws Exception {
+        //Given
+        String url = "/api/v1/student/" + stud1.getId();
+
+        //When
+        when(studentsService.getStudentsByParams(Map.of("id", stud1.getId()))).thenReturn(List.of(stud1));
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.patch(url)
+                .contentType(MediaType.APPLICATION_JSON_VALUE).content(ObjectToJson(stud1))).andReturn();
+
+        int result = mvcResult.getResponse().getStatus();
+
+        //Then
+        assertEquals(HttpStatus.NO_CONTENT.value(), result);
+    }
+
+    @Test
+    void updateStudentNonExistentTest() throws Exception {
+        //Given
+        String url = "/api/v1/student/" + stud1.getId();
+
+        //When
+        when(studentsService.getStudentsByParams(Map.of("id", stud1.getId()))).thenReturn(Collections.emptyList());
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.patch(url)
+                .contentType(MediaType.APPLICATION_JSON_VALUE).content(ObjectToJson(stud1))).andReturn();
+
+        int result = mvcResult.getResponse().getStatus();
+
+        //Then
+        assertEquals(HttpStatus.NOT_FOUND.value(), result);
+    }
+
+    @Test
+    void saveStudentTest() throws Exception {
+        //Given
+        String url = "/api/v1/students";
+
+        //When
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(url)
+                .contentType(MediaType.APPLICATION_JSON_VALUE).content(ObjectToJson(stud1))).andReturn();
+
+        int result = mvcResult.getResponse().getStatus();
+
+        //Then
+        assertEquals(HttpStatus.CREATED.value(), result);
+    }
+
+    String ObjectToJson(Student student) throws Exception {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        return objectMapper.writeValueAsString(student);
     }
 }

@@ -1,3 +1,4 @@
+
 package com.example.coursesmodule.model;
 
 import jakarta.persistence.*;

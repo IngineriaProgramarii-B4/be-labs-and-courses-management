@@ -1,3 +1,4 @@
+
 package com.example.coursesmodule.api;
 
 import com.example.coursesmodule.model.Component;
@@ -351,5 +352,4 @@ class EvaluationControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("Evaluation method not found", exception.getReason());
     }
-
 }

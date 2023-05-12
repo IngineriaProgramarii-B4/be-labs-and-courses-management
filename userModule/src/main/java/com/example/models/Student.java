@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-
 import java.util.*;
 
 @Entity
@@ -17,11 +16,11 @@ import java.util.*;
 @Table(name = "students")
 public class Student extends User {
     private Set<String> enrolledCourses = new HashSet<>();
-    @Min(value = 1)
-    @Max(value = 3)
+    @Min(value=1)
+    @Max(value=3)
     private int year;
-    @Min(value = 1)
-    @Max(value = 6)
+    @Min(value=1)
+    @Max(value=6)
     private int semester;
     private String registrationNumber;
 
@@ -33,7 +32,8 @@ public class Student extends User {
     private boolean deleted = false;
     // <--------------------------------------------------------------------------------> //
 
-    public Student(UUID id, String firstname,
+    public Student(UUID id,
+                   String firstname,
                    String lastname,
                    String email,
                    String username,
@@ -47,6 +47,7 @@ public class Student extends User {
         this.semester = semester;
         this.registrationNumber = registrationNumber;
     }
+
 
     public Student(String firstname,
                    String lastname,
@@ -63,8 +64,8 @@ public class Student extends User {
         this.registrationNumber = registrationNumber;
     }
 
-    /* default ctor */
     public Student() {
+
     }
 
     public Set<String> getEnrolledCourses() {
@@ -125,10 +126,6 @@ public class Student extends User {
                 ", username='" + username + '\'' +
                 '}';
     }
-
-//    public void setElectives(Integer year, Integer semester) {
-//
-//    }
 
     @Override
     public int hashCode() {

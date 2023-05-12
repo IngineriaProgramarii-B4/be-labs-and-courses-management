@@ -22,8 +22,9 @@ class UsersRepositoryTest {
     @Test
     @DirtiesContext
     void findUsersByParamsEmailExistsTest() {
-
-        //INPUT
+        //
+        //Given
+        //
         Student student = new Student(
                 "testName",
                 "testSurname",
@@ -36,8 +37,9 @@ class UsersRepositoryTest {
         );
 
         usersRepository.save(student);
-
-        //OUTPUT
+        //
+        //When
+        //
         String email = "testemail@mail.com";
 
         List<User> result = usersRepository.findUsersByParams(
@@ -46,33 +48,39 @@ class UsersRepositoryTest {
                 null,
                 email,
                 null);
-
-        //EXPECTING
+        //
+        //Then
+        //
         assertTrue(result.contains(student));
     }
 
     @Test
     void findUsersByParamsEmailNonexistentTest() {
-
-        //OUTPUT
-        String email = "abracadabra@mail.com";
-
+        //
+        //Given
+        //
+        String email = "testemail@ail.com";
+        //
+        //When
+        //
         List<User> result = usersRepository.findUsersByParams(
                 null,
                 null,
                 null,
                 email,
                 null);
-
-        //EXPECTING
+        //
+        //Then
+        //
         assertTrue(result.isEmpty());
     }
 
     @Test
     @DirtiesContext
     void findUsersByParamsUsernameExistsTest() {
-
-        //INPUT
+        //
+        //Given
+        //
         Student student = new Student(
                 "testName",
                 "testSurname",
@@ -85,8 +93,9 @@ class UsersRepositoryTest {
         );
 
         usersRepository.save(student);
-
-        //OUTPUT
+        //
+        //When
+        //
         String username = "testUser";
 
         List<User> result = usersRepository.findUsersByParams(
@@ -95,25 +104,30 @@ class UsersRepositoryTest {
                 null,
                 null,
                 username);
-
-        //EXPECTING
+        //
+        //Then
+        //
         assertTrue(result.contains(student));
     }
 
     @Test
     void findUsersByParamsUsernameNonexistentTest() {
-
-        //OUTPUT
-        String username = "abracadabra";
-
+        //
+        //Given
+        //
+        String username = "tesUser";
+        //
+        //When
+        //
         List<User> result = usersRepository.findUsersByParams(
                 null,
                 null,
                 null,
                 null,
                 username);
-
-        //EXPECTING
+        //
+        //Then
+        //
         assertTrue(result.isEmpty());
     }
 }

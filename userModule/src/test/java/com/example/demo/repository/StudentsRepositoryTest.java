@@ -20,8 +20,9 @@ class StudentsRepositoryTest {
     @Test
     @DirtiesContext
     void findStudentsByParamsEmailExistsTest() {
-
-        //INPUT
+        //
+        //Given
+        //
         Student student = new Student(
                 "testName",
                 "testSurename",
@@ -34,8 +35,9 @@ class StudentsRepositoryTest {
         );
 
         studentsRepository.save(student);
-
-        //OUTPUT
+        //
+        //When
+        //
         String email = "testemail@mail.com";
 
         List<Student> result = studentsRepository.findStudentsByParams(
@@ -48,17 +50,21 @@ class StudentsRepositoryTest {
                 0,
                 null
         );
-
-        //EXPECTING
+        //
+        //Then
+        //
         assertTrue(result.contains(student));
     }
 
     @Test
     void findStudentsByParamsEmailNonexistentTest() {
-
-        //OUTPUT
-        String email = "abracadabra@mail.com";
-
+        //
+        //Given
+        //
+        String email = "testmail@mail.com";
+        //
+        //When
+        //
         List<Student> result = studentsRepository.findStudentsByParams(
                 null,
                 null,
@@ -69,16 +75,18 @@ class StudentsRepositoryTest {
                 0,
                 null
         );
-
-        //EXPECTING
+        //
+        //Then
+        //
         assertTrue(result.isEmpty());
     }
 
     @Test
     @DirtiesContext
     void findStudentsByParamsUsernameExistsTest() {
-
-        //INPUT
+        //
+        //Given
+        //
         Student student = new Student(
                 "testName",
                 "testSurname",
@@ -91,8 +99,9 @@ class StudentsRepositoryTest {
         );
 
         studentsRepository.save(student);
-
-        //OUTPUT
+        //
+        //When
+        //
         String username = "testUser";
 
         List<Student> result = studentsRepository.findStudentsByParams(
@@ -105,17 +114,21 @@ class StudentsRepositoryTest {
                 0,
                 null
         );
-
-        //EXPECTING
+        //
+        //Then
+        //
         assertTrue(result.contains(student));
     }
 
     @Test
     void findStudentsByParamsUsernameNonexistentTest() {
-
-        //OUTPUT
+        //
+        //Given
+        //
         String username = "testemail@mail.com";
-
+        //
+        //When
+        //
         List<Student> result = studentsRepository.findStudentsByParams(
                 null,
                 null,
@@ -126,16 +139,18 @@ class StudentsRepositoryTest {
                 0,
                 null
         );
-
-        //EXPECTING
+        //
+        //Then
+        //
         assertTrue(result.isEmpty());
     }
 
     @Test
     @DirtiesContext
     void findStudentsByParamsRegistrationNumberExistsTest() {
-
-        //INPUT
+        //
+        //Given
+        //
         Student student = new Student(
                 "testName",
                 "testSurname",
@@ -148,8 +163,9 @@ class StudentsRepositoryTest {
         );
 
         studentsRepository.save(student);
-
-        //OUTPUT
+        //
+        //When
+        //
         String regisNr = "testRegistrationNumber";
 
         List<Student> result = studentsRepository.findStudentsByParams(
@@ -162,17 +178,21 @@ class StudentsRepositoryTest {
                 1,
                 regisNr
         );
-
-        //EXPECTING
+        //
+        //Then
+        //
         assertTrue(result.contains(student));
     }
 
     @Test
     void findStudentsByParamsRegistrationNumberNonexistentTest() {
-
-        //OUTPUT
-        String regisNr = "abracadabra";
-
+        //
+        //Given
+        //
+        String regisNr = "testRegistrationNumber";
+        //
+        //When
+        //
         List<Student> result = studentsRepository.findStudentsByParams(
                 null,
                 null,
@@ -183,8 +203,9 @@ class StudentsRepositoryTest {
                 1,
                 regisNr
         );
-
-        //EXPECTING
+        //
+        //Then
+        //
         assertTrue(result.isEmpty());
     }
 }

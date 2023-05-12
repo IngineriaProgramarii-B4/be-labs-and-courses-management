@@ -71,6 +71,29 @@
         <sonar.token>sqp_1fca216302b7dd5cc3bd476c54fa818a4cad331d
         </sonar.token>
         <sonar.projectKey>backend-user-module</sonar.projectKey>
+        <sonar.exclusions>
+            src/main/java/com/example/configurations/GradeConfig.java,
+            src/main/java/com/example/configurations/SubjectConfig.java,
+            src/main/java/com/example/controllers/ComponentController.java,
+            src/main/java/com/example/controllers/EvaluationController.java,
+            src/main/java/com/example/controllers/ResourceController.java,
+            src/main/java/com/example/controllers/SubjectController.java,
+            src/main/java/com/example/dao/*,
+            src/main/java/com/example/models/Component.java,
+            src/main/java/com/example/models/Evaluation.java,
+            src/main/java/com/example/models/Resource.java,
+            src/main/java/com/example/models/Subject.java,
+            src/main/java/com/example/repository/ComponentRepo.java,
+            src/main/java/com/example/repository/EvaluationRepo.java,
+            src/main/java/com/example/repository/ResourceRepo.java,
+            src/main/java/com/example/repository/SubjectRepo.java,
+            src/main/java/com/example/security/*,
+            src/main/java/com/example/services/ComponentService.java,
+            src/main/java/com/example/services/EvaluationService.java,
+            src/main/java/com/example/services/ResourceService.java,
+            src/main/java/com/example/services/SubjectService.java,
+            src/main/java/com/example/services/SubjectService.java,
+        </sonar.exclusions>
     </properties>
 
     <build>

@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,12 +15,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -51,12 +48,14 @@ class TeachersServiceTest {
 
     @Test
     void getTeachersByParamsOfficeTest() {
-
+        //Given
         List<Teacher> expected = List.of(teacher);
 
         Map<String, Object> args = new HashMap<>();
 
         args.put("office", "OfficeTest");
+
+        args.put("id", "");
 
         given(teachersRepository.findTeachersByParams(
                 nullable(UUID.class),
@@ -68,14 +67,16 @@ class TeachersServiceTest {
                 nullable(String.class)))
                 .willReturn(expected);
 
+        //When
         List<Teacher> result = teachersService.getTeachersByParams(args);
 
+        //Then
         assertTrue(result.containsAll(expected));
     }
 
     @Test
     void getTeachersByParamsTitleTest() {
-
+        //Given
         List<Teacher> expected = List.of(teacher);
 
         Map<String, Object> args = new HashMap<>();
@@ -92,22 +93,60 @@ class TeachersServiceTest {
                 eq("TitleTest")))
                 .willReturn(expected);
 
+        //When
         List<Teacher> result = teachersService.getTeachersByParams(args);
 
+        //Then
+        assertTrue(result.containsAll(expected));
+    }
+
+    @Test
+    void getTeachersByParamsIdTest() {
+        //Given
+        List<Teacher> expected = List.of(teacher);
+
+        Map<String, Object> args = new HashMap<>();
+
+        UUID idTest = UUID.randomUUID();
+
+        args.put("id", idTest);
+
+        given(teachersRepository.findTeachersByParams(
+                eq(idTest),
+                nullable(String.class),
+                nullable(String.class),
+                nullable(String.class),
+                nullable(String.class),
+                nullable(String.class),
+                nullable(String.class)))
+                .willReturn(expected);
+
+        //When
+        List<Teacher> result = teachersService.getTeachersByParams(args);
+
+        //Then
         assertTrue(result.containsAll(expected));
     }
 
     @Test
     void saveTeacherTest() {
+        //When
+        when(teachersRepository.save(teacher)).thenReturn(teacher);
 
-        TeachersService teachersServiceMock = mock(TeachersService.class);
+        teachersService.saveTeacher(teacher);
 
-        ArgumentCaptor<Teacher> teacherToCapture = ArgumentCaptor.forClass(Teacher.class);
+        //Then
+        verify(teachersRepository, times(1)).save(teacher);
+    }
 
-        doNothing().when(teachersServiceMock).saveTeacher(teacherToCapture.capture());
+    @Test
+    void updateTeacherTest() {
+        //When
+        doNothing().when(teachersRepository).updateTeacher(teacher.getId(), teacher.getFirstname(), teacher.getLastname(), teacher.getEmail(), teacher.getUsername(), teacher.getOffice(), teacher.getTitle());
 
-        teachersServiceMock.saveTeacher(teacher);
+        teachersService.updateTeacher(teacher.getId(), teacher);
 
-        assertEquals(teacher, teacherToCapture.getValue());
+        //Then
+        verify(teachersRepository, times(1)).updateTeacher(teacher.getId(), teacher.getFirstname(), teacher.getLastname(), teacher.getEmail(), teacher.getUsername(), teacher.getOffice(), teacher.getTitle());
     }
 }

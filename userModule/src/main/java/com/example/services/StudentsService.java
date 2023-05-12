@@ -31,16 +31,19 @@ public class StudentsService {
         int semester = 0;
         String registrationNumber = (String) params.get("registrationNumber");
 
-        if (params.containsKey("id") && (!params.get("id").equals(""))) {
-            id = (UUID) params.get("id");
-        }
+        final String idKey = "id";
+        if (params.containsKey(idKey) && (!params.get(idKey).equals(""))) {
+                id = (UUID) params.get(idKey);
 
-        if (params.containsKey("year") && (!params.get("year").equals(""))) {
-            year = Integer.parseInt((String) params.get("year"));
         }
+        final String yearKey = "year";
+        if (params.containsKey(yearKey) && (!params.get(yearKey).equals(""))) {
+                year = Integer.parseInt((String) params.get(yearKey));
 
-        if (params.containsKey("semester") && (!params.get("semester").equals(""))) {
-            semester = Integer.parseInt((String) params.get("semester"));
+        }
+        final String semesterKey = "semester";
+        if (params.containsKey(semesterKey) && (!params.get(semesterKey).equals(""))) {
+            semester = Integer.parseInt((String) params.get(semesterKey));
         }
 
         return studentsRepository.findStudentsByParams(id, firstname, lastname, email, username, year, semester, registrationNumber);
@@ -52,6 +55,7 @@ public class StudentsService {
         studentsRepository.save(student);
         return student;
     }
+
     @Transactional
     public Student deleteStudent(UUID id) {
         Student student = studentsRepository.findStudentById(id);
@@ -92,9 +96,6 @@ public class StudentsService {
 
     @Transactional
     public Grade deleteGrade(UUID id, int gradeId) {
-        List<Grade> grades;
-        Student student = studentsRepository.findStudentById(id);
-        grades = student.getGrades();
         try {
             return getGradeById(id, gradeId).setDeleted();
         } catch (Exception e) {
