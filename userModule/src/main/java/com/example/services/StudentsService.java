@@ -47,10 +47,18 @@ public class StudentsService {
     }
 
     public Student saveStudent(Student student) {
+        if (student == null)
+            return null;
         studentsRepository.save(student);
         return student;
     }
-
+    @Transactional
+    public Student deleteStudent(UUID id) {
+        Student student = studentsRepository.findStudentById(id);
+        if (student == null)
+            return null;
+        return student.setDeleted();
+    }
     @Transactional
     public void updateStudent(UUID id, Student student) {
         // TODO : update the courses, it implies another table that makes connection between teacher and subjects
@@ -59,12 +67,12 @@ public class StudentsService {
 
     // <-------------------------------- FROM CATALOG ----------------------------------> //
 
-    // te poti folosi de getStudentsByParams
+    // Q: te poti folosi de getStudentsByParams - A: nu, ca da o lista de studenti si n-am nevoie de o lista daca sigur o sa-mi returneze un singur student
     public Student getStudentById(UUID id) {
         return studentsRepository.findStudentById(id);
     }
 
-    // asta nu ar trebui in GradeService? ca si toate cele de mai jos, avand in vedere ca returneaza Grade
+    // Q: asta nu ar trebui in GradeService? ca si toate cele de mai jos, avand in vedere ca returneaza Grade - A: idk, apeleaza functii din studentService, idk what to say
     public Grade getGradeById(UUID id, int gradeId) {
         Student student = studentsRepository.findStudentById(id);
         Grade grade = student.getGradeById(gradeId);
@@ -118,7 +126,7 @@ public class StudentsService {
                 LocalDate.parse(evaluationDate, formatter);
                 grade.setEvaluationDate(evaluationDate);
             } catch (DateTimeParseException exception) {
-                //
+                grade.setEvaluationDate("01.01.1980");
             }
         }
         return getGradeById(id, gradeId);

@@ -55,7 +55,7 @@ class UsersRepositoryTest {
     void findUsersByParamsEmailNonexistentTest() {
 
         //OUTPUT
-        String email = "testemail@mail.com";
+        String email = "abracadabra@mail.com";
 
         List<User> result = usersRepository.findUsersByParams(
                 null,
@@ -104,7 +104,7 @@ class UsersRepositoryTest {
     void findUsersByParamsUsernameNonexistentTest() {
 
         //OUTPUT
-        String username = "testUser";
+        String username = "abracadabra";
 
         List<User> result = usersRepository.findUsersByParams(
                 null,

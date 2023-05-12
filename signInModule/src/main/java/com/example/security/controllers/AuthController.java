@@ -2,10 +2,14 @@ package com.example.security.controllers;
 
 import com.example.security.dto.*;
 import com.example.security.model.Role;
+import com.example.security.model.Student;
+import com.example.security.model.Teacher;
 import com.example.security.model.UserEntity;
 import com.example.security.repository.RoleRepository;
 import com.example.security.repository.UserRepository;
 import com.example.security.security.JWTGenerator;
+import com.example.security.service.StudentService;
+import com.example.security.service.TeacherService;
 import com.example.security.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,12 +25,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import com.example.security.security.ForgotPasswordRequestBody;
 import com.example.security.security.EmailService;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -40,15 +42,20 @@ public class AuthController {
 
     private final EmailService emailService;
     private final UserService userService;
+    private final StudentService studentService;
+    private final TeacherService teacherService;
+
 
     @Autowired
-    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JWTGenerator jwtGenerator, EmailService emailService, UserService userService) {
+    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JWTGenerator jwtGenerator, EmailService emailService, UserService userService, StudentService studentService, TeacherService teacherService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtGenerator = jwtGenerator;
         this.emailService = emailService;
         this.userService = userService;
+        this.studentService = studentService;
+        this.teacherService = teacherService;
     }
 
     @PostMapping("/login")
@@ -82,6 +89,27 @@ public class AuthController {
                     user.setEmail(registerRequestBody.getEmail());
                     user.setPassword(passwordEncoder.encode(registerRequestBody.getPassword()));
                     userRepository.save(user);
+                    List<Role> roles = user.getRoles();
+                    int role =  roles.get(0).getId();
+                    if(role == 1)
+                    {
+
+                    }
+                    else if(role == 2){
+                        Teacher teacher = new Teacher();
+                        teacher.setRegistrationNumber(user.getUserId());
+                        teacher.setMail(user.getEmail());
+                        teacher.setPassword(user.getPassword());
+                        teacherService.addTeacher(teacher);
+                    }
+                    else if(role == 3){
+                        Student student = new Student();
+                        student.setRegistrationNumber(user.getUserId());
+                        student.setMail(user.getEmail());
+                        student.setPassword(user.getPassword());
+                        studentService.addStudent(student);
+                    }
+
                 }
             } else {
                 return new ResponseEntity<>("User not found!", HttpStatus.NOT_FOUND);
@@ -132,7 +160,6 @@ public class AuthController {
     @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@RequestBody PasswordResetRequest passwordResetRequest,
                                 @RequestParam("token") String token){
-        System.out.println(passwordResetRequest.getNewPassword());
         String tokenVerificationResult = userService.validatePasswordResetToken(token);
         if (!tokenVerificationResult.equalsIgnoreCase("valid")) {
             return new ResponseEntity<>("Invalid token password reset token",HttpStatus.BAD_REQUEST);
@@ -140,6 +167,20 @@ public class AuthController {
         UserEntity theUser = userService.findUserByPasswordToken(token);
         if (theUser!=null) {
             userService.resetPassword(theUser, passwordResetRequest.getNewPassword());
+            List<Role> roles = theUser.getRoles();
+            int role =  roles.get(0).getId();
+            if(role == 2){
+                Teacher updatedTeacher = teacherService.getTeacherByRegistrationNumber(theUser.getUserId());
+                updatedTeacher.setPassword(theUser.getPassword());
+                teacherService.addTeacher(updatedTeacher);
+
+            }
+            if(role == 3){
+                Student updatedStudent = studentService.getStudentByRegistrationNumber(theUser.getUserId());
+                updatedStudent.setPassword(theUser.getPassword());
+                studentService.addStudent(updatedStudent);
+
+            }
             return new ResponseEntity<>("Password has been reset successfully",HttpStatus.OK);
         }
         return new ResponseEntity<>("Invalid token password reset token",HttpStatus.BAD_REQUEST);
