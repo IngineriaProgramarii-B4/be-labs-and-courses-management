@@ -3,6 +3,7 @@ package com.example.coursesmodule.service;
 import com.example.coursesmodule.dao.CourseDao;
 import com.example.coursesmodule.model.Component;
 import com.example.coursesmodule.model.Evaluation;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class EvaluationService {
 
     private final CourseDao courseDao;

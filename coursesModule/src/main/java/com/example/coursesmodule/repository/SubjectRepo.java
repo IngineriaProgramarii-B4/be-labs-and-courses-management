@@ -7,8 +7,9 @@ import org.springframework.lang.NonNull;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-public interface SubjectRepo extends JpaRepository<Subject, Integer> {
+public interface SubjectRepo extends JpaRepository<Subject, UUID> {
 
     @Query("SELECT s FROM Subject s WHERE s.title = ?1 AND s.isDeleted = FALSE")
     Optional<Subject> findSubjectByTitle(String title);

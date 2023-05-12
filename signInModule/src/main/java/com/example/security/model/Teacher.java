@@ -43,8 +43,6 @@ public class Teacher {
         this.password = password;
     }
 
-    public Teacher(UUID id, String firstName, String lastName, String mail, String password, String degree, Date createdAt, Date updatedAt) {
-    }
 
     public UUID getId() {
         return id;

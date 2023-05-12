@@ -7,8 +7,8 @@ import com.example.coursesmodule.repository.ResourceRepo;
 import com.example.coursesmodule.repository.SubjectRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,11 +25,20 @@ public class SubjectDataAccessService implements CourseDao{
 
     @Autowired
     private EvaluationRepo evaluationRepo;
+    
+    private static final String DATA_FORMAT = "dd/MM/yyyy HH:mm:ss";
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATA_FORMAT);
+    private LocalDateTime formatDateTime(){
+        LocalDateTime dateTime = LocalDateTime.now();
+        return LocalDateTime.parse(formatter.format(dateTime), formatter);
+    }
 
     // SUBJECTS
 
     @Override
     public int insertSubject(Subject subject) {
+        subject.setCreatedAt(formatDateTime());
+        subject.setUpdatedAt(formatDateTime());
         subjectRepo.save(subject);
         return 1;
     }
@@ -65,12 +74,14 @@ public class SubjectDataAccessService implements CourseDao{
             ) + "DELETED_" + title + "_" + oldImage.getTitle();
             oldImage.setLocation(oldImageLocationUpdated);
             oldImage.setDeleted(true);
+            oldImage.setUpdatedAt(formatDateTime());
             resourceRepo.save(oldImage);
             subjectToDelete.setImage(oldImage);
         }
 
         subjectToDelete.setDeleted(true);
         subjectToDelete.setImage(oldImage);
+        subjectToDelete.setUpdatedAt(formatDateTime());
         subjectRepo.save(subjectToDelete);
         return 1;
     }
@@ -80,6 +91,7 @@ public class SubjectDataAccessService implements CourseDao{
         Subject subjectToUpdate = subjectRepo.findSubjectByTitle(title).orElse(null);
         if(subjectToUpdate == null)
             return 0;
+
 
         if (!subjectToUpdate.getTitle().equals(subject.getTitle())) {
             subjectToUpdate.setTitle(subject.getTitle());
@@ -97,7 +109,6 @@ public class SubjectDataAccessService implements CourseDao{
                     resource.setLocation(newResLocation);
                     //resource location: RESOURCE_PATH/OldSubjectTitle_Component_Resource.txt ->
                     // -> RESOURCE_PATH/NewSubjectTitle_Component_Resource.txt
-
                     component.addResource(resource);
                     resourceRepo.save(resource);
                 }
@@ -114,8 +125,6 @@ public class SubjectDataAccessService implements CourseDao{
             ) + subject.getTitle() + "_" + oldImage.getTitle();
 
             oldImage.setLocation(locationOfOldImageUpdated);
-            //oldImage location: RESOURCE_PATH/OldSubjectTitle_image.jpg -> RESOURCE_PATH/NewSubjectTitle_image.jpg;
-
             resourceRepo.save(oldImage);
         }
 
@@ -123,6 +132,8 @@ public class SubjectDataAccessService implements CourseDao{
         subjectToUpdate.setYear(subject.getYear());
         subjectToUpdate.setSemester(subject.getSemester());
         subjectToUpdate.setDescription(subject.getDescription());
+
+        subjectToUpdate.setUpdatedAt(formatDateTime());
         subjectRepo.save(subjectToUpdate);
         return 1;
     }
@@ -142,13 +153,15 @@ public class SubjectDataAccessService implements CourseDao{
             ) + "OUTDATED_" + title + "_" + oldImage.getTitle();
 
             oldImage.setLocation(oldImageLocationUpdated);
-            //oldImage location: RESOURCE_PATH/Subject_image.jpg -> RESOURCE_PATH/OUTDATED_Subject_image.jpg;
 
             oldImage.setDeleted(true);
+            oldImage.setUpdatedAt(formatDateTime());
             resourceRepo.save(oldImage);
         }
-
+        image.setCreatedAt(formatDateTime());
+        image.setUpdatedAt(formatDateTime());
         subjectToUpdate.setImage(image);
+        subjectToUpdate.setUpdatedAt(formatDateTime());
         subjectRepo.save(subjectToUpdate);
         return 1;
     }
@@ -160,7 +173,10 @@ public class SubjectDataAccessService implements CourseDao{
         Subject subjectToModify = subjectRepo.findSubjectByTitle(title).orElse(null);
         if(subjectToModify == null)
             return 0;
+        component.setCreatedAt(formatDateTime());
+        component.setUpdatedAt(formatDateTime());
         subjectToModify.addComponent(component);
+        subjectToModify.setUpdatedAt(formatDateTime());
         subjectRepo.save(subjectToModify);
         return 1;
     }
@@ -184,6 +200,7 @@ public class SubjectDataAccessService implements CourseDao{
         if(componentToDelete == null)
             return 0;
         componentToDelete.setDeleted(true);
+        componentToDelete.setUpdatedAt(formatDateTime());
         subjectToModify.softDeleteComponent(componentToDelete);
         componentRepo.save(componentToDelete);
         subjectRepo.save(subjectToModify);
@@ -197,6 +214,9 @@ public class SubjectDataAccessService implements CourseDao{
             return 0;
         componentToUpdate.setNumberWeeks(component.getNumberWeeks());
         componentToUpdate.setType(component.getType());
+
+        componentToUpdate.setUpdatedAt(formatDateTime());
+
         componentRepo.save(componentToUpdate);
         return 1;
     }
@@ -218,6 +238,9 @@ public class SubjectDataAccessService implements CourseDao{
         Component componentToModify = componentRepo.findBySubjectTitleAndType(title, type).orElse(null);
         if(componentToModify == null)
             return 0;
+        resource.setCreatedAt(formatDateTime());
+        resource.setUpdatedAt(formatDateTime());
+        componentToModify.setUpdatedAt(formatDateTime());
         componentToModify.addResource(resource);
         componentRepo.save(componentToModify);
         return 1;
@@ -230,7 +253,7 @@ public class SubjectDataAccessService implements CourseDao{
             return 0;
         resourceToUpdate.setTitle(resource.getTitle());
         resourceToUpdate.setLocation(resource.getLocation());
-        resourceToUpdate.setTimeStamp(LocalDateTime.now());
+        resourceToUpdate.setUpdatedAt(formatDateTime());
         resourceRepo.save(resourceToUpdate);
         return 1;
     }
@@ -249,6 +272,7 @@ public class SubjectDataAccessService implements CourseDao{
                 0,
                 resourceToDelete.getLocation().lastIndexOf("/") + 1
         ) + "DELETED_" + subjectTitle + "_" + componentType + "_" + resourceTitle);
+        resourceToDelete.setUpdatedAt(formatDateTime());
         resourceRepo.save(resourceToDelete);
 
         componentToModify.softDeleteResource(resourceToDelete);
@@ -264,6 +288,9 @@ public class SubjectDataAccessService implements CourseDao{
         Subject subjectToModify = subjectRepo.findSubjectByTitle(title).orElse(null);
         if(subjectToModify == null)
             return 0;
+        evaluationMethod.setCreatedAt(formatDateTime());
+        evaluationMethod.setUpdatedAt(formatDateTime());
+        subjectToModify.setUpdatedAt(formatDateTime());
         subjectToModify.addEvaluation(evaluationMethod);
         subjectRepo.save(subjectToModify);
         return 1;
@@ -288,6 +315,7 @@ public class SubjectDataAccessService implements CourseDao{
         if(evaluationToDelete == null)
             return 0;
         evaluationToDelete.setDeleted(true);
+        evaluationToDelete.setUpdatedAt(formatDateTime());
         subjectToModify.softDeleteEvaluation(evaluationToDelete);
         evaluationRepo.save(evaluationToDelete);
         subjectRepo.save(subjectToModify);
@@ -302,6 +330,7 @@ public class SubjectDataAccessService implements CourseDao{
         evaluationToUpdate.setComponent(evaluationMethod.getComponent());
         evaluationToUpdate.setValue(evaluationMethod.getValue());
         evaluationToUpdate.setDescription(evaluationMethod.getDescription());
+        evaluationToUpdate.setUpdatedAt(formatDateTime());
         evaluationRepo.save(evaluationToUpdate);
         return 1;
     }

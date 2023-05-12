@@ -14,4 +14,8 @@ public class Role {
 
     private String name;
 
+    @Override
+    public String toString() {
+        return "Role(id=" + id + ", name=" + name + ")";
+    }
 }

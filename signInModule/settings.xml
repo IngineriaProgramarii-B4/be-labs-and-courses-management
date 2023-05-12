@@ -12,7 +12,7 @@
                 <sonar.host.url>
                     http://localhost:9000
                 </sonar.host.url>
-                <sonar.token>sqp_8be3774d01289302f88acc371e52461706e88b92
+                <sonar.token>sqp_55156e1f2d0d7d9e118f1a97a49c818f37eaca02
                 </sonar.token>
             </properties>
         </profile>

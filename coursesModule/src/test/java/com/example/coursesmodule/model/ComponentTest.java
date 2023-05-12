@@ -1,3 +1,4 @@
+
 package com.example.coursesmodule.model;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -78,11 +79,20 @@ class ComponentTest {
     }
 
     @Test
+    void softDeleteResourceNotFound() {
+        Resource resource = new Resource("Physics_romania.png", "savedResources/Physics_romania.png", "image/png", false);
+        assertEquals(0, component.getResources().size());
+
+        component.softDeleteResource(resource);
+        assertEquals(0, component.getResources().size());
+    }
+
+    @Test
     void testToString() {
         component.setResources(List.of(new Resource("Physics_romania.png", "savedResources/Physics_romania.png", "image/png", false)));
         component.setNumberWeeks(10);
         component.setDeleted(true);
-        assertEquals("Component{id=0, type='null', numberWeeks=10, " +
+        assertEquals("Component{type='null', numberWeeks=10, " +
                 "resources=[Resource{title='Physics_romania.png', location='savedResources/Physics_romania.png', type='image/png', isDeleted=false}], isDeleted=true}", component.toString());
     }
 }

@@ -1,3 +1,4 @@
+
 package com.example.coursesmodule.service;
 
 import com.example.coursesmodule.dao.CourseDao;
@@ -11,16 +12,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import java.util.logging.Logger;
 
 @Service
 @Transactional
 public class SubjectService {
     private final CourseDao courseDao;
     private static final String RESOURCE_PATH = "savedResources/";
+    private static final String RENAME_FAILURE = "RENAME FAILURE";
+    private static final Logger logger = Logger.getLogger(SubjectService.class.getName());
 
     @Autowired
     public SubjectService(@Qualifier("postgres") CourseDao courseDao) {
@@ -45,7 +51,7 @@ public class SubjectService {
         return false;
     }
 
-    private boolean validateUpdate(String title, String title1) {
+    public boolean validateUpdate(String title, String title1) {
         if(title.equals(title1))
             return true;
         for(Subject subject : courseDao.selectAllSubjects()) //only non-deleted subjects
@@ -67,6 +73,7 @@ public class SubjectService {
     public int addSubject(Subject subject) {
         if(!validateSubject(subject))
             return 0;
+
         return courseDao.insertSubject(subject);
     }
 
@@ -94,8 +101,12 @@ public class SubjectService {
             String type = component.getType();
             componentService.deleteComponentByType(title, type);
         }
-
-        Resource oldImage = courseDao.selectSubjectByTitle(title).get().getImage();
+        Optional<Subject> subject = courseDao.selectSubjectByTitle(title);
+        Resource oldImage;
+        if(subject.isEmpty()) {
+            return courseDao.deleteSubjectByTitle(title);
+        }
+        oldImage = subject.get().getImage();
         if (oldImage != null) {
             File oldImageFile = new File(oldImage.getLocation());
             String oldImageLocation = oldImage.getLocation(); //RESOURCE_PATH/Subject_image.jpg
@@ -105,7 +116,10 @@ public class SubjectService {
             ) + "DELETED_" + title + "_" + oldImage.getTitle();
             //-> RESOURCE_PATH/DELETED_Subject_image.jpg
 
-            boolean renameSuccessful = oldImageFile.renameTo(new File(oldImageLocationUpdated));
+            if (oldImageFile.renameTo(new File(oldImageLocationUpdated))) {
+                logger.info(oldImageLocationUpdated);
+            }
+            else logger.info(RENAME_FAILURE);
         }
 
         return courseDao.deleteSubjectByTitle(title);
@@ -124,10 +138,17 @@ public class SubjectService {
                         0,
                         resLocation.lastIndexOf("/") + 1
                 ) + subject.getTitle() + "_" + component.getType() + "_" + resource.getTitle();
-                boolean renameSuccessful = resFile.renameTo(new File(newResLocation));
+
+                if (resFile.renameTo(new File(newResLocation))) {
+                    logger.info(newResLocation);
+                }
+                else logger.info(RENAME_FAILURE);
             }
 
-        Resource oldImage = courseDao.selectSubjectByTitle(title).get().getImage();
+        Optional<Subject> subject1 = courseDao.selectSubjectByTitle(title);
+        Resource oldImage = null;
+        if(subject1.isPresent())
+            oldImage = subject1.get().getImage();
         if (oldImage != null) {
             String oldImageLocation = oldImage.getLocation();
             File oldImageFile = new File(oldImageLocation);
@@ -136,7 +157,10 @@ public class SubjectService {
                     0,
                     oldImageLocation.lastIndexOf("/") + 1
             ) + subject.getTitle() + "_" + oldImage.getTitle();
-            boolean renameSuccessful = oldImageFile.renameTo(new File(oldImageLocationUpdated));
+            if (oldImageFile.renameTo(new File(oldImageLocationUpdated))) {
+                logger.info(oldImageLocationUpdated);
+            }
+            else logger.info(RENAME_FAILURE);
         }
 
         return courseDao.updateSubjectByTitle(title, subject);
@@ -160,16 +184,16 @@ public class SubjectService {
         if(courseDao.saveImageToSubject(title, resource) == 0)
             return 0;
         try {
-            String absolutePath = new File("").getAbsolutePath();
-            String folderPath = absolutePath + "/" + RESOURCE_PATH;
-            File folder = new File(folderPath);
+            String absPath = new File("").getAbsolutePath();
+            Path absolutePath = Path.of(absPath);
+            Path folderPath = absolutePath.resolve(RESOURCE_PATH);
+            File folder = new File(folderPath.toString());
             if (!folder.exists()) {
                 folder.mkdir();
             }
 
             if (oldImage != null) {
                 File oldImageFile = new File(oldImageLocation);
-                System.out.println(oldImageLocation);
                 String oldImageLocationUpdated = oldImageLocation.substring(
                         0,
                         oldImageLocation.lastIndexOf("/") + 1
@@ -178,12 +202,15 @@ public class SubjectService {
                 oldImage.setLocation(oldImageLocationUpdated);
                 // -> RESOURCE_PATH/OUTDATED_Subject_image.jpg
 
-                boolean renameSuccessful = oldImageFile.renameTo(new File(oldImageLocationUpdated));
+                if (oldImageFile.renameTo(new File(oldImageLocationUpdated))) {
+                    logger.info(oldImageLocationUpdated);
+                }
+                else logger.info(RENAME_FAILURE);
             }
-            image.transferTo(new File(folderPath + fileName));
+            image.transferTo(new File(folderPath.resolve(fileName).toString()));
             return 1;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(java.util.logging.Level.SEVERE, "Exception: ", e);
             return 0;
         }
     }

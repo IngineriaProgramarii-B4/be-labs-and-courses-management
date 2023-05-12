@@ -4,7 +4,6 @@ import com.example.security.model.UserEntity;
 import com.example.security.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -20,14 +19,7 @@ public class EmailService {
 
     @Autowired
     private JavaMailSender mailSender;
-    private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
 
-    @Autowired
-    public EmailService(PasswordEncoder passwordEncoder, UserRepository userRepository) {
-        this.passwordEncoder = passwordEncoder;
-        this.userRepository = userRepository;
-    }
 
     public void sendPasswordResetEmail(UserEntity user, String url) throws MessagingException, UnsupportedEncodingException {
 
@@ -48,9 +40,5 @@ public class EmailService {
 
     }
 
-    public String randomPassword(int length) {
-        RandomStringGenerator pwdGenerator = new RandomStringGenerator.Builder().withinRange(97, 122)
-                .build();
-        return pwdGenerator.generate(length);
-    }
+
 }

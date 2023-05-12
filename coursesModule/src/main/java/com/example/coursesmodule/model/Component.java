@@ -1,25 +1,25 @@
 package com.example.coursesmodule.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-
+import org.hibernate.annotations.GenericGenerator;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "component")
 public class Component {
     @Id
-    @SequenceGenerator(
-            name = "approfundation_sequence",
-            sequenceName = "approfundation_sequence",
-            allocationSize = 1
+    @GenericGenerator(
+            name = "component_sequence",
+            strategy = "org.hibernate.id.UUIDGenerator"
     )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "approfundation_sequence"
+            strategy = GenerationType.IDENTITY,
+            generator = "component_sequence"
     )
-    private int id;
+    private UUID id;
     @Column(name = "type", nullable = false)
     private String type;
     @Column(name = "number_weeks", nullable = false)
@@ -29,16 +29,16 @@ public class Component {
     private List<Resource> resources = new ArrayList<>();
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 
     public Component() {
     }
 
-    public Component(@JsonProperty("id") int id,
-                     @JsonProperty("type") String type,
-                     @JsonProperty("numberWeeks") int numberWeeks,
-                     @JsonProperty("resources") List<Resource> resources,
-                     @JsonProperty("isDeleted") boolean isDeleted) {
-        this.id = id;
+    public Component(String type, int numberWeeks, List<Resource> resources, boolean isDeleted) {
+        this.id = UUID.randomUUID();
         this.type = type;
         this.numberWeeks = numberWeeks;
         this.resources = resources;
@@ -76,9 +76,6 @@ public class Component {
         return numberWeeks;
     }
 
-    public int getId() {
-        return id;
-    }
 
     public boolean isDeleted() {
         return isDeleted;
@@ -99,12 +96,18 @@ public class Component {
             resources.set(index, resource);
         }
     }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     @Override
     public String toString() {
         return "Component{" +
-                "id=" + id +
-                ", type='" + type + '\'' +
+                "type='" + type + '\'' +
                 ", numberWeeks=" + numberWeeks +
                 ", resources=" + resources +
                 ", isDeleted=" + isDeleted +

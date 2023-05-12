@@ -1,22 +1,24 @@
 package com.example.coursesmodule.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "evaluation")
 public class Evaluation {
     @Id
-    @SequenceGenerator(
+    @GenericGenerator(
             name = "evaluation_sequence",
-            sequenceName = "evaluation_sequence",
-            allocationSize = 1
+            strategy = "org.hibernate.id.UUIDGenerator"
     )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
+            strategy = GenerationType.IDENTITY,
             generator = "evaluation_sequence"
     )
-    private Long id;
+    private UUID id;
     @Column(name = "component", nullable = false)
     private String component;
     @Column(name = "value", nullable = false)
@@ -25,28 +27,24 @@ public class Evaluation {
     private String description;
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 
     public Evaluation() {
     }
 
-    public Evaluation(@JsonProperty("id") Long id,
-                      @JsonProperty("component") String component,
-                      @JsonProperty("value") float value,
-                      @JsonProperty("description") String description,
-                      @JsonProperty("isDeleted") boolean isDeleted) {
-        this.id = id;
+    public Evaluation(String component, float value, String description, boolean isDeleted) {
+        this.id = UUID.randomUUID();
         this.component = component;
         this.value = value;
         this.description = description;
         this.isDeleted = isDeleted;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getComponent() {
@@ -80,12 +78,17 @@ public class Evaluation {
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
     }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     @Override
     public String toString() {
         return "Evaluation{" +
-                "id=" + id +
-                ", component='" + component + '\'' +
+                "component='" + component + '\'' +
                 ", value=" + value +
                 ", isDeleted=" + isDeleted +
                 '}';

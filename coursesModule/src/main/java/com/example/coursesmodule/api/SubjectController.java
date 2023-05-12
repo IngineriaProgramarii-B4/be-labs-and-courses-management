@@ -1,3 +1,4 @@
+
 package com.example.coursesmodule.api;
 
 import com.example.coursesmodule.model.Subject;
@@ -18,7 +19,7 @@ import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping(path = "api/v1/subjects")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000")
 public class SubjectController {
     
     private static final String SUBJECT_ERROR = "Subject not found";

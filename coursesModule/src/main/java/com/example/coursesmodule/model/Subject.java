@@ -1,25 +1,25 @@
+
 package com.example.coursesmodule.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 
-
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
 @Table(name = "subject")
 public class Subject {
     @Id
-    @SequenceGenerator(
+    @GenericGenerator(
             name = "subject_sequence",
-            sequenceName = "subject_sequence",
-            allocationSize = 1
+            strategy = "org.hibernate.id.UUIDGenerator"
     )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
+            strategy = GenerationType.IDENTITY,
             generator = "subject_sequence"
     )
-    private int id;
+    private UUID id;
     @Column(name = "title", nullable = false)
     private String title;
     @Column(name = "credits", nullable = false)
@@ -42,26 +42,22 @@ public class Subject {
     @JoinColumn(name = "subject_id", referencedColumnName = "id")
     private List<Evaluation> evaluationList = new ArrayList<>();
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "subject_id", referencedColumnName = "id")
+    @JoinColumn(name = "image_id", referencedColumnName = "id")
     private Resource image;
     @Column(name="is_deleted", nullable = false)
     private boolean isDeleted;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 
     //constructors
     public Subject() {
     }
 
-    public Subject(@JsonProperty("id") int id,
-                   @JsonProperty("title") String title,
-                   @JsonProperty("credits") int credits,
-                   @JsonProperty("year") int year,
-                   @JsonProperty("semester") int semester,
-                   @JsonProperty("description") String description,
-                   @JsonProperty("components") List<Component> componentList,
-                   @JsonProperty("evaluations") List<Evaluation> evaluationList,
-                   @JsonProperty("isDeleted") boolean isDeleted
-    ) {
-        this.id = id;
+    public Subject(String title, int credits, int year, int semester, String description, List<Component> componentList,
+                   List<Evaluation> evaluationList, boolean isDeleted) {
+        this.id = UUID.randomUUID();
         this.title = title;
         this.credits = credits;
         this.year = year;
@@ -69,17 +65,12 @@ public class Subject {
         this.description = description;
         this.componentList = componentList;
         this.evaluationList = evaluationList;
-        this.image = null;
         this.isDeleted = isDeleted;
     }
 
     //setters
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setCredits(int credits) {
@@ -121,10 +112,6 @@ public class Subject {
         return title;
     }
 
-    public int getId() {
-        return id;
-    }
-
     public int getCredits() {
         return credits;
     }
@@ -151,6 +138,13 @@ public class Subject {
         return isDeleted;
     }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     //additional methods
 
     public void addComponent(Component component) {
@@ -174,7 +168,7 @@ public class Subject {
     }
 
     public void removeEvaluation(Evaluation evaluation) {
-        evaluationList.add(evaluation);
+        evaluationList.remove(evaluation);
     }
 
     public void softDeleteEvaluation(Evaluation evaluation) {
@@ -188,8 +182,7 @@ public class Subject {
     @Override
     public String toString() {
         return "Subject{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
+                "title='" + title + '\'' +
                 ", credits=" + credits +
                 ", year=" + year +
                 ", semester=" + semester +
