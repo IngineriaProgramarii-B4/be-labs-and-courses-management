@@ -14,12 +14,12 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-        <repository>
-            <id>clojars</id>
-            <name>Clojars</name>
-            <url>https://repo.clojars.org/</url>
-        </repository>
-    </repositories>
+		<repository>
+			<id>clojars</id>
+			<name>Clojars</name>
+			<url>https://repo.clojars.org/</url>
+		</repository>
+	</repositories>
 	<modelVersion>4.0.0</modelVersion>
 	<profiles>
 		<profile>
@@ -49,12 +49,51 @@
 	<properties>
 		<java.version>17</java.version>
 		<sonar.host.url>http://localhost:9000</sonar.host.url>
-		<sonar.token>sqp_8be3774d01289302f88acc371e52461706e88b92
+		<sonar.token>sqp_55156e1f2d0d7d9e118f1a97a49c818f37eaca02
 		</sonar.token>
-		<sonar.projectKey>Ip-proiect</sonar.projectKey>
+		<sonar.projectKey>Ip-Backend</sonar.projectKey>
 
 	</properties>
 	<dependencies>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>5.8.0-M1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>3.12.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-inline</artifactId>
+			<version>3.12.4</version>
+			<scope>test</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>jakarta.mail</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<version>${spring-security.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+
+
+
+
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
@@ -79,6 +118,8 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
+			<version>1.18.22</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -124,11 +165,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-            <version>6.0.7</version>
-        </dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>6.0.7</version>
+		</dependency>
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
@@ -138,13 +179,8 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-text</artifactId>
-			<version>1.6</version>
-		</dependency>
 
-    </dependencies>
+	</dependencies>
 
 	<build>
 		<plugins>

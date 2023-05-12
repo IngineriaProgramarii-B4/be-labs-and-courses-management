@@ -26,7 +26,6 @@ public class PasswordResetTokenService {
         if(passwordToken == null){
             return "Invalid verification token";
         }
-        UserEntity user = passwordToken.getUser();
         Calendar calendar = Calendar.getInstance();
         if ((passwordToken.getExpirationTime().getTime()-calendar.getTime().getTime())<= 0){
             return "Link already expired, resend link";

@@ -91,11 +91,7 @@ public class AuthController {
                     userRepository.save(user);
                     List<Role> roles = user.getRoles();
                     int role =  roles.get(0).getId();
-                    if(role == 1)
-                    {
-
-                    }
-                    else if(role == 2){
+                     if(role == 2){
                         Teacher teacher = new Teacher();
                         teacher.setRegistrationNumber(user.getUserId());
                         teacher.setMail(user.getEmail());
@@ -186,9 +182,6 @@ public class AuthController {
         return new ResponseEntity<>("Invalid token password reset token",HttpStatus.BAD_REQUEST);
     }
     public String applicationUrl(HttpServletRequest request) {
-        System.out.println(request.getServerName());
-        System.out.println(request.getServerPort());
-        System.out.println(request.getContextPath());
         return "http://"+request.getServerName()+":"
                 +"3000";
     }

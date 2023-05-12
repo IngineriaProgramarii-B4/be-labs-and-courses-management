@@ -37,6 +37,7 @@ public class JWTGenerator {
                 .getBody();
         return claims.getSubject();
     }
+
     public boolean validateToken(String token)
     {
         try {

@@ -1,22 +1,21 @@
 package com.example.security;
 
-
 import com.example.security.model.UserEntity;
 import com.example.security.security.EmailService;
 import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 
 import java.io.UnsupportedEncodingException;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
  class EmailServiceTest {
@@ -28,21 +27,25 @@ import static org.mockito.ArgumentMatchers.any;
     private JavaMailSender mailSender;
 
     private UserEntity user;
-    private String resetToken;
+    private String url;
 
     @BeforeEach
-    public void setUp() {
+     void setup() {
         user = new UserEntity();
         user.setEmail("test@example.com");
 
-        resetToken = "sampleResetToken";
+        url = "http://example.com/resetPassword";
     }
 
     @Test
      void testSendPasswordResetEmail() throws MessagingException, UnsupportedEncodingException {
-        emailService.sendPasswordResetEmail(user, resetToken);
+        MimeMessage mimeMessage = mock(MimeMessage.class);
 
-        Mockito.verify(mailSender, Mockito.times(1)).send(any(SimpleMailMessage.class));
+        when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
+
+        emailService.sendPasswordResetEmail(user, url);
+
+        verify(mailSender, times(1)).createMimeMessage();
+        verify(mailSender, times(1)).send(any(MimeMessage.class));
     }
 }
-
