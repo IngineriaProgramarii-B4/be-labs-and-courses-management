@@ -28,9 +28,12 @@ public class Demo {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring("Bearer ".length());
             System.out.println(token);
-            // Aici ai token-ul
+            if(jwtGenerator.validateToken(token))
+                return ResponseEntity.ok("This is a STUDENT page");
+            else
+                return new ResponseEntity<>("Token expired or invalid", HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.ok("This is a STUDENT page");
+        return new ResponseEntity<>("Token expired or invalid", HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/teacher")
